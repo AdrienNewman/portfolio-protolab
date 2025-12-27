@@ -86,8 +86,8 @@ Tous les fichiers de documentation sont dans `Documentation Porte Folio/`.
 | Préfixe | Usage | Exemple |
 |---------|-------|---------|
 | `DEV_` | Documentation développeur (debug, migration, changelog) | `DEV_CHANGELOG_V3.11.md` |
-| `INCIDENT_` | Rapports d'incidents avec date YYYYMMDD | `INCIDENT_CSS_20241227.md` |
-| `SESSION_` | Résumés de sessions de travail | `SESSION_20241227.md` |
+| `INCIDENT_` | Rapports d'incidents avec date YYYYMMDD | `INCIDENT_CSS_20251227.md` |
+| `SESSION_` | Résumés de sessions de travail | `SESSION_20251227.md` |
 | `TEMPLATE_` | Templates réutilisables | `TEMPLATE_FRONTMATTER.md` |
 | `LLM_` | Prompts et guides pour LLM | `LLM_PROMPTS.md` |
 | *(sans préfixe)* | Documents de référence principaux | `REFERENCE_PORTFOLIO.md` |
@@ -101,8 +101,8 @@ Tous les fichiers de documentation sont dans `Documentation Porte Folio/`.
 | `DEV_DEBUG.md` | Guide de débogage |
 | `DEV_MIGRATION_V3.md` | Documentation de migration vers V3 |
 | `DEV_TROUBLESHOOTING.md` | Résolution de problèmes courants |
-| `INCIDENT_CSS_20241227.md` | Incident CSS du 27/12/2024 |
-| `SESSION_20241227.md` | Résumé session du 27/12/2024 |
+| `INCIDENT_CSS_20251227.md` | Incident CSS du 27/12/2025 |
+| `SESSION_20251227.md` | Résumé session du 27/12/2025 |
 | `TEMPLATE_FRONTMATTER.md` | Template frontmatter pour les docs |
 | `LLM_PROMPTS.md` | Prompts pour utilisation avec LLM |
 
@@ -223,7 +223,15 @@ Contenu ici...
 
 ## Changelog
 
-### V3.11 (27 décembre 2024)
+### V3.12 (27 décembre 2025)
+
+- **Icônes technologies** : Affichage d'icônes SVG colorées (couleurs Simple Icons) dans le header du modal documentation
+- **Séparation tech/thèmes** : Filtrage automatique - seules les technologies (grafana, docker, proxmox...) sont affichées, les thèmes sont ignorés
+- **Icônes fixes** : Suppression des effets hover, couleurs statiques
+- **Fix CSS :global()** : Correction du scoping CSS Astro pour éléments injectés dynamiquement
+
+### V3.11 (27 décembre 2025)
+
 - **Nouvelle catégorie** : `web-front` pour la documentation frontend
 - **API Route docs** : `/api/docs/[slug].json` pour servir le contenu des docs
 - **Fix modals documentation** : Correction des erreurs 404, utilisation de l'API JSON

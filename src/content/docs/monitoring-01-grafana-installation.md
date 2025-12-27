@@ -2,7 +2,7 @@
 title: "Installation et Configuration de Grafana"
 description: "Guide complet pour installer et configurer Grafana dans un environnement de monitoring professionnel"
 category: monitoring
-date: 2024-12-15
+date: 2025-12-15
 tags:
   - grafana
   - monitoring

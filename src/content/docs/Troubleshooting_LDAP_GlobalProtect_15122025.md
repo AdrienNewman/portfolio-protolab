@@ -2,7 +2,7 @@
 title: "Troubleshooting LDAP GlobalProtect Palo Alto"
 description: "Résolution complète d'un problème d'authentification LDAP sur GlobalProtect - 7h de troubleshooting méthodique"
 category: paloalto
-date: 2024-12-15
+date: 2025-12-15
 tags:
   - palo-alto
   - globalprotect

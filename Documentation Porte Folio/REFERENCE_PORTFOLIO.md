@@ -1,9 +1,9 @@
 # Référence — Portfolio Protolab
 
-Date de capture : 27 décembre 2024
+Date de capture : 27 décembre 2025
 Répertoire : `portefolio V3`
 Branche : `master`
-Version : **V3.11**
+Version : **V3.12**
 
 **But du document** : fournir une référence complète de l'état actuel du site portfolio (structure, technologies, scripts, configuration, contenu et points d'attention) pour permettre une reprise par un LLM local (ex : Ollama, LlamaCPP) ou un service comme Claude Code. Inclus des exemples de prompts prêts à l'emploi et des commandes pour développement et déploiement.
 
@@ -11,7 +11,23 @@ Version : **V3.11**
 
 ---
 
-## Changelog V3.11 (27 décembre 2024)
+## Changelog V3.12 (27 décembre 2025)
+
+- **Icônes technologies dans modal doc** : Les tags de technologies affichent maintenant des icônes SVG colorées (couleurs officielles Simple Icons)
+- **Séparation technologies/thèmes** : Filtrage automatique des tags - seules les technologies (grafana, docker, proxmox...) sont affichées avec icônes, les thèmes (monitoring, security...) sont ignorés
+- **Icônes fixes** : Suppression des effets hover sur les icônes technologies (pas d'interactivité, couleurs statiques)
+- **CSS :global() fix** : Correction du scoping CSS Astro pour les éléments injectés dynamiquement via JavaScript
+- **TECH_COLORS mapping** : Nouveau mapping des couleurs de marque pour 25+ technologies (grafana #F46800, docker #2496ED, proxmox #E57000, etc.)
+- **THEME_TAGS filter** : Liste des tags thématiques à filtrer (monitoring, observability, security, infrastructure, etc.)
+
+### Fichiers modifiés V3.12
+
+- `public/scripts/modal-system.js` : Ajout TECH_COLORS, THEME_TAGS, modification updateModalContent()
+- `src/components/ui/DocModal.astro` : CSS avec :global() et suppression hover effects
+
+---
+
+## Changelog V3.11 (27 décembre 2025)
 
 - **Nouvelle catégorie** : `web-front` ajoutée au schema (`src/content/config.ts`) et au mapping (`src/utils/categoryMapping.ts`)
 - **API Route docs** : `/api/docs/[slug].json` pour servir le contenu des documentations via JSON
@@ -29,8 +45,8 @@ Tous les fichiers sont dans `Documentation Porte Folio/`. Utiliser ces préfixes
 | Préfixe | Usage | Exemple |
 | ------- | ----- | ------- |
 | `DEV_` | Documentation développeur (debug, migration, changelog) | `DEV_CHANGELOG_V3.11.md` |
-| `INCIDENT_` | Rapports d'incidents avec date YYYYMMDD | `INCIDENT_CSS_20241227.md` |
-| `SESSION_` | Résumés de sessions de travail | `SESSION_20241227.md` |
+| `INCIDENT_` | Rapports d'incidents avec date YYYYMMDD | `INCIDENT_CSS_20251227.md` |
+| `SESSION_` | Résumés de sessions de travail | `SESSION_20251227.md` |
 | `TEMPLATE_` | Templates réutilisables | `TEMPLATE_FRONTMATTER.md` |
 | `LLM_` | Prompts et guides pour LLM | `LLM_PROMPTS.md` |
 | *(sans préfixe)* | Documents de référence principaux | `REFERENCE_PORTFOLIO.md` |
@@ -42,8 +58,8 @@ Tous les fichiers sont dans `Documentation Porte Folio/`. Utiliser ces préfixes
 - `DEV_DEBUG.md` - Guide de débogage
 - `DEV_MIGRATION_V3.md` - Documentation de migration vers V3
 - `DEV_TROUBLESHOOTING.md` - Résolution de problèmes courants
-- `INCIDENT_CSS_20241227.md` - Incident CSS du 27/12/2024
-- `SESSION_20241227.md` - Résumé session du 27/12/2024
+- `INCIDENT_CSS_20251227.md` - Incident CSS du 27/12/2025
+- `SESSION_20251227.md` - Résumé session du 27/12/2025
 - `TEMPLATE_FRONTMATTER.md` - Template frontmatter pour les docs
 - `LLM_PROMPTS.md` - Prompts pour utilisation avec LLM
 

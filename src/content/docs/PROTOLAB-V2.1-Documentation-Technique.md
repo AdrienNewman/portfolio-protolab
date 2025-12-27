@@ -2,7 +2,7 @@
 title: "PROTOLAB V2.1 - Documentation Technique Complète"
 description: "Infrastructure lab d'entreprise avec Proxmox, Palo Alto PA-VM, Active Directory et stack de monitoring centralisé"
 category: architecture
-date: 2024-12-17
+date: 2025-12-17
 tags:
   - proxmox
   - palo-alto

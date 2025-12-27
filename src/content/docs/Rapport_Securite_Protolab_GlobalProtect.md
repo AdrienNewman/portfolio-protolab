@@ -2,7 +2,7 @@
 title: "Rapport de Sécurité - GlobalProtect Protolab"
 description: "Analyse de sécurité complète et préparation à l'ouverture GlobalProtect vers Internet avec Palo Alto PA-VM"
 category: security
-date: 2024-12-15
+date: 2025-12-15
 tags:
   - palo-alto
   - globalprotect
