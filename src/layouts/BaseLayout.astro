@@ -1,5 +1,6 @@
 ---
 import DocModal from '../components/ui/DocModal.astro';
+import GameOverlay from '../components/game/GameOverlay.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -39,6 +40,9 @@ const {
     <!-- Documentation Modal -->
     <DocModal />
 
+    <!-- NetDefender Game Overlay (Easter Egg) -->
+    <GameOverlay />
+
     <!-- Three.js via CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
@@ -49,5 +53,8 @@ const {
     <script is:inline src="/scripts/typing-effect.js"></script>
     <script is:inline src="/scripts/modal-system.js"></script>
     <script is:inline src="/scripts/doc-counter.js"></script>
+
+    <!-- NetDefender Easter Egg - Floating Packet -->
+    <script is:inline src="/scripts/floating-packet.js"></script>
 </body>
 </html>

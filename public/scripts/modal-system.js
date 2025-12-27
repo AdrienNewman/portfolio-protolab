@@ -322,9 +322,14 @@ class DocModalSystem {
         this.closeButtons = this.modal?.querySelectorAll('[data-modal-close]');
         this.prevButton = document.getElementById('doc-modal-prev');
         this.nextButton = document.getElementById('doc-modal-next');
+        this.progressFill = this.modal?.querySelector('.doc-progress-fill');
+        this.contentEl = this.modal?.querySelector('.doc-modal-content');
+        this.tocList = document.getElementById('doc-toc-list');
 
         this.currentDocIndex = -1;
         this.allDocs = [];
+        this.tocObserver = null;
+        this.headingIdCounter = 0;
 
         this.init();
     }
@@ -341,10 +346,33 @@ class DocModalSystem {
         // Attacher les event listeners
         this.attachEventListeners();
 
+        // Initialiser la progress bar
+        this.initProgressBar();
+
         // Gérer le hash dans l'URL pour deep linking
         this.handleUrlHash();
 
         console.log('✓ Documentation modal system initialized');
+    }
+
+    initProgressBar() {
+        if (!this.contentEl || !this.progressFill) return;
+
+        this.contentEl.addEventListener('scroll', () => {
+            const scrollTop = this.contentEl.scrollTop;
+            const scrollHeight = this.contentEl.scrollHeight - this.contentEl.clientHeight;
+
+            if (scrollHeight > 0) {
+                const progress = (scrollTop / scrollHeight) * 100;
+                this.progressFill.style.width = `${Math.min(100, Math.max(0, progress))}%`;
+            }
+        }, { passive: true });
+    }
+
+    resetProgressBar() {
+        if (this.progressFill) {
+            this.progressFill.style.width = '0%';
+        }
     }
 
     loadDocsList() {
@@ -394,6 +422,9 @@ class DocModalSystem {
     async openModal(slug, index) {
         this.currentDocIndex = index;
 
+        // Réinitialiser la progress bar
+        this.resetProgressBar();
+
         // Mettre à jour l'URL
         window.location.hash = `doc-${slug}`;
 
@@ -411,6 +442,12 @@ class DocModalSystem {
     closeModal() {
         this.modal.dataset.modalState = 'closed';
         document.body.style.overflow = '';
+
+        // Réinitialiser la progress bar
+        this.resetProgressBar();
+
+        // Nettoyer la TOC
+        this.cleanupTOC();
 
         // Nettoyer le hash
         history.pushState('', document.title, window.location.pathname + window.location.search);
@@ -461,8 +498,43 @@ class DocModalSystem {
         // Enlever le frontmatter YAML
         let html = markdown.replace(/^---[\s\S]*?---\n/, '');
 
-        // Conversion basique du Markdown en HTML
-        // Headings
+        // Code blocks - Terminal style avec bouton copier
+        // Regex amélioré: ```lang:filename ou ```lang
+        html = html.replace(/```(\w+)?(?::(.+?))?\n([\s\S]*?)```/g, (_, lang, filename, code) => {
+            const language = lang || 'text';
+            const escapedCode = this.escapeHtml(code.trim());
+            const codeId = `code-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+
+            return `<div class="code-block" data-code-id="${codeId}">
+                <div class="code-header">
+                    <div class="code-header-left">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                        <span class="code-lang">${language}</span>
+                        ${filename ? `<span class="code-filename">${filename}</span>` : ''}
+                    </div>
+                    <button class="code-copy-btn" data-code-target="${codeId}" aria-label="Copier le code">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        <span class="copy-text">Copier</span>
+                    </button>
+                </div>
+                <pre><code data-code-content="${codeId}">${escapedCode}</code></pre>
+            </div>`;
+        });
+
+        // Horizontal rules (avant headings pour éviter confusion)
+        html = html.replace(/^---$/gm, '<hr class="doc-divider">');
+
+        // Blockquotes
+        html = html.replace(/^>\s*(.*)$/gm, '<blockquote>$1</blockquote>');
+        html = html.replace(/<\/blockquote>\n<blockquote>/g, '<br>');
+
+        // Headings (H4 ajouté)
+        html = html.replace(/^#### (.*$)/gim, '<h4>$1</h4>');
         html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
         html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
         html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
@@ -470,31 +542,315 @@ class DocModalSystem {
         // Bold
         html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
+        // Appliquer les couleurs aux labels
+        html = this.applyLabelColors(html);
+
         // Italic
         html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
 
-        // Code inline
+        // Code inline (après les code blocks pour éviter les conflits)
         html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-
-        // Code blocks
-        html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
 
         // Links
         html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
 
-        // Lists
+        // Listes à puces
         html = html.replace(/^\- (.*$)/gim, '<li>$1</li>');
-        html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+
+        // Listes ordonnées
+        html = html.replace(/^\d+\.\s+(.*$)/gim, '<li class="ordered">$1</li>');
+
+        // Wrapper les listes
+        html = this.wrapLists(html);
 
         // Paragraphs
         html = html.split('\n\n').map(para => {
-            if (para.trim() && !para.startsWith('<')) {
+            para = para.trim();
+            if (para && !para.startsWith('<') && !para.match(/^<[a-z]/i)) {
                 return `<p>${para}</p>`;
             }
             return para;
         }).join('\n');
 
         return html;
+    }
+
+    applyLabelColors(html) {
+        const LABEL_COLORS = {
+            'symptôme': '#F5A623', 'symptome': '#F5A623',
+            'root cause': '#F5A623', 'cause': '#F5A623',
+            'solution': '#00ff88', 'résolution': '#00ff88',
+            'resolution': '#00ff88', 'correction': '#00ff88',
+            'diagnostic': '#00ffff', 'configuration': '#00ffff',
+            'important': '#ff0080', 'attention': '#ff0080',
+            'note': 'rgba(255,255,255,0.6)'
+        };
+
+        return html.replace(/<strong>([^<]+)<\/strong>\s*:/g, (match, label) => {
+            const normalized = label.toLowerCase().trim();
+            const color = LABEL_COLORS[normalized];
+            if (color) {
+                return `<strong class="doc-label" style="color: ${color}">${label}</strong> :`;
+            }
+            return match;
+        });
+    }
+
+    wrapLists(html) {
+        const lines = html.split('\n');
+        const result = [];
+        let inList = false;
+        let listType = null;
+
+        lines.forEach(line => {
+            if (line.includes('<li class="ordered">')) {
+                if (!inList || listType !== 'ol') {
+                    if (inList) result.push(listType === 'ul' ? '</ul>' : '</ol>');
+                    result.push('<ol>');
+                    inList = true;
+                    listType = 'ol';
+                }
+                result.push(line.replace(' class="ordered"', ''));
+            } else if (line.includes('<li>')) {
+                if (!inList || listType !== 'ul') {
+                    if (inList) result.push(listType === 'ul' ? '</ul>' : '</ol>');
+                    result.push('<ul>');
+                    inList = true;
+                    listType = 'ul';
+                }
+                result.push(line);
+            } else {
+                if (inList) {
+                    result.push(listType === 'ul' ? '</ul>' : '</ol>');
+                    inList = false;
+                    listType = null;
+                }
+                result.push(line);
+            }
+        });
+
+        if (inList) {
+            result.push(listType === 'ul' ? '</ul>' : '</ol>');
+        }
+
+        return result.join('\n');
+    }
+
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    getLanguageLabel(lang) {
+        const labels = {
+            'bash': 'Terminal',
+            'sh': 'Shell',
+            'zsh': 'Terminal',
+            'powershell': 'PowerShell',
+            'ps1': 'PowerShell',
+            'cmd': 'Command Prompt',
+            'yaml': 'YAML',
+            'yml': 'YAML',
+            'json': 'JSON',
+            'javascript': 'JavaScript',
+            'js': 'JavaScript',
+            'typescript': 'TypeScript',
+            'ts': 'TypeScript',
+            'python': 'Python',
+            'py': 'Python',
+            'html': 'HTML',
+            'css': 'CSS',
+            'scss': 'SCSS',
+            'nginx': 'Nginx',
+            'dockerfile': 'Dockerfile',
+            'docker': 'Docker',
+            'sql': 'SQL',
+            'text': 'Texte'
+        };
+        return labels[lang.toLowerCase()] || lang.toUpperCase();
+    }
+
+    initCodeCopyButtons() {
+        const copyButtons = this.modal.querySelectorAll('.code-copy-btn');
+        copyButtons.forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                const codeId = btn.dataset.codeTarget;
+                const codeEl = this.modal.querySelector(`[data-code-content="${codeId}"]`);
+
+                if (codeEl) {
+                    try {
+                        await navigator.clipboard.writeText(codeEl.textContent);
+
+                        // Feedback visuel
+                        btn.classList.add('copied');
+                        const textSpan = btn.querySelector('.copy-text');
+                        const originalText = textSpan.textContent;
+                        textSpan.textContent = 'Copié ✓';
+
+                        setTimeout(() => {
+                            btn.classList.remove('copied');
+                            textSpan.textContent = originalText;
+                        }, 2000);
+                    } catch (err) {
+                        console.error('Failed to copy code:', err);
+                    }
+                }
+            });
+        });
+    }
+
+    generateTOC() {
+        if (!this.tocList) return;
+
+        const bodyEl = this.modal.querySelector('#doc-modal-body');
+        if (!bodyEl) return;
+
+        // Réinitialiser le compteur d'IDs
+        this.headingIdCounter = 0;
+
+        // Trouver tous les H2 et H3
+        const headings = bodyEl.querySelectorAll('h2, h3');
+
+        if (headings.length === 0) {
+            this.tocList.innerHTML = '<li><span style="color: rgba(255,255,255,0.3); font-size: 0.7rem; padding: 0.5rem 1rem;">Aucune section</span></li>';
+            return;
+        }
+
+        // Générer les IDs uniques et construire la TOC
+        const tocItems = [];
+        headings.forEach((heading) => {
+            // Générer un ID unique basé sur le texte
+            const text = heading.textContent.trim();
+            const id = this.slugify(text) + '-' + (++this.headingIdCounter);
+            heading.id = id;
+
+            const level = heading.tagName.toLowerCase();
+            tocItems.push(`
+                <li>
+                    <a href="#${id}" class="toc-${level}" data-toc-target="${id}">${text}</a>
+                </li>
+            `);
+        });
+
+        this.tocList.innerHTML = tocItems.join('');
+
+        // Attacher les event listeners pour le smooth scroll
+        this.tocList.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.dataset.tocTarget;
+                const targetEl = document.getElementById(targetId);
+                if (targetEl && this.contentEl) {
+                    // Calculer la position relative au container scrollable
+                    const containerRect = this.contentEl.getBoundingClientRect();
+                    const targetRect = targetEl.getBoundingClientRect();
+                    const scrollTop = this.contentEl.scrollTop + (targetRect.top - containerRect.top) - 20;
+
+                    this.contentEl.scrollTo({
+                        top: scrollTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Initialiser l'IntersectionObserver pour le highlight
+        this.initTOCObserver();
+    }
+
+    slugify(text) {
+        return text
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '') // Supprimer les accents
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .substring(0, 50);
+    }
+
+    initTOCObserver() {
+        // Nettoyer l'observer précédent
+        if (this.tocObserver) {
+            this.tocObserver.disconnect();
+        }
+
+        const bodyEl = this.modal.querySelector('#doc-modal-body');
+        if (!bodyEl || !this.contentEl) return;
+
+        const headings = bodyEl.querySelectorAll('h2, h3');
+        if (headings.length === 0) return;
+
+        // Garder track du dernier heading actif
+        this.lastActiveHeadingId = null;
+
+        // Options de l'observer - zone de détection ajustée
+        const options = {
+            root: this.contentEl,
+            rootMargin: '-20% 0px -60% 0px',
+            threshold: [0, 0.25, 0.5]
+        };
+
+        this.tocObserver = new IntersectionObserver((entries) => {
+            // Trouver le heading le plus haut visible
+            let topMostVisible = null;
+            let topMostPosition = Infinity;
+
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const rect = entry.boundingClientRect;
+                    if (rect.top < topMostPosition && rect.top >= 0) {
+                        topMostPosition = rect.top;
+                        topMostVisible = entry.target;
+                    }
+                }
+            });
+
+            // Si on a trouvé un heading visible et qu'il est différent du précédent
+            if (topMostVisible && topMostVisible.id !== this.lastActiveHeadingId) {
+                this.lastActiveHeadingId = topMostVisible.id;
+                this.updateTOCActive(topMostVisible.id);
+            }
+        }, options);
+
+        // Observer tous les headings
+        headings.forEach(heading => {
+            this.tocObserver.observe(heading);
+        });
+
+        // Activer le premier heading par défaut
+        if (headings.length > 0 && headings[0].id) {
+            this.updateTOCActive(headings[0].id);
+        }
+    }
+
+    updateTOCActive(id) {
+        if (!this.tocList) return;
+
+        // Retirer la classe active de tous les liens
+        this.tocList.querySelectorAll('a').forEach(a => {
+            a.classList.remove('active');
+        });
+
+        // Ajouter la classe active au lien correspondant
+        const activeLink = this.tocList.querySelector(`a[data-toc-target="${id}"]`);
+        if (activeLink) {
+            activeLink.classList.add('active');
+            // Scroll la TOC pour garder l'élément visible
+            activeLink.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+    }
+
+    cleanupTOC() {
+        if (this.tocObserver) {
+            this.tocObserver.disconnect();
+            this.tocObserver = null;
+        }
+        if (this.tocList) {
+            this.tocList.innerHTML = '';
+        }
     }
 
     updateModalContent(docData) {
@@ -545,6 +901,12 @@ class DocModalSystem {
         if (bodyEl) {
             bodyEl.innerHTML = docData.htmlContent;
         }
+
+        // Initialiser les boutons copier pour les code blocks
+        this.initCodeCopyButtons();
+
+        // Générer la table des matières
+        this.generateTOC();
 
         // Scroll to top
         const contentEl = this.modal.querySelector('.doc-modal-content');

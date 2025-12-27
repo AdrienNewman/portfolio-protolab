@@ -1,0 +1,896 @@
+---
+// GameOverlay.astro - Full screen game container
+// Triggered by clicking the floating packet in Three.js background
+---
+
+<div id="game-overlay" class="game-overlay">
+    <!-- Game Canvas -->
+    <canvas id="game-canvas"></canvas>
+
+    <!-- HUD -->
+    <div id="game-hud" class="game-hud">
+        <div class="hud-top">
+            <!-- Wave/Layer Info -->
+            <div class="hud-panel hud-wave">
+                <span class="hud-label">WAVE</span>
+                <span class="hud-value" id="hud-wave-number">1</span>
+                <span class="hud-sublabel" id="hud-layer-name">APPLICATION</span>
+            </div>
+
+            <!-- Score -->
+            <div class="hud-panel hud-score">
+                <span class="hud-label">SCORE</span>
+                <span class="hud-value" id="hud-score">0</span>
+            </div>
+
+            <!-- Health -->
+            <div class="hud-panel hud-health">
+                <span class="hud-label">FIREWALL</span>
+                <div class="health-bar">
+                    <div class="health-fill" id="hud-health-fill"></div>
+                </div>
+                <span class="health-text" id="hud-health-text">100%</span>
+            </div>
+        </div>
+
+        <div class="hud-bottom">
+            <div class="hud-controls">
+                <span class="control-hint">[ZQSD/ARROWS] MOVE</span>
+                <span class="control-hint">[SPACE/CLICK] FIRE</span>
+                <span class="control-hint">[ESC] PAUSE</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Power-up Notification -->
+    <div id="powerup-notification" class="powerup-notification"></div>
+
+    <!-- Start Screen -->
+    <div id="game-start-screen" class="game-screen start-screen">
+        <div class="screen-content">
+            <h1 class="game-title">
+                <span class="title-net">NET</span><span class="title-defender">DEFENDER</span>
+            </h1>
+            <p class="game-subtitle">OSI LAYER DEFENSE PROTOCOL</p>
+
+            <div class="game-description">
+                <p>Defend the network stack against cyber threats.</p>
+                <p>Traverse all 7 OSI layers from Application to Physical.</p>
+            </div>
+
+            <div class="osi-preview">
+                <div class="osi-layer" style="--layer-color: #ff0080">L7 APPLICATION</div>
+                <div class="osi-layer" style="--layer-color: #ff0080">L6 PRESENTATION</div>
+                <div class="osi-layer" style="--layer-color: #00ff88">L5 SESSION</div>
+                <div class="osi-layer" style="--layer-color: #00ff88">L4 TRANSPORT</div>
+                <div class="osi-layer" style="--layer-color: #00ffff">L3 NETWORK</div>
+                <div class="osi-layer" style="--layer-color: #ffff00">L2 DATA LINK</div>
+                <div class="osi-layer" style="--layer-color: #ffff00">L1 PHYSICAL</div>
+            </div>
+
+            <button class="game-btn start-btn" id="start-game-btn">
+                <span>INITIALIZE DEFENSE</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </button>
+
+            <button class="game-btn exit-btn" id="exit-start-btn">
+                <span>RETURN TO PORTFOLIO</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Pause Screen -->
+    <div id="game-pause-screen" class="game-screen pause-screen hidden">
+        <div class="screen-content">
+            <h2 class="screen-title">SYSTEM PAUSED</h2>
+
+            <div class="pause-stats">
+                <div class="stat-item">
+                    <span class="stat-label">CURRENT SCORE</span>
+                    <span class="stat-value" id="pause-score">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">CURRENT WAVE</span>
+                    <span class="stat-value" id="pause-wave">1/7</span>
+                </div>
+            </div>
+
+            <button class="game-btn resume-btn" id="resume-btn">
+                <span>RESUME DEFENSE</span>
+            </button>
+
+            <button class="game-btn restart-btn" id="restart-pause-btn">
+                <span>RESTART MISSION</span>
+            </button>
+
+            <button class="game-btn exit-btn" id="exit-pause-btn">
+                <span>ABORT MISSION</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="game-over-screen" class="game-screen gameover-screen hidden">
+        <div class="screen-content">
+            <h2 class="screen-title glitch-text">BREACH DETECTED</h2>
+            <p class="screen-subtitle">Network infrastructure compromised</p>
+
+            <div class="final-stats">
+                <div class="stat-item large">
+                    <span class="stat-label">FINAL SCORE</span>
+                    <span class="stat-value" id="final-score">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">HIGH SCORE</span>
+                    <span class="stat-value" id="high-score">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">BREACHED AT</span>
+                    <span class="stat-value" id="breach-layer">LAYER 7</span>
+                </div>
+            </div>
+
+            <button class="game-btn restart-btn" id="restart-gameover-btn">
+                <span>REINITIALIZE DEFENSE</span>
+            </button>
+
+            <button class="game-btn exit-btn" id="exit-gameover-btn">
+                <span>RETURN TO PORTFOLIO</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Victory Screen -->
+    <div id="game-victory-screen" class="game-screen victory-screen hidden">
+        <div class="screen-content">
+            <h2 class="screen-title victory-title">ALL LAYERS SECURED</h2>
+            <p class="screen-subtitle">Network infrastructure protected</p>
+
+            <div class="victory-badge">
+                <div class="badge-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                </div>
+                <span class="badge-text">MISSION COMPLETE</span>
+            </div>
+
+            <div class="final-stats">
+                <div class="stat-item large">
+                    <span class="stat-label">FINAL SCORE</span>
+                    <span class="stat-value" id="victory-score">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">HIGH SCORE</span>
+                    <span class="stat-value" id="victory-high-score">0</span>
+                </div>
+            </div>
+
+            <button class="game-btn restart-btn" id="restart-victory-btn">
+                <span>DEFEND AGAIN</span>
+            </button>
+
+            <button class="game-btn exit-btn" id="exit-victory-btn">
+                <span>RETURN TO PORTFOLIO</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* ========================================
+       GAME OVERLAY BASE
+       ======================================== */
+    .game-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 30000;
+        background: #000;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .game-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    #game-canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+
+    /* ========================================
+       HUD STYLES
+       ======================================== */
+    .game-hud {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 1.5rem;
+        font-family: 'Space Mono', monospace;
+    }
+
+    .hud-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .hud-panel {
+        background: rgba(10, 10, 10, 0.9);
+        border: 2px solid var(--neon-cyan);
+        padding: 1rem 1.5rem;
+        position: relative;
+        background-image:
+            linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 15px 15px;
+    }
+
+    .hud-panel::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+    }
+
+    .hud-label {
+        display: block;
+        font-size: 0.65rem;
+        color: var(--gray-light);
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin-bottom: 0.25rem;
+    }
+
+    .hud-value {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 2.5rem;
+        color: var(--neon-cyan);
+        line-height: 1;
+        text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    }
+
+    .hud-sublabel {
+        display: block;
+        font-size: 0.6rem;
+        color: var(--neon-green);
+        letter-spacing: 0.1em;
+        margin-top: 0.25rem;
+    }
+
+    .hud-score .hud-value {
+        min-width: 120px;
+        text-align: center;
+    }
+
+    .health-bar {
+        width: 150px;
+        height: 12px;
+        background: var(--gray-mid);
+        border: 1px solid var(--gray-light);
+        position: relative;
+        overflow: hidden;
+        margin-top: 0.5rem;
+    }
+
+    .health-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--neon-green), var(--neon-cyan));
+        transition: width 0.3s ease;
+        box-shadow: 0 0 10px var(--neon-green);
+        width: 100%;
+    }
+
+    .health-text {
+        font-size: 0.7rem;
+        color: var(--gray-lighter);
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    .hud-bottom {
+        display: flex;
+        justify-content: center;
+    }
+
+    .hud-controls {
+        display: flex;
+        gap: 2rem;
+        background: rgba(10, 10, 10, 0.8);
+        padding: 0.75rem 1.5rem;
+        border: 1px solid var(--gray-mid);
+    }
+
+    .control-hint {
+        font-size: 0.65rem;
+        color: var(--gray-light);
+        letter-spacing: 0.05em;
+    }
+
+    /* ========================================
+       POWER-UP NOTIFICATION
+       ======================================== */
+    .powerup-notification {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 1rem 2rem;
+        font-family: 'Space Mono', monospace;
+        font-size: 1.25rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        background: rgba(0, 0, 0, 0.9);
+        border: 3px solid;
+        opacity: 0;
+        pointer-events: none;
+        z-index: 150;
+        transition: opacity 0.2s ease;
+    }
+
+    .powerup-notification.show {
+        opacity: 1;
+        animation: powerupPulse 0.5s ease-out;
+    }
+
+    @keyframes powerupPulse {
+        0% { transform: translate(-50%, -50%) scale(0.8); }
+        50% { transform: translate(-50%, -50%) scale(1.1); }
+        100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    /* ========================================
+       GAME SCREENS (Start, Pause, GameOver, Victory)
+       ======================================== */
+    .game-screen {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(10px);
+        z-index: 200;
+    }
+
+    .game-screen.hidden {
+        display: none;
+    }
+
+    .screen-content {
+        text-align: center;
+        max-width: 600px;
+        padding: 3rem;
+        border: 2px solid var(--neon-cyan);
+        background: var(--gray-dark);
+        background-image:
+            linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 30px 30px;
+        position: relative;
+    }
+
+    .screen-content::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta), var(--neon-cyan));
+        z-index: -1;
+        opacity: 0.3;
+    }
+
+    /* Game Title */
+    .game-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 5rem;
+        line-height: 1;
+        margin-bottom: 0.5rem;
+        letter-spacing: 0.05em;
+    }
+
+    .title-net {
+        color: var(--neon-cyan);
+        text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+    }
+
+    .title-defender {
+        color: var(--white);
+    }
+
+    .game-subtitle {
+        font-family: 'Space Mono', monospace;
+        font-size: 1rem;
+        color: var(--neon-green);
+        letter-spacing: 0.3em;
+        margin-bottom: 2rem;
+    }
+
+    .game-description {
+        color: var(--gray-lighter);
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .game-description p {
+        margin: 0.5rem 0;
+    }
+
+    /* OSI Preview */
+    .osi-preview {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        margin-bottom: 2rem;
+    }
+
+    .osi-layer {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.7rem;
+        padding: 0.4rem 1rem;
+        background: rgba(0, 0, 0, 0.5);
+        border-left: 3px solid var(--layer-color);
+        color: var(--layer-color);
+        text-align: left;
+        letter-spacing: 0.1em;
+    }
+
+    /* Screen Titles */
+    .screen-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 3rem;
+        color: var(--neon-cyan);
+        margin-bottom: 1rem;
+        letter-spacing: 0.1em;
+    }
+
+    .screen-subtitle {
+        color: var(--gray-lighter);
+        margin-bottom: 2rem;
+    }
+
+    .victory-title {
+        color: var(--neon-green);
+        text-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+    }
+
+    .glitch-text {
+        color: var(--neon-magenta);
+        animation: glitch 2s infinite;
+    }
+
+    @keyframes glitch {
+        0%, 90%, 100% { transform: translateX(0); }
+        92% { transform: translateX(-3px); text-shadow: 3px 0 var(--neon-cyan); }
+        94% { transform: translateX(3px); text-shadow: -3px 0 var(--neon-magenta); }
+        96% { transform: translateX(-3px); text-shadow: 3px 0 var(--neon-cyan); }
+    }
+
+    /* Stats */
+    .pause-stats,
+    .final-stats {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-item.large .stat-value {
+        font-size: 3rem;
+    }
+
+    .stat-label {
+        display: block;
+        font-size: 0.7rem;
+        color: var(--gray-light);
+        letter-spacing: 0.1em;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-value {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 2rem;
+        color: var(--neon-cyan);
+    }
+
+    /* Victory Badge */
+    .victory-badge {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .badge-icon {
+        width: 80px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 3px solid var(--neon-green);
+        border-radius: 50%;
+        margin-bottom: 1rem;
+        animation: badgePulse 2s infinite;
+    }
+
+    .badge-icon svg {
+        width: 40px;
+        height: 40px;
+        stroke: var(--neon-green);
+    }
+
+    .badge-text {
+        font-family: 'Space Mono', monospace;
+        font-size: 0.9rem;
+        color: var(--neon-green);
+        letter-spacing: 0.2em;
+    }
+
+    @keyframes badgePulse {
+        0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.3); }
+        50% { box-shadow: 0 0 40px rgba(0, 255, 136, 0.6); }
+    }
+
+    /* Buttons */
+    .game-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        padding: 1rem 2rem;
+        margin: 0.5rem;
+        font-family: 'Space Mono', monospace;
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        border: 2px solid;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .game-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .start-btn,
+    .resume-btn,
+    .restart-btn {
+        background: var(--neon-cyan);
+        border-color: var(--neon-cyan);
+        color: var(--black);
+    }
+
+    .start-btn:hover,
+    .resume-btn:hover,
+    .restart-btn:hover {
+        background: var(--neon-magenta);
+        border-color: var(--neon-magenta);
+        box-shadow: 0 0 30px rgba(255, 0, 128, 0.5);
+    }
+
+    .exit-btn {
+        background: transparent;
+        border-color: var(--gray-light);
+        color: var(--gray-light);
+    }
+
+    .exit-btn:hover {
+        border-color: var(--neon-magenta);
+        color: var(--neon-magenta);
+    }
+
+    /* ========================================
+       RESPONSIVE
+       ======================================== */
+    @media (max-width: 768px) {
+        .game-hud {
+            padding: 1rem;
+        }
+
+        .hud-top {
+            flex-wrap: wrap;
+        }
+
+        .hud-panel {
+            padding: 0.75rem 1rem;
+        }
+
+        .hud-value {
+            font-size: 1.75rem;
+        }
+
+        .health-bar {
+            width: 100px;
+        }
+
+        .hud-controls {
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .game-title {
+            font-size: 3rem;
+        }
+
+        .screen-content {
+            padding: 2rem 1.5rem;
+            margin: 1rem;
+        }
+
+        .osi-preview {
+            display: none;
+        }
+    }
+</style>
+
+<script is:inline>
+    // Game overlay controller
+    class GameOverlayController {
+        constructor() {
+            this.overlay = document.getElementById('game-overlay');
+            this.canvas = document.getElementById('game-canvas');
+            this.hud = document.getElementById('game-hud');
+            this.game = null;
+            this.gameLoaded = false;
+
+            // Screens
+            this.startScreen = document.getElementById('game-start-screen');
+            this.pauseScreen = document.getElementById('game-pause-screen');
+            this.gameOverScreen = document.getElementById('game-over-screen');
+            this.victoryScreen = document.getElementById('game-victory-screen');
+
+            // HUD elements
+            this.hudScore = document.getElementById('hud-score');
+            this.hudWaveNumber = document.getElementById('hud-wave-number');
+            this.hudLayerName = document.getElementById('hud-layer-name');
+            this.hudHealthFill = document.getElementById('hud-health-fill');
+            this.hudHealthText = document.getElementById('hud-health-text');
+
+            // Notification
+            this.notification = document.getElementById('powerup-notification');
+            this.notificationTimeout = null;
+
+            this.bindEvents();
+        }
+
+        bindEvents() {
+            // Start game
+            document.getElementById('start-game-btn')?.addEventListener('click', () => this.startGame());
+
+            // Resume
+            document.getElementById('resume-btn')?.addEventListener('click', () => this.resumeGame());
+
+            // Restart buttons
+            document.getElementById('restart-pause-btn')?.addEventListener('click', () => this.restartGame());
+            document.getElementById('restart-gameover-btn')?.addEventListener('click', () => this.restartGame());
+            document.getElementById('restart-victory-btn')?.addEventListener('click', () => this.restartGame());
+
+            // Exit buttons
+            document.getElementById('exit-start-btn')?.addEventListener('click', () => this.closeOverlay());
+            document.getElementById('exit-pause-btn')?.addEventListener('click', () => this.closeOverlay());
+            document.getElementById('exit-gameover-btn')?.addEventListener('click', () => this.closeOverlay());
+            document.getElementById('exit-victory-btn')?.addEventListener('click', () => this.closeOverlay());
+
+            // Escape key to close (when on start screen) or pause
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && this.overlay.classList.contains('active')) {
+                    if (!this.startScreen.classList.contains('hidden')) {
+                        this.closeOverlay();
+                    }
+                }
+            });
+        }
+
+        loadGameScript() {
+            return new Promise((resolve, reject) => {
+                if (this.gameLoaded) {
+                    resolve();
+                    return;
+                }
+
+                const script = document.createElement('script');
+                script.type = 'module';
+                script.src = '/scripts/game/NetDefender.js';
+                script.onload = () => {
+                    this.gameLoaded = true;
+                    resolve();
+                };
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+
+        async open() {
+            // Show overlay
+            this.overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            // Show start screen
+            this.showScreen('start');
+
+            // Initialize game if needed
+            if (!this.game) {
+                try {
+                    // Load game script first
+                    await this.loadGameScript();
+
+                    // Wait a bit for the module to register
+                    await new Promise(r => setTimeout(r, 100));
+
+                    // Create game instance (NetDefender is exposed on window)
+                    if (window.NetDefender) {
+                        this.game = new window.NetDefender('game-canvas');
+
+                        // Set up callbacks
+                        this.game.onScoreUpdate = (score) => this.updateScore(score);
+                        this.game.onHealthUpdate = (health, max) => this.updateHealth(health, max);
+                        this.game.onWaveUpdate = (wave, total, layer) => this.updateWave(wave, total, layer);
+                        this.game.onPause = (paused) => paused ? this.showScreen('pause') : this.showScreen('playing');
+                        this.game.onGameOver = (score, highScore) => this.showGameOver(score, highScore);
+                        this.game.onVictory = (score, highScore) => this.showVictory(score, highScore);
+                        this.game.onPowerUpCollect = (name, color, isPositive) => this.showPowerUpNotification(name, color);
+                    } else {
+                        console.error('NetDefender not available on window');
+                    }
+                } catch (err) {
+                    console.error('Failed to load game:', err);
+                }
+            }
+        }
+
+        startGame() {
+            if (this.game) {
+                this.showScreen('playing');
+                this.game.start();
+            }
+        }
+
+        resumeGame() {
+            if (this.game) {
+                this.showScreen('playing');
+                this.game.resume();
+            }
+        }
+
+        restartGame() {
+            if (this.game) {
+                this.game.stop();
+                this.showScreen('playing');
+                this.game.start();
+            }
+        }
+
+        closeOverlay() {
+            if (this.game) {
+                this.game.stop();
+            }
+            this.overlay.classList.remove('active');
+            document.body.style.overflow = '';
+
+            // Dispatch event for Three.js to know game closed
+            window.dispatchEvent(new CustomEvent('netdefender-closed'));
+        }
+
+        showScreen(screen) {
+            // Hide all screens
+            this.startScreen.classList.add('hidden');
+            this.pauseScreen.classList.add('hidden');
+            this.gameOverScreen.classList.add('hidden');
+            this.victoryScreen.classList.add('hidden');
+            this.hud.style.display = 'none';
+
+            // Show requested screen
+            switch (screen) {
+                case 'start':
+                    this.startScreen.classList.remove('hidden');
+                    break;
+                case 'pause':
+                    this.pauseScreen.classList.remove('hidden');
+                    if (this.game) {
+                        document.getElementById('pause-score').textContent = this.game.score.toLocaleString('fr-FR');
+                        document.getElementById('pause-wave').textContent = `${this.game.waveManager.getCurrentWaveNumber()}/${this.game.waveManager.getTotalWaves()}`;
+                    }
+                    break;
+                case 'gameover':
+                    this.gameOverScreen.classList.remove('hidden');
+                    break;
+                case 'victory':
+                    this.victoryScreen.classList.remove('hidden');
+                    break;
+                case 'playing':
+                    this.hud.style.display = 'flex';
+                    break;
+            }
+        }
+
+        updateScore(score) {
+            this.hudScore.textContent = score.toLocaleString('fr-FR');
+        }
+
+        updateHealth(health, max) {
+            const percent = (health / max) * 100;
+            this.hudHealthFill.style.width = `${percent}%`;
+            this.hudHealthText.textContent = `${Math.round(percent)}%`;
+
+            // Color based on health
+            if (percent <= 25) {
+                this.hudHealthFill.style.background = 'var(--neon-magenta)';
+            } else if (percent <= 50) {
+                this.hudHealthFill.style.background = 'var(--neon-yellow)';
+            } else {
+                this.hudHealthFill.style.background = 'linear-gradient(90deg, var(--neon-green), var(--neon-cyan))';
+            }
+        }
+
+        updateWave(wave, total, layer) {
+            this.hudWaveNumber.textContent = wave;
+            if (layer) {
+                this.hudLayerName.textContent = layer.name;
+                this.hudLayerName.style.color = layer.color;
+            }
+        }
+
+        showGameOver(score, highScore) {
+            document.getElementById('final-score').textContent = score.toLocaleString('fr-FR');
+            document.getElementById('high-score').textContent = highScore.toLocaleString('fr-FR');
+            if (this.game) {
+                const layer = this.game.waveManager.getCurrentLayerInfo();
+                document.getElementById('breach-layer').textContent = `LAYER ${layer?.level || '?'}`;
+            }
+            this.showScreen('gameover');
+        }
+
+        showVictory(score, highScore) {
+            document.getElementById('victory-score').textContent = score.toLocaleString('fr-FR');
+            document.getElementById('victory-high-score').textContent = highScore.toLocaleString('fr-FR');
+            this.showScreen('victory');
+        }
+
+        showPowerUpNotification(name, color) {
+            if (this.notificationTimeout) {
+                clearTimeout(this.notificationTimeout);
+            }
+
+            this.notification.textContent = name;
+            this.notification.style.color = color;
+            this.notification.style.borderColor = color;
+            this.notification.style.boxShadow = `0 0 20px ${color}`;
+            this.notification.classList.add('show');
+
+            this.notificationTimeout = setTimeout(() => {
+                this.notification.classList.remove('show');
+            }, 1500);
+        }
+    }
+
+    // Initialize controller
+    const gameController = new GameOverlayController();
+
+    // Expose for external triggering
+    window.openNetDefender = () => gameController.open();
+    window.closeNetDefender = () => gameController.closeOverlay();
+</script>

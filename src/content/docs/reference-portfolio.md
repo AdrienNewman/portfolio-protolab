@@ -36,6 +36,11 @@ Branche : `master`
 - Contenu dynamique : `astro:content` Collections (`docs`, `projects`) définies dans `src/content/config.ts`
 
 **Changements récents (capture d'état)**
+- **V4.0** : Intégration du mini-jeu NetDefender (easter egg) - Voir [netdefender-game-reference.md](netdefender-game-reference.md) pour la documentation complète
+  - Nouveau composant `src/components/game/GameOverlay.astro` (interface complète du jeu)
+  - Scripts modulaires dans `public/scripts/game/` (entities, systems, effects, config)
+  - Easter egg `floating-packet.js` : paquet 3D cliquable dans le fond Three.js
+  - 7 vagues OSI avec 28 types d'ennemis thématiques
 - `src/components/modals/` : la plupart des modals (preview + detail) ont été extraits depuis `index.astro` pour améliorer la maintenabilité et la lisibilité.
 - `src/components/ui/ProjectGallery.astro` : nouveau composant qui lit automatiquement la collection `projects` et rend des `ProjectCard` dynamiquement.
 - `src/pages/index.astro` : simplifié pour importer et rendre les composants modaux (ex : `Preview*`, `Modal*`, `Project*`) au lieu d'avoir tout inline. Correction : `ModalWindows` et `ModalLinux` ont été ajoutés dans le DOM (élimine les warnings "Modal not found for card").
@@ -77,7 +82,8 @@ Branche : `master`
 Conseil : respecter les types `zod` lors de la création de nouveaux fichiers de collection pour éviter les erreurs au build.
 
 **4) Composants & responsabilités**
-- `BaseLayout.astro` : meta tags, fonts, import `global.css`, canvas `#three-canvas`, insertion des scripts CDN et inline, inclusion du `DocModal` global
+- `BaseLayout.astro` : meta tags, fonts, import `global.css`, canvas `#three-canvas`, insertion des scripts CDN et inline, inclusion du `DocModal` global et du `GameOverlay` (NetDefender)
+- `GameOverlay.astro` : overlay plein écran pour le mini-jeu NetDefender (HUD, écrans start/pause/gameover, canvas de jeu)
 - `TerminalBoot.astro` + `public/scripts/terminal-boot.js` : écran de boot initial, dispatch d'un event `portfolioReady` qui déclenche l'affichage principal
 - `index.astro` : charge la plupart des composants, définit icônes et couleurs via `utils/icons.ts`, contient tous les modals de preview (level 1) et détail (level 2), ainsi que plusieurs `project modals` (Protolab, LLM, Observability...)
 - `three-background.js` : initialise le canvas Three.js (via CDN r128) pour l'effet de fond
@@ -95,6 +101,13 @@ Remarques sur la logique des modals
 - `public/scripts/scroll-animations.js` : IntersectionObserver pour animations et gestion nav
 - `public/scripts/terminal-boot.js` : logique boot + CustomEvent `portfolioReady`
 - `public/scripts/modal-system.js` : logique modals
+- `public/scripts/floating-packet.js` : easter egg - paquet 3D cliquable pour lancer NetDefender
+- `public/scripts/game/` : mini-jeu NetDefender (architecture modulaire)
+  - `NetDefender.js` : orchestrateur principal
+  - `config/gameConfig.js` : configuration OSI, ennemis, power-ups
+  - `entities/` : Player.js, Enemy.js, Bullet.js, PowerUp.js
+  - `systems/` : InputHandler.js, ParticleSystem.js, WaveManager.js, AudioManager.js
+  - `effects/` : GridBackground.js, ScreenShake.js
 - `public/fonts/` : polices Google (Bebas Neue, Space Mono, JetBrains Mono) référencées via CDN
 
 **6) Build & run (local)**
@@ -392,6 +405,7 @@ git reset --hard HEAD~1
 - [ ] Si besoin LLM local : configurer GPU host (drivers, nvidia-container-toolkit)
 
 **Actions terminées lors de cette capture :**
+- **V4.0** : Intégration complète du mini-jeu NetDefender (easter egg OSI)
 - Extraction/création des composants modals sous `src/components/modals/` et intégration dans `index.astro`.
 - Ajout de `ProjectGallery.astro` et intégration.
 - Correction de la présence des modals Windows/Linux pour éliminer les warnings `Modal not found for card`.
