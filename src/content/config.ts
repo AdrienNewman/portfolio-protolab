@@ -19,7 +19,8 @@ const docsCollection = defineCollection({
             'documentation',
             'architecture',
             'multimedia',
-            'llm'
+            'llm',
+            'web-front'
         ]),
         date: z.date(),
         tags: z.array(z.string()).default([]),

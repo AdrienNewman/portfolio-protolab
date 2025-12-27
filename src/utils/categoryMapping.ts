@@ -82,6 +82,12 @@ export const CATEGORY_CONFIG = {
     icon: 'nvidia',
     color: '#FFB900',
     description: 'Intelligence artificielle et LLM'
+  },
+  'web-front': {
+    displayName: 'Web & Front-end',
+    icon: 'react',
+    color: '#61dafb',
+    description: 'Développement web et front-end'
   }
 } as const;
 

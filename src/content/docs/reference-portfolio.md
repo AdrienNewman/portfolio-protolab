@@ -1,3 +1,24 @@
+---
+title: "Référence Technique - Portfolio Protolab V3"
+description: "Documentation technique complète du portfolio : architecture Astro, structure du code, workflow Git, et guide de reprise pour LLM"
+category: web-front
+date: 2025-12-27
+tags:
+  - astro
+  - typescript
+  - docker
+  - nginx
+  - git
+  - devops
+  - documentation
+  - architecture
+  - frontend
+author: Adrien Mercadier
+readingTime: 14
+featured: true
+difficulty: intermediate
+---
+
 # Référence — Portfolio Protolab
 
 Date de capture : 27 décembre 2025

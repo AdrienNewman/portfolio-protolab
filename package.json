@@ -6,7 +6,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "update-docs": "node src/utils/updateDocMetadata.js"
   },
   "dependencies": {
     "astro": "^5.16.6",
