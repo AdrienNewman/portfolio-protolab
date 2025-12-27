@@ -1,14 +1,55 @@
 # Référence — Portfolio Protolab
 
-Date de capture : 27 décembre 2025
+Date de capture : 27 décembre 2024
 Répertoire : `portefolio V3`
 Branche : `master`
+Version : **V3.11**
 
 **But du document** : fournir une référence complète de l'état actuel du site portfolio (structure, technologies, scripts, configuration, contenu et points d'attention) pour permettre une reprise par un LLM local (ex : Ollama, LlamaCPP) ou un service comme Claude Code. Inclus des exemples de prompts prêts à l'emploi et des commandes pour développement et déploiement.
 
 **NOTE** : ce fichier est une capture d'état — conservez-le avec le repo pour faciliter la continuité.
 
-**Résumé rapide**
+---
+
+## Changelog V3.11 (27 décembre 2024)
+
+- **Nouvelle catégorie** : `web-front` ajoutée au schema (`src/content/config.ts`) et au mapping (`src/utils/categoryMapping.ts`)
+- **API Route docs** : `/api/docs/[slug].json` pour servir le contenu des documentations via JSON
+- **Fix modals documentation** : `modal-system.js` utilise maintenant l'API JSON au lieu de fetch `/docs/*.md` (corrige erreurs 404)
+- **Script validation** : `npm run update-docs` pour valider les métadonnées des docs (`src/utils/updateDocMetadata.js`)
+- **Fix curseur** : z-index du curseur personnalisé augmenté à 99999 (visible dans les modals)
+- **Réorganisation documentation** : Tous les fichiers `.md` du projet déplacés vers `Documentation Porte Folio/` avec nomenclature claire
+
+---
+
+## Nomenclature des fichiers de documentation
+
+Tous les fichiers sont dans `Documentation Porte Folio/`. Utiliser ces préfixes :
+
+| Préfixe | Usage | Exemple |
+| ------- | ----- | ------- |
+| `DEV_` | Documentation développeur (debug, migration, changelog) | `DEV_CHANGELOG_V3.11.md` |
+| `INCIDENT_` | Rapports d'incidents avec date YYYYMMDD | `INCIDENT_CSS_20241227.md` |
+| `SESSION_` | Résumés de sessions de travail | `SESSION_20241227.md` |
+| `TEMPLATE_` | Templates réutilisables | `TEMPLATE_FRONTMATTER.md` |
+| `LLM_` | Prompts et guides pour LLM | `LLM_PROMPTS.md` |
+| *(sans préfixe)* | Documents de référence principaux | `REFERENCE_PORTFOLIO.md` |
+
+### Fichiers actuels
+
+- `REFERENCE_PORTFOLIO.md` - Référence technique complète du projet
+- `DEV_CHANGELOG_V3.11.md` - Changelog de la version 3.11
+- `DEV_DEBUG.md` - Guide de débogage
+- `DEV_MIGRATION_V3.md` - Documentation de migration vers V3
+- `DEV_TROUBLESHOOTING.md` - Résolution de problèmes courants
+- `INCIDENT_CSS_20241227.md` - Incident CSS du 27/12/2024
+- `SESSION_20241227.md` - Résumé session du 27/12/2024
+- `TEMPLATE_FRONTMATTER.md` - Template frontmatter pour les docs
+- `LLM_PROMPTS.md` - Prompts pour utilisation avec LLM
+
+---
+
+### Résumé rapide
 - Framework : `Astro` (v5.16.x)
 - Build : statique (Astro -> `dist`) puis servi par `nginx` dans un conteneur Docker
 - Langages : `TypeScript` (pour les collections), `Astro` (components), `Vanilla JS` (scripts dans `public/scripts`), CSS

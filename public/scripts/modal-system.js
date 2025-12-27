@@ -337,31 +337,33 @@ class DocModalSystem {
 
     async loadDocContent(slug) {
         try {
-            // Récupérer les données depuis l'élément de la card
-            const docData = this.allDocs[this.currentDocIndex];
-
-            // Fetch le contenu Markdown de la documentation
-            const response = await fetch(`/docs/${slug}.md`);
+            // Fetch le contenu depuis l'API JSON
+            const response = await fetch(`/api/docs/${slug}.json`);
 
             if (!response.ok) {
                 throw new Error(`Failed to load doc: ${slug}`);
             }
 
-            const markdownContent = await response.text();
+            const docData = await response.json();
+            const markdownContent = docData.content;
 
-            // Convertir le Markdown en HTML (simple conversion pour le moment)
+            // Convertir le Markdown en HTML
             const htmlContent = this.convertMarkdownToHtml(markdownContent);
 
             // Calculer les stats
             const wordCount = markdownContent.split(/\s+/).length;
             const readingTime = Math.ceil(wordCount / 200); // ~200 mots par minute
 
-            // Mettre à jour le modal avec les données
+            // Mettre à jour le modal avec les données de l'API
             this.updateModalContent({
                 title: docData.title,
                 description: docData.description,
                 categoryDisplay: docData.category,
-                date: docData.date,
+                date: new Date(docData.date).toLocaleDateString('fr-FR', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                }),
                 tags: docData.tags,
                 htmlContent: htmlContent,
                 wordCount: wordCount,

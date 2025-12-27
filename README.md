@@ -65,11 +65,46 @@ Portfolio professionnel d'Adrien Mercadier, Technicien Supérieur Systèmes et R
 │   │                               # Sections: Profile, Contact, Footer, Modals
 │   └── styles/
 │       └── global.css              # Variables CSS + reset
+├── Documentation Porte Folio/      # Documentation du projet
+│   ├── DEV_*.md                    # Docs développeur
+│   ├── INCIDENT_*.md               # Rapports d'incidents
+│   ├── SESSION_*.md                # Résumés de sessions
+│   ├── TEMPLATE_*.md               # Templates réutilisables
+│   └── REFERENCE_PORTFOLIO.md      # Référence technique complète
 ├── Dockerfile                      # Build multi-stage Node + Nginx
 ├── docker-compose.yml              # Stack avec labels Traefik
 ├── nginx.conf                      # Config Nginx optimisée
 └── package.json
 ```
+
+## Documentation du projet
+
+Tous les fichiers de documentation sont dans `Documentation Porte Folio/`.
+
+### Nomenclature des fichiers
+
+| Préfixe | Usage | Exemple |
+|---------|-------|---------|
+| `DEV_` | Documentation développeur (debug, migration, changelog) | `DEV_CHANGELOG_V3.11.md` |
+| `INCIDENT_` | Rapports d'incidents avec date YYYYMMDD | `INCIDENT_CSS_20241227.md` |
+| `SESSION_` | Résumés de sessions de travail | `SESSION_20241227.md` |
+| `TEMPLATE_` | Templates réutilisables | `TEMPLATE_FRONTMATTER.md` |
+| `LLM_` | Prompts et guides pour LLM | `LLM_PROMPTS.md` |
+| *(sans préfixe)* | Documents de référence principaux | `REFERENCE_PORTFOLIO.md` |
+
+### Fichiers actuels
+
+| Fichier | Description |
+|---------|-------------|
+| `REFERENCE_PORTFOLIO.md` | Référence technique complète du projet |
+| `DEV_CHANGELOG_V3.11.md` | Changelog de la version 3.11 |
+| `DEV_DEBUG.md` | Guide de débogage |
+| `DEV_MIGRATION_V3.md` | Documentation de migration vers V3 |
+| `DEV_TROUBLESHOOTING.md` | Résolution de problèmes courants |
+| `INCIDENT_CSS_20241227.md` | Incident CSS du 27/12/2024 |
+| `SESSION_20241227.md` | Résumé session du 27/12/2024 |
+| `TEMPLATE_FRONTMATTER.md` | Template frontmatter pour les docs |
+| `LLM_PROMPTS.md` | Prompts pour utilisation avec LLM |
 
 ## Commandes
 
@@ -79,6 +114,7 @@ Portfolio professionnel d'Adrien Mercadier, Technicien Supérieur Systèmes et R
 | `npm run dev`         | Démarrer le serveur dev sur `localhost:4321`   |
 | `npm run build`       | Construire le site pour la production          |
 | `npm run preview`     | Prévisualiser le build en local                |
+| `npm run update-docs` | Valider les métadonnées des documentations     |
 
 ## Déploiement Docker
 
@@ -184,6 +220,15 @@ Contenu ici...
 - Preview modals (Level 1 - hover)
 - 5 modals restants (Proxmox, Observability, LLM, Backup, Cloud)
 - Modals pour les projets
+
+## Changelog
+
+### V3.11 (27 décembre 2024)
+- **Nouvelle catégorie** : `web-front` pour la documentation frontend
+- **API Route docs** : `/api/docs/[slug].json` pour servir le contenu des docs
+- **Fix modals documentation** : Correction des erreurs 404, utilisation de l'API JSON
+- **Script validation** : `npm run update-docs` pour valider les métadonnées
+- **Fix curseur** : Le curseur personnalisé reste visible dans les modals (z-index)
 
 ## État actuel de la migration
 

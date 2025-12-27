@@ -84,10 +84,10 @@ export const CATEGORY_CONFIG = {
     description: 'Intelligence artificielle et LLM'
   },
   'web-front': {
-    displayName: 'Web & Front-end',
-    icon: 'react',
-    color: '#61dafb',
-    description: 'Développement web et front-end'
+    displayName: 'Web Frontend',
+    icon: 'html5',
+    color: '#E34F26',
+    description: 'Développement web frontend et interfaces'
   }
 } as const;
 
