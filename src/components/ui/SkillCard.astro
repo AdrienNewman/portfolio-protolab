@@ -1,0 +1,174 @@
+---
+// Skill Card Component
+interface Props {
+    number: string;
+    title: string;
+    description?: string;
+    tags?: string[];
+    icon: string;
+    preview?: string;
+    modal?: string;
+}
+
+const { number, title, description, tags, icon, preview, modal } = Astro.props;
+---
+
+<div class="skill-card" data-tilt data-preview={preview} data-modal={modal}>
+    <div class="skill-card-inner">
+        <span class="skill-number">{number}</span>
+        <div class="skill-icon">
+            <svg viewBox="0 0 24 24" set:html={icon} />
+        </div>
+        <h3 class="skill-title">{title}</h3>
+        {description && <p class="skill-desc">{description}</p>}
+        {tags && tags.length > 0 && (
+            <div class="skill-tags">
+                {tags.map(tag => <span class="skill-tag">{tag}</span>)}
+            </div>
+        )}
+    </div>
+</div>
+
+<style>
+    .skill-card {
+        position: relative;
+        background: linear-gradient(135deg, rgba(26, 26, 26, 0.8), rgba(10, 10, 10, 0.9));
+        border: 2px solid var(--gray-mid);
+        padding: 1.5rem;
+        aspect-ratio: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        transform-style: preserve-3d;
+        opacity: 0;
+        transform: translateY(40px);
+        cursor: pointer;
+    }
+
+    .skill-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.4s ease;
+    }
+
+    .skill-card::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0, 255, 255, 0.06), transparent 40%);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        pointer-events: none;
+    }
+
+    .skill-card:hover {
+        border-color: var(--neon-cyan);
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .skill-card:hover::before { transform: scaleX(1); }
+    .skill-card:hover::after { opacity: 1; }
+
+    .skill-card-inner { position: relative; z-index: 1; }
+
+    .skill-icon {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--gray-mid);
+        border: 2px solid var(--gray-light);
+        margin-bottom: 1rem;
+        transition: all 0.4s ease;
+        position: relative;
+    }
+
+    .skill-icon::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
+        z-index: -1;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+    }
+
+    .skill-card:hover .skill-icon { background: var(--black); border-color: transparent; }
+    .skill-card:hover .skill-icon::before { opacity: 1; }
+
+    .skill-icon :global(svg) { width: 28px; height: 28px; stroke: var(--neon-cyan); stroke-width: 1.5; fill: none; transition: all 0.4s ease; }
+    .skill-card:hover .skill-icon :global(svg) { stroke: var(--white); }
+
+    .skill-number {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.5rem;
+        color: var(--gray-mid);
+        line-height: 1;
+        transition: color 0.4s ease;
+    }
+
+    .skill-card:hover .skill-number { color: var(--gray-light); }
+
+    .skill-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.25rem;
+        letter-spacing: 0.05em;
+        text-align: center;
+        margin: 0;
+    }
+
+    .skill-desc { display: none; }
+    .skill-tags { display: none; }
+
+    .skill-tag {
+        padding: 0.35rem 0.75rem;
+        font-size: 0.625rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--neon-cyan);
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        background: rgba(0, 255, 255, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .skill-card:hover .skill-tag {
+        border-color: var(--neon-cyan);
+        background: rgba(0, 255, 255, 0.1);
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+    }
+
+    @media (max-width: 768px) {
+        .skill-card {
+            padding: 1.2rem;
+        }
+        .skill-icon {
+            width: 40px;
+            height: 40px;
+        }
+        .skill-icon :global(svg) {
+            width: 22px;
+            height: 22px;
+        }
+        .skill-title {
+            font-size: 1rem;
+        }
+        .skill-number {
+            font-size: 1.2rem;
+        }
+    }
+</style>

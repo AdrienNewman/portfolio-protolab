@@ -1,0 +1,134 @@
+---
+// Terminal Boot Component
+---
+
+<div id="terminal-boot">
+    <div class="terminal-body" id="terminal-output"></div>
+    <button class="skip-btn" id="skip-btn">Skip intro →</button>
+</div>
+
+<style>
+    #terminal-boot {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--black);
+        z-index: 10000;
+        display: flex;
+        flex-direction: column;
+        transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    #terminal-boot.fade-out {
+        opacity: 0;
+        transform: scale(1.02);
+        pointer-events: none;
+    }
+
+    #terminal-boot.hidden { display: none; }
+
+    .terminal-body {
+        flex: 1;
+        padding: 30px 40px;
+        overflow-y: auto;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--white);
+    }
+
+    .terminal-body::-webkit-scrollbar { width: 6px; }
+    .terminal-body::-webkit-scrollbar-track { background: var(--gray-dark); }
+    .terminal-body::-webkit-scrollbar-thumb { background: var(--gray-mid); border-radius: 3px; }
+
+    .term-line {
+        margin-bottom: 3px;
+        opacity: 0;
+        transform: translateY(5px);
+        animation: lineAppear 0.1s ease forwards;
+        white-space: pre-wrap;
+    }
+
+    @keyframes lineAppear { to { opacity: 1; transform: translateY(0); } }
+
+    .term-prompt { color: var(--neon-green); }
+    .term-user { color: var(--neon-cyan); font-weight: 600; }
+    .term-path { color: #58a6ff; }
+    .term-command { color: var(--white); }
+    .term-output { color: var(--gray-light); }
+    .term-success { color: var(--neon-green); }
+    .term-info { color: var(--neon-cyan); }
+    .term-highlight { color: var(--neon-magenta); font-weight: 600; }
+
+    .term-progress {
+        display: inline-block;
+        width: 200px;
+        height: 8px;
+        background: var(--gray-mid);
+        border-radius: 4px;
+        overflow: hidden;
+        margin-left: 10px;
+        vertical-align: middle;
+    }
+
+    .term-progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, var(--neon-cyan), var(--neon-green));
+        width: 0%;
+        transition: width 0.3s ease;
+        border-radius: 4px;
+    }
+
+    .typing-cursor-term {
+        display: inline-block;
+        width: 8px;
+        height: 16px;
+        background: var(--white);
+        margin-left: 2px;
+        animation: cursorBlink 1s step-end infinite;
+        vertical-align: middle;
+    }
+
+    @keyframes cursorBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    .neofetch-container { display: flex; gap: 30px; margin: 15px 0; }
+    .neofetch-ascii { color: var(--neon-cyan); font-size: 9px; line-height: 1.1; white-space: pre; }
+    .neofetch-info { display: flex; flex-direction: column; gap: 3px; font-size: 12px; }
+    .neofetch-label { color: var(--neon-cyan); font-weight: 600; }
+    .neofetch-value { color: var(--white); }
+    .neofetch-colors { display: flex; gap: 0; margin-top: 10px; }
+    .color-block { width: 20px; height: 12px; }
+
+    .skip-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        padding: 10px 24px;
+        background: transparent;
+        border: 1px solid var(--gray-light);
+        color: var(--gray-light);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 10001;
+    }
+
+    .skip-btn:hover {
+        border-color: var(--neon-cyan);
+        color: var(--neon-cyan);
+    }
+
+    .skip-btn.hidden { opacity: 0; pointer-events: none; }
+
+    @media (max-width: 768px) {
+        .terminal-body { padding: 20px; font-size: 11px; }
+        .neofetch-container { flex-direction: column; gap: 15px; }
+        .neofetch-ascii { font-size: 6px; }
+        .skip-btn { bottom: 15px; right: 15px; padding: 8px 16px; font-size: 11px; }
+    }
+</style>
+
+<script is:inline src="/scripts/terminal-boot.js"></script>

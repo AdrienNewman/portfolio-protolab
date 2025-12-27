@@ -1,0 +1,154 @@
+---
+// Navigation Component
+---
+
+<nav class="nav" id="nav">
+    <div class="nav-inner">
+        <a href="#accueil" class="nav-logo">
+            <span class="nav-logo-bracket">[</span>
+            <span class="nav-logo-text">AM</span>
+            <span class="nav-logo-bracket">]</span>
+        </a>
+        <ul class="nav-menu">
+            <li><a href="#accueil" class="nav-link active">Accueil</a></li>
+            <li><a href="#competences" class="nav-link">Compétences</a></li>
+            <li><a href="#projets" class="nav-link">Projets</a></li>
+            <li><a href="#documentation" class="nav-link">Documentation</a></li>
+            <li><a href="#contact" class="nav-link">Contact</a></li>
+            <li><a href="#contact" class="nav-cta">Disponible</a></li>
+        </ul>
+        <button class="nav-toggle" id="nav-toggle" aria-label="Menu">
+            <span class="nav-toggle-line"></span>
+            <span class="nav-toggle-line"></span>
+            <span class="nav-toggle-line"></span>
+        </button>
+    </div>
+</nav>
+
+<style>
+    .nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .nav-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.25rem 2rem;
+        background: transparent;
+        border-bottom: 2px solid transparent;
+        transition: all 0.4s ease;
+    }
+
+    .nav.scrolled .nav-inner {
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(20px);
+        border-bottom: 2px solid var(--neon-cyan);
+        padding: 0.875rem 2rem;
+    }
+
+    .nav-logo {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.75rem;
+        letter-spacing: 0.05em;
+        color: var(--white);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+    }
+
+    .nav-logo-bracket { color: var(--neon-cyan); }
+    .nav-logo-text { transition: color 0.3s ease; }
+    .nav-logo:hover .nav-logo-text { color: var(--neon-cyan); }
+
+    .nav-menu { display: flex; align-items: center; list-style: none; }
+
+    .nav-link {
+        display: block;
+        padding: 0.75rem 1.5rem;
+        font-family: 'Space Mono', monospace;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--gray-light);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .nav-link::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 0;
+        height: 2px;
+        background: var(--neon-cyan);
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+    }
+
+    .nav-link:hover { color: var(--white); }
+    .nav-link:hover::before { width: calc(100% - 3rem); }
+    .nav-link.active { color: var(--neon-cyan); }
+    .nav-link.active::before { width: calc(100% - 3rem); }
+
+    .nav-cta {
+        margin-left: 1rem;
+        padding: 0.75rem 1.5rem;
+        font-family: 'Space Mono', monospace;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--black);
+        background: var(--neon-cyan);
+        border: 2px solid var(--neon-cyan);
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .nav-cta:hover {
+        background: transparent;
+        color: var(--neon-cyan);
+    }
+
+    .nav-toggle {
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 50px;
+        height: 50px;
+        background: transparent;
+        border: 2px solid var(--neon-cyan);
+        cursor: pointer;
+        z-index: 1002;
+    }
+
+    .nav-toggle-line {
+        width: 24px;
+        height: 2px;
+        background: var(--neon-cyan);
+        transition: all 0.3s ease;
+        position: absolute;
+    }
+
+    .nav-toggle-line:nth-child(1) { transform: translateY(-7px); }
+    .nav-toggle-line:nth-child(3) { transform: translateY(7px); }
+
+    .nav-toggle.active .nav-toggle-line:nth-child(1) { transform: rotate(45deg); }
+    .nav-toggle.active .nav-toggle-line:nth-child(2) { opacity: 0; }
+    .nav-toggle.active .nav-toggle-line:nth-child(3) { transform: rotate(-45deg); }
+
+    @media (max-width: 968px) {
+        .nav-menu { display: none; }
+        .nav-toggle { display: flex; }
+    }
+</style>

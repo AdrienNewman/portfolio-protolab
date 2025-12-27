@@ -1,16 +1,813 @@
 ---
-
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TerminalBoot from '../components/effects/TerminalBoot.astro';
+import Navbar from '../components/layout/Navbar.astro';
+import MobileMenu from '../components/layout/MobileMenu.astro';
+import Hero from '../components/sections/Hero.astro';
+import Skills from '../components/sections/Skills.astro';
+import Projects from '../components/sections/Projects.astro';
+import Documentation from '../components/sections/Documentation.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout
+    title="Adrien Mercadier | TSSR - Portfolio"
+    description="Portfolio de Adrien Mercadier - Technicien Supérieur Systèmes et Réseaux spécialisé en infrastructure, virtualisation et monitoring"
+>
+    <!-- Terminal Boot Screen -->
+    <TerminalBoot />
+
+    <!-- Main Portfolio -->
+    <div id="main-portfolio">
+        <!-- Navigation -->
+        <Navbar />
+        <MobileMenu />
+
+        <!-- Sections -->
+        <Hero />
+
+        <!-- Profile Section -->
+        <section class="section" id="profil">
+            <div class="skills-container">
+                <div class="section-header">
+                    <span class="section-label">User_Profile</span>
+                    <h2 class="section-title">Qui est <span>L'Admin ?</span></h2>
+                </div>
+
+                <div class="profile-grid">
+                    <!-- Terminal Bio -->
+                    <div class="profile-terminal-wrapper">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons">
+                                <span class="t-btn close"></span>
+                                <span class="t-btn min"></span>
+                                <span class="t-btn max"></span>
+                            </div>
+                            <div class="terminal-title">user_bio.log</div>
+                        </div>
+                        <div class="profile-terminal-body">
+                            <p class="term-line"><span class="term-prompt">➜</span> <span class="term-cmd">whoami</span></p>
+                            <p class="term-output">Adrien Mercadier, 39 ans. Étudiant TSSR passionné.</p>
+
+                            <p class="term-line"><span class="term-prompt">➜</span> <span class="term-cmd">cat background.txt</span></p>
+                            <div class="term-text-block">
+                                <p>> Initialisation du protocole de reconversion...</p>
+                                <p>> <span class="highlight-magenta">ERROR 404:</span> Routine not found.</p>
+                                <p>Après <strong>5 ans de gestion E-commerce</strong> (SMA Diffusion) et <strong>15 ans de restauration</strong>, j'ai migré mon OS vers ma véritable passion : l'IT.</p>
+                                <p>Ce background n'est pas obsolète. C'est mon firmware de base. Il m'a appris à gérer des crashs en production et à optimiser des flux logistiques bien avant de toucher à un serveur.</p>
+                            </div>
+
+                            <p class="term-line"><span class="term-prompt">➜</span> <span class="term-cmd">echo $CURRENT_STATUS</span></p>
+                            <p class="term-output text-neon-green">READY_TO_DEPLOY</p>
+                        </div>
+                    </div>
+
+                    <!-- Soft Skills -->
+                    <div class="soft-skills-wrapper">
+                        <h3 class="soft-title">Attributs Système <span class="blink">_</span></h3>
+
+                        <div class="soft-skill-item">
+                            <div class="soft-info">
+                                <span class="soft-label">Gestion de Crise (Load Balancing)</span>
+                                <span class="soft-val">98%</span>
+                            </div>
+                            <div class="soft-bar-bg">
+                                <div class="soft-bar-fill fill-magenta" style="width: 98%"></div>
+                            </div>
+                        </div>
+
+                        <div class="soft-skill-item">
+                            <div class="soft-info">
+                                <span class="soft-label">Management & Leadership</span>
+                                <span class="soft-val">90%</span>
+                            </div>
+                            <div class="soft-bar-bg">
+                                <div class="soft-bar-fill fill-cyan" style="width: 90%"></div>
+                            </div>
+                        </div>
+
+                        <div class="soft-skill-item">
+                            <div class="soft-info">
+                                <span class="soft-label">Relation Client (User Support)</span>
+                                <span class="soft-val">95%</span>
+                            </div>
+                            <div class="soft-bar-bg">
+                                <div class="soft-bar-fill fill-green" style="width: 95%"></div>
+                            </div>
+                        </div>
+
+                        <div class="soft-skill-item">
+                            <div class="soft-info">
+                                <span class="soft-label">Adaptabilité (Hot Swapping)</span>
+                                <span class="soft-val">100%</span>
+                            </div>
+                            <div class="soft-bar-bg">
+                                <div class="soft-bar-fill fill-yellow" style="width: 100%"></div>
+                            </div>
+                        </div>
+
+                        <div class="mini-stats-grid">
+                            <div class="mini-stat">
+                                <span class="ms-icon">⚡</span>
+                                <span class="ms-label">Réactif</span>
+                            </div>
+                            <div class="mini-stat">
+                                <span class="ms-icon">🛡️</span>
+                                <span class="ms-label">Fiable</span>
+                            </div>
+                            <div class="mini-stat">
+                                <span class="ms-icon">🤝</span>
+                                <span class="ms-label">Humain</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <Skills />
+        <Projects />
+        <Documentation />
+
+        <!-- Contact Section -->
+        <section class="contact-section" id="contact">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-label">Contact</span>
+                    <h2 class="section-title">Restons en <span>Contact</span></h2>
+                    <p class="section-desc">Disponible pour des opportunités de collaboration ou d'emploi en tant que TSSR.</p>
+                </div>
+
+                <div class="contact-content">
+                    <div class="contact-links">
+                        <a href="mailto:adrien@protolab.local" class="contact-link">
+                            <span class="contact-icon">✉</span>
+                            <span>adrien@protolab.local</span>
+                        </a>
+                        <a href="https://linkedin.com/in/adrienmercadier" class="contact-link" target="_blank" rel="noopener">
+                            <span class="contact-icon">in</span>
+                            <span>LinkedIn</span>
+                        </a>
+                        <a href="https://github.com/adrienmercadier" class="contact-link" target="_blank" rel="noopener">
+                            <span class="contact-icon">gh</span>
+                            <span>GitHub</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-inner">
+                <div class="footer-left">
+                    <span class="footer-text">© 2025 Adrien Mercadier</span>
+                    <span class="footer-separator">|</span>
+                    <span class="footer-text">TSSR - Infrastructure & Systems</span>
+                </div>
+                <div class="footer-right">
+                    <span class="footer-text">Hébergé sur Protolab</span>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Back to Top Button -->
+        <button class="back-to-top" id="back-to-top" aria-label="Retour en haut">
+            <span>↑</span>
+        </button>
+
+        <!-- Modals for Skill Cards -->
+        <div id="modal-windows" class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Windows Server & Active Directory</h2>
+                    <button class="modal-close" aria-label="Fermer">×</button>
+                </div>
+                <div class="modal-body">
+                    <h4>Architecture Technique</h4>
+                    <ul>
+                        <li>Domain Controller (DC01) sur Windows Server 2022</li>
+                        <li>Structure OUs organisée</li>
+                        <li>DNS intégré avec zones de recherche inverse</li>
+                        <li>DHCP haute dispo</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="modal-linux" class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Linux & Scripting Bash</h2>
+                    <button class="modal-close" aria-label="Fermer">×</button>
+                </div>
+                <div class="modal-body">
+                    <h4>Environnement & Outils</h4>
+                    <ul>
+                        <li>Administration Debian 12 / Ubuntu Server</li>
+                        <li>Scripting Bash avancé</li>
+                        <li>Gestion des services avec systemd</li>
+                        <li>Conteneurisation Docker</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="modal-paloalto" class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Palo Alto Firewall NextGen</h2>
+                    <button class="modal-close" aria-label="Fermer">×</button>
+                </div>
+                <div class="modal-body">
+                    <h4>Infrastructure & Configuration</h4>
+                    <ul>
+                        <li>Configuration de firewalls Next-Gen</li>
+                        <li>Politiques de sécurité</li>
+                        <li>NAT & VPN GlobalProtect</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</BaseLayout>
+
+<style is:global>
+    #main-portfolio {
+        opacity: 0;
+        transition: opacity 0.8s ease;
+    }
+
+    #main-portfolio.visible {
+        opacity: 1;
+    }
+
+    /* Fix Hero positioning - make sure it starts at top of viewport */
+    .hero {
+        margin-top: 0 !important;
+    }
+
+    /* Ensure navigation doesn't push content down */
+    .nav {
+        position: fixed !important;
+        top: 0 !important;
+        z-index: 1000 !important;
+    }
+
+    /* Make sure Three.js canvas is behind and doesn't take space */
+    #three-canvas {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 0 !important;
+        pointer-events: none !important;
+    }
+
+    /* Ensure main portfolio content is above canvas */
+    #main-portfolio {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* FORCE ALL ELEMENTS TO BE VISIBLE - Override all component opacity animations */
+    .hero .status-badge,
+    .hero .hero-title,
+    .hero .hero-subtitle,
+    .hero .typing-wrapper,
+    .hero .cta-wrapper,
+    .hero .scroll-indicator,
+    .hero .stat-item,
+    .section-label,
+    .section-title,
+    .section-desc,
+    .skill-card,
+    .project-card,
+    .project-header,
+    .project-content {
+        opacity: 1 !important;
+        transform: none !important;
+        animation: none !important;
+    }
+
+    /* Profile Section */
+    #profil {
+        padding: 120px 40px;
+        background: var(--black);
+    }
+
+    .profile-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: center;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .profile-terminal-wrapper {
+        background: rgba(10, 10, 10, 0.9);
+        border: 1px solid var(--gray-mid);
+        border-radius: 6px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        overflow: hidden;
+        transition: border-color 0.3s ease;
+    }
+
+    .profile-terminal-wrapper:hover {
+        border-color: var(--neon-cyan);
+    }
+
+    .terminal-header {
+        background: var(--gray-dark);
+        padding: 10px 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .terminal-buttons { display: flex; gap: 6px; }
+    .t-btn { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+    .t-btn.close { background: #ff5f56; }
+    .t-btn.min { background: #ffbd2e; }
+    .t-btn.max { background: #27c93f; }
+
+    .terminal-title {
+        flex-grow: 1;
+        text-align: center;
+        font-family: 'Space Mono', monospace;
+        font-size: 14px;
+        color: var(--gray-light);
+    }
+
+    .profile-terminal-body {
+        padding: 20px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 14px;
+        line-height: 1.6;
+        color: var(--gray-light);
+    }
+
+    .term-line {
+        margin: 10px 0;
+    }
+
+    .term-prompt {
+        color: var(--neon-green);
+        margin-right: 8px;
+    }
+
+    .term-cmd {
+        color: var(--neon-cyan);
+    }
+
+    .term-output {
+        color: var(--white);
+        margin: 5px 0 15px 0;
+    }
+
+    .term-text-block {
+        margin: 15px 0;
+        padding-left: 15px;
+        border-left: 2px solid var(--gray-mid);
+        color: var(--gray-lighter);
+    }
+
+    .term-text-block p {
+        margin: 8px 0;
+    }
+
+    .highlight-magenta { color: var(--neon-magenta); }
+    .text-neon-green { color: var(--neon-green); font-weight: bold; }
+
+    .soft-skills-wrapper { padding: 20px; }
+
+    .soft-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 32px;
+        color: var(--white);
+        margin-bottom: 30px;
+        letter-spacing: 1px;
+    }
+
+    .blink { animation: blink 1s infinite; }
+
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+    }
+
+    .soft-skill-item { margin-bottom: 24px; }
+
+    .soft-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-family: 'Space Mono', monospace;
+        font-size: 13px;
+        text-transform: uppercase;
+    }
+
+    .soft-label { color: var(--white); }
+    .soft-val { color: var(--neon-cyan); }
+
+    .soft-bar-bg {
+        width: 100%;
+        height: 10px;
+        background: var(--gray-mid);
+        position: relative;
+        overflow: hidden;
+        transform: skewX(-20deg);
+    }
+
+    .soft-bar-fill {
+        height: 100%;
+        transition: width 1s ease;
+    }
+
+    .soft-bar-fill::after {
+        content: '';
+        position: absolute;
+        top: 0; right: 0; bottom: 0;
+        width: 5px;
+        background: rgba(255,255,255,0.8);
+        box-shadow: 0 0 10px rgba(255,255,255,0.8);
+    }
+
+    .fill-cyan { background: var(--neon-cyan); box-shadow: 0 0 15px var(--neon-cyan); }
+    .fill-magenta { background: var(--neon-magenta); box-shadow: 0 0 15px var(--neon-magenta); }
+    .fill-green { background: var(--neon-green); box-shadow: 0 0 15px var(--neon-green); }
+    .fill-yellow { background: var(--neon-yellow); box-shadow: 0 0 15px var(--neon-yellow); }
+
+    .mini-stats-grid {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+    }
+
+    .mini-stat {
+        flex: 1;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        padding: 15px;
+        text-align: center;
+        transition: 0.3s;
+    }
+
+    .mini-stat:hover {
+        border-color: var(--neon-cyan);
+        transform: translateY(-5px);
+    }
+
+    .ms-icon { font-size: 24px; display: block; margin-bottom: 8px; }
+    .ms-label { font-family: 'Space Mono'; font-size: 11px; color: var(--gray-light); text-transform: uppercase; }
+
+    /* Profile Section Responsive */
+    @media (max-width: 900px) {
+        .profile-grid {
+            grid-template-columns: 1fr;
+            gap: 3rem;
+        }
+
+        .soft-skills-wrapper {
+            max-width: 100%;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .profile-terminal-body {
+            padding: 1.5rem;
+        }
+
+        .term-line {
+            font-size: 0.75rem;
+        }
+
+        .soft-title {
+            font-size: 1.25rem;
+        }
+
+        .soft-item-label {
+            font-size: 0.75rem;
+        }
+
+        .soft-item-value {
+            font-size: 0.75rem;
+        }
+
+        .mini-stats-grid {
+            flex-direction: column;
+            gap: 10px;
+        }
+    }
+
+    /* Contact Section */
+    .contact-section {
+        padding: 120px 40px;
+        background: var(--gray-dark);
+        text-align: center;
+    }
+
+    .contact-content {
+        max-width: 600px;
+        margin: 60px auto 0;
+    }
+
+    .contact-links {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .contact-link {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 20px;
+        background: var(--gray-mid);
+        border: 1px solid var(--gray-light);
+        color: var(--white);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    .contact-link:hover {
+        border-color: var(--neon-cyan);
+        transform: translateX(10px);
+        background: rgba(0, 255, 255, 0.05);
+    }
+
+    .contact-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--neon-cyan);
+        color: var(--black);
+        font-weight: bold;
+        font-size: 20px;
+    }
+
+    /* Footer */
+    .footer {
+        padding: 40px 20px;
+        background: var(--black);
+        border-top: 1px solid var(--gray-mid);
+    }
+
+    .footer-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 14px;
+    }
+
+    .footer-text {
+        color: var(--gray-light);
+    }
+
+    .footer-separator {
+        color: var(--gray-mid);
+        margin: 0 15px;
+    }
+
+    .footer-left {
+        display: flex;
+        align-items: center;
+    }
+
+    /* Back to Top */
+    .back-to-top {
+        position: fixed;
+        bottom: 40px;
+        right: 40px;
+        width: 50px;
+        height: 50px;
+        background: var(--neon-cyan);
+        color: var(--black);
+        border: none;
+        cursor: pointer;
+        font-size: 24px;
+        font-weight: bold;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.3s ease;
+        z-index: 1000;
+        pointer-events: none;
+    }
+
+    .back-to-top.visible {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: all;
+    }
+
+    .back-to-top:hover {
+        background: var(--neon-magenta);
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 10000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(10px);
+    }
+
+    .modal-overlay.active {
+        display: flex;
+    }
+
+    .modal-content {
+        background: var(--gray-dark);
+        border: 2px solid var(--neon-cyan);
+        max-width: 800px;
+        max-height: 80vh;
+        overflow-y: auto;
+        position: relative;
+        padding: 40px;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        border-bottom: 1px solid var(--gray-mid);
+        padding-bottom: 20px;
+    }
+
+    .modal-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 32px;
+        color: var(--neon-cyan);
+    }
+
+    .modal-close {
+        background: transparent;
+        border: 1px solid var(--gray-light);
+        color: var(--white);
+        width: 40px;
+        height: 40px;
+        font-size: 24px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .modal-close:hover {
+        border-color: var(--neon-magenta);
+        color: var(--neon-magenta);
+    }
+
+    .modal-body h4 {
+        color: var(--neon-cyan);
+        font-size: 20px;
+        margin: 20px 0 15px;
+        font-family: 'Space Mono', monospace;
+    }
+
+    .modal-body ul {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    .modal-body li {
+        color: var(--gray-light);
+        margin-bottom: 10px;
+        padding-left: 20px;
+        position: relative;
+    }
+
+    .modal-body li:before {
+        content: "▸";
+        color: var(--neon-green);
+        position: absolute;
+        left: 0;
+    }
+
+    @media (max-width: 768px) {
+        .footer-inner {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+
+        .footer-separator {
+            display: none;
+        }
+
+        .contact-section {
+            padding: 80px 20px;
+        }
+
+        .modal-content {
+            margin: 20px;
+            padding: 20px;
+            max-height: 90vh;
+        }
+    }
+</style>
+
+<script>
+    // Debug: Log when portfolioReady event is received
+    document.addEventListener('portfolioReady', () => {
+        console.log('✓ Portfolio ready event received');
+        // Scroll to top when portfolio becomes visible
+        window.scrollTo({ top: 0, behavior: 'instant' });
+    });
+
+    // Fallback: If portfolio doesn't show after 3 seconds, force it
+    setTimeout(() => {
+        const portfolio = document.getElementById('main-portfolio');
+        if (portfolio && !portfolio.classList.contains('visible')) {
+            console.warn('⚠ Portfolio not visible after 3s, forcing display');
+            portfolio.classList.add('visible');
+            // Also scroll to top
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+    }, 3000);
+
+    // Debug on load
+    window.addEventListener('load', () => {
+        const portfolio = document.getElementById('main-portfolio');
+        const hero = document.querySelector('.hero');
+        const skills = document.querySelector('.skills-container');
+
+        console.log('=== DEBUG INFO ===');
+        console.log('Portfolio element:', portfolio ? 'FOUND' : 'NOT FOUND');
+        console.log('Hero element:', hero ? 'FOUND' : 'NOT FOUND');
+        console.log('Skills element:', skills ? 'FOUND' : 'NOT FOUND');
+
+        if (portfolio) {
+            console.log('Portfolio HTML length:', portfolio.innerHTML.length);
+            console.log('Portfolio has visible class:', portfolio.classList.contains('visible'));
+        }
+
+        // Initialize modals
+        initModals();
+    });
+
+    // Modal functionality
+    function initModals() {
+        // Add click handlers to skill cards
+        document.querySelectorAll('.skill-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const modalId = card.getAttribute('data-modal');
+                if (modalId) {
+                    openModal(modalId);
+                }
+            });
+        });
+
+        // Close buttons
+        document.querySelectorAll('.modal-close').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                closeAllModals();
+            });
+        });
+
+        // Close on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    closeAllModals();
+                }
+            });
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeAllModals();
+            }
+        });
+    }
+
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeAllModals() {
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.classList.remove('active');
+        });
+        document.body.style.overflow = '';
+    }
+</script>

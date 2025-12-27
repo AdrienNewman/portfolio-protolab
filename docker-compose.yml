@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  portfolio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: protolab-portfolio
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    labels:
+      # Traefik labels (si utilisé)
+      - "traefik.enable=true"
+      - "traefik.http.routers.portfolio.rule=Host(`portfolio.protolab.local`)"
+      - "traefik.http.routers.portfolio.entrypoints=web"
+      - "traefik.http.services.portfolio.loadbalancer.server.port=80"

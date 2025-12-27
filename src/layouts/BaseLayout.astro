@@ -1,0 +1,49 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Adrien Mercadier | TSSR',
+  description = 'Portfolio de Adrien Mercadier - Technicien Supérieur Systèmes et Réseaux'
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content={description}>
+    <title>{title}</title>
+
+    <!-- Fonts: Brutalist choices -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Global CSS -->
+    <style is:global>
+        @import '../styles/global.css';
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="custom-cursor" id="cursor"></div>
+
+    <!-- Three.js Background -->
+    <canvas id="three-canvas"></canvas>
+
+    <!-- Main Content -->
+    <slot />
+
+    <!-- Three.js via CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Custom Scripts -->
+    <script is:inline src="/scripts/custom-cursor.js"></script>
+    <script is:inline src="/scripts/three-background.js"></script>
+    <script is:inline src="/scripts/scroll-animations.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+title: "Infrastructure Protolab"
+description: "Homelab entreprise-grade : 3 nœuds Proxmox, virtualisation complète, firewall PaloAlto, stack observabilité (Wazuh, Grafana, Loki)."
+stack:
+  - "Proxmox VE"
+  - "Palo Alto"
+  - "Windows Server"
+  - "Linux"
+  - "Docker"
+featured: true
+status: "Production"
+icon: "🏗️"
+iconColor: "#00ffff"
+glowColor: "rgba(0, 255, 255, 0.3)"
+stats:
+  - label: "VMs"
+    value: "15+"
+  - label: "Services"
+    value: "30+"
+  - label: "Uptime"
+    value: "99.8%"

@@ -1,0 +1,340 @@
+---
+// Project Card Component
+interface Props {
+    title: string;
+    description: string;
+    stack: string[];
+    featured?: boolean;
+    status?: string;
+    statusDot?: string;
+    icon?: string;
+    iconColor?: string;
+    glowColor?: string;
+    stats?: Array<{value: string, label: string}>;
+    projectId?: string;
+}
+
+const { title, description, stack, featured = false, status = "Production", statusDot, icon, iconColor, glowColor, stats, projectId } = Astro.props;
+---
+
+<div
+    class:list={["project-card", { "project-featured": featured }]}
+    data-project={projectId}
+>
+    <div class="project-bg">
+        <div class="project-grid-pattern"></div>
+        <div class:list={["project-glow", glowColor && `project-glow-${glowColor}`]}></div>
+    </div>
+    <div class="project-content">
+        <div class="project-header">
+            <div class="project-status">
+                <span class:list={["project-status-dot", statusDot && `project-status-dot-${statusDot}`]}></span>
+                {status}
+            </div>
+        </div>
+        <h3 class="project-title">{title}</h3>
+        <p class="project-desc">{description}</p>
+        <div class="project-stack">
+            {stack.map(tech => <span>{tech}</span>)}
+        </div>
+        <div class="project-cta">
+            <span>Voir le projet</span>
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+    </div>
+    {(featured || stats) && (
+        <div class="project-visual">
+            {icon && (
+                <div class:list={["project-icon-container", iconColor && `project-icon-${iconColor}`]}>
+                    <svg viewBox="0 0 24 24" set:html={icon} />
+                </div>
+            )}
+            {stats && stats.length > 0 && (
+                <div class="project-stats">
+                    {stats.map(stat => (
+                        <div class="project-stat">
+                            <span class="project-stat-value">{stat.value}</span>
+                            <span class="project-stat-label">{stat.label}</span>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    )}
+</div>
+
+<style>
+    .project-card {
+        position: relative;
+        background: var(--gray-dark);
+        border: 2px solid var(--gray-mid);
+        overflow: hidden;
+        cursor: pointer;
+        opacity: 0;
+        transform: translateY(40px);
+        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .project-card.project-featured {
+        grid-column: span 2;
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+    }
+
+    .project-bg {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+    }
+
+    .project-grid-pattern {
+        position: absolute;
+        inset: 0;
+        background-image:
+            linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 30px 30px;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+
+    .project-card:hover .project-grid-pattern { opacity: 1; }
+
+    .project-glow {
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(0, 255, 255, 0.15) 0%, transparent 70%);
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+
+    .project-glow-magenta {
+        background: radial-gradient(circle, rgba(255, 0, 128, 0.15) 0%, transparent 70%);
+    }
+
+    .project-glow-green {
+        background: radial-gradient(circle, rgba(0, 255, 136, 0.15) 0%, transparent 70%);
+    }
+
+    .project-card:hover .project-glow { opacity: 1; }
+
+    .project-card:hover {
+        border-color: var(--neon-cyan);
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .project-card:nth-child(2):hover { border-color: var(--neon-magenta); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); }
+    .project-card:nth-child(3):hover { border-color: var(--neon-green); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); }
+
+    .project-content {
+        position: relative;
+        z-index: 1;
+        padding: 2.5rem;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .project-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .project-status {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--neon-cyan);
+        padding: 0.4rem 0.8rem;
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        background: rgba(0, 255, 255, 0.05);
+    }
+
+    .project-status-dot {
+        width: 6px;
+        height: 6px;
+        background: var(--neon-cyan);
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .project-status-dot-green { background: var(--neon-green); }
+
+    .project-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 2.5rem;
+        letter-spacing: 0.05em;
+        margin-bottom: 1rem;
+        line-height: 1.1;
+    }
+
+    .project-desc {
+        font-size: 0.95rem;
+        color: var(--gray-light);
+        line-height: 1.7;
+        margin-bottom: 1.5rem;
+        flex-grow: 1;
+    }
+
+    .project-stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .project-stack span {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--white);
+        background: var(--gray-mid);
+        border: 1px solid var(--gray-light);
+        transition: all 0.3s ease;
+    }
+
+    .project-card:hover .project-stack span {
+        border-color: var(--neon-cyan);
+        background: rgba(0, 255, 255, 0.1);
+    }
+
+    .project-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--neon-cyan);
+        opacity: 0;
+        transform: translateX(-10px);
+        transition: all 0.4s ease;
+    }
+
+    .project-card:hover .project-cta {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .project-cta :global(svg) {
+        width: 16px;
+        height: 16px;
+        stroke: currentColor;
+        stroke-width: 2;
+        fill: none;
+        transition: transform 0.3s ease;
+    }
+
+    .project-card:hover .project-cta :global(svg) { transform: translateX(5px); }
+
+    .project-visual {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), transparent);
+    }
+
+    .project-icon-container {
+        width: 120px;
+        height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid var(--neon-cyan);
+        background: rgba(0, 255, 255, 0.05);
+        margin-bottom: 2rem;
+        transition: all 0.5s ease;
+    }
+
+    .project-icon-container :global(svg) {
+        width: 50px;
+        height: 50px;
+        stroke: var(--neon-cyan);
+        stroke-width: 1.5;
+        fill: none;
+        transition: all 0.4s ease;
+    }
+
+    .project-card:hover .project-icon-container {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .project-card:hover .project-icon-container :global(svg) {
+        transform: scale(1.05);
+    }
+
+    .project-icon-magenta { border-color: var(--neon-magenta); background: rgba(255, 0, 128, 0.05); }
+    .project-icon-magenta :global(svg) { stroke: var(--neon-magenta); }
+    .project-card:nth-child(2):hover .project-icon-container { box-shadow: 0 10px 30px rgba(255, 0, 128, 0.15); }
+
+    .project-icon-green { border-color: var(--neon-green); background: rgba(0, 255, 136, 0.05); }
+    .project-icon-green :global(svg) { stroke: var(--neon-green); }
+    .project-card:nth-child(3):hover .project-icon-container { box-shadow: 0 10px 30px rgba(0, 255, 136, 0.15); }
+
+    .project-stats {
+        display: flex;
+        gap: 2rem;
+    }
+
+    .project-stat { text-align: center; }
+
+    .project-stat-value {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 2rem;
+        color: var(--neon-cyan);
+        line-height: 1;
+    }
+
+    .project-card:nth-child(2) .project-stat-value { color: var(--neon-magenta); }
+    .project-card:nth-child(3) .project-stat-value { color: var(--neon-green); }
+
+    .project-stat-label {
+        font-size: 0.65rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--gray-light);
+    }
+
+    @media (max-width: 1024px) {
+        .project-card.project-featured {
+            grid-column: span 2;
+            grid-template-columns: 1fr;
+        }
+
+        .project-visual { padding: 1.5rem; }
+        .project-icon-container { width: 80px; height: 80px; margin-bottom: 1rem; }
+        .project-icon-container :global(svg) { width: 35px; height: 35px; }
+    }
+
+    @media (max-width: 768px) {
+        .project-card.project-featured { grid-column: span 1; }
+
+        .project-content { padding: 1.5rem; }
+        .project-title { font-size: 2rem; }
+
+        .project-visual { display: none; }
+
+        .project-cta { opacity: 1; transform: translateX(0); }
+    }
+</style>

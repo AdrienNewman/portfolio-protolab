@@ -1,0 +1,168 @@
+---
+// Skills Section Component
+import SkillCard from '../ui/SkillCard.astro';
+---
+
+<section class="section section-dark" id="competences">
+    <div class="skills-container">
+        <div class="section-header">
+            <span class="section-label">Expertise</span>
+            <h2 class="section-title">Mes <span>Compétences</span></h2>
+            <p class="section-desc">Technologies et outils maîtrisés au cours de ma formation TSSR et de mes projets personnels sur mon homelab Protolab.</p>
+        </div>
+
+        <div class="skills-grid">
+            <!-- Windows Server -->
+            <SkillCard
+                number="01"
+                title="Windows Server"
+                description="Administration Active Directory, GPO, DNS, DHCP. Déploiement et gestion d'infrastructures Windows."
+                tags={['AD DS', 'GPO', 'DNS', 'PowerShell']}
+                icon='<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>'
+                preview="preview-windows"
+                modal="modal-windows"
+            />
+
+            <!-- Linux -->
+            <SkillCard
+                number="02"
+                title="Linux"
+                description="Administration système Debian/Ubuntu, scripting Bash, gestion des services, conteneurisation Docker."
+                tags={['Debian', 'Bash', 'Docker', 'LXC']}
+                icon='<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>'
+                preview="preview-linux"
+                modal="modal-linux"
+            />
+
+            <!-- Palo Alto -->
+            <SkillCard
+                number="03"
+                title="Palo Alto"
+                description="Configuration de firewalls Next-Gen. Politiques de sécurité, NAT, VPN GlobalProtect."
+                tags={['PAN-OS', 'GlobalProtect', 'Threat Prevention']}
+                icon='<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>'
+                preview="preview-paloalto"
+                modal="modal-paloalto"
+            />
+
+            <!-- Virtualisation -->
+            <SkillCard
+                number="04"
+                title="Virtualisation"
+                description="Hyperviseur Proxmox VE, création et gestion de VMs et conteneurs LXC, passthrough GPU."
+                tags={['Proxmox', 'VMware', 'KVM', 'GPU Passthrough']}
+                icon='<rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/>'
+                preview="preview-proxmox"
+                modal="modal-proxmox"
+            />
+
+            <!-- Monitoring -->
+            <SkillCard
+                number="05"
+                title="Monitoring"
+                description="Stack observabilité complète : collecte de logs, métriques, dashboards."
+                tags={['Grafana', 'VictoriaLogs', 'OpenTelemetry']}
+                icon='<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>'
+                preview="preview-observability"
+                modal="modal-observability"
+            />
+
+            <!-- LLM -->
+            <SkillCard
+                number="06"
+                title="Local LLM"
+                description="Déploiement d'environnements IA locaux avec accélération GPU."
+                tags={['Ollama', 'CUDA', 'Open WebUI']}
+                icon='<path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M16 14v6a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-6"/><circle cx="9" cy="10" r="1"/><circle cx="15" cy="10" r="1"/>'
+                preview="preview-llm"
+                modal="modal-llm"
+            />
+
+            <!-- Backup -->
+            <SkillCard
+                number="07"
+                title="Backup"
+                description="Stratégies de sauvegarde 3-2-1, automatisation, restauration."
+                tags={['3-2-1', 'Snapshots', 'Automation']}
+                icon='<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>'
+                preview="preview-backup"
+                modal="modal-backup"
+            />
+
+            <!-- Cloud Local -->
+            <SkillCard
+                number="08"
+                title="Cloud Local"
+                description="Conception de cloud privé : services conteneurisés, orchestration."
+                tags={['Private Cloud', 'Containers', 'IAM']}
+                icon='<path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>'
+                preview="preview-cloud"
+                modal="modal-cloud"
+            />
+        </div>
+    </div>
+</section>
+
+<style>
+    .section { position: relative; z-index: 1; padding: 8rem 2rem; }
+    .section-dark { background: var(--gray-dark); }
+
+    .section-header { text-align: center; margin-bottom: 5rem; }
+
+    .section-label {
+        display: inline-block;
+        font-family: 'Space Mono', monospace;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: var(--neon-cyan);
+        margin-bottom: 1rem;
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--neon-cyan);
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    .section-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: clamp(3rem, 8vw, 6rem);
+        letter-spacing: 0.02em;
+        line-height: 1;
+        margin-bottom: 1.5rem;
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    .section-title span { color: var(--neon-cyan); }
+
+    .section-desc {
+        font-size: 1rem;
+        color: var(--gray-light);
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.8;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    .skills-container { max-width: 1400px; margin: 0 auto; }
+
+    .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 1.5rem;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    @media (max-width: 768px) {
+        .section { padding: 5rem 1.5rem; }
+        .section-header { margin-bottom: 3rem; }
+
+        .skills-grid {
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 1rem;
+        }
+    }
+</style>

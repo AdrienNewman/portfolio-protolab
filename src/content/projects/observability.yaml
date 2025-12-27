@@ -1,0 +1,17 @@
+title: "Stack Observabilité"
+description: "Wazuh SIEM, Grafana, Prometheus, Loki. Monitoring centralisé + alerting automatisé."
+stack:
+  - "Wazuh"
+  - "Grafana"
+  - "Prometheus"
+  - "Loki"
+featured: false
+status: "Production"
+icon: "📊"
+iconColor: "#00ff88"
+glowColor: "rgba(0, 255, 136, 0.3)"
+stats:
+  - label: "Agents"
+    value: "12"
+  - label: "Métriques"
+    value: "500+"

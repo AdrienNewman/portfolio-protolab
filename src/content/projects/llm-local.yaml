@@ -1,0 +1,17 @@
+title: "LLM Local + GPU"
+description: "Ollama avec modèles Llama 3.1, Mistral NeMo, GPU NVIDIA RTX 3060. API FastAPI pour intégration portfolio."
+stack:
+  - "Ollama"
+  - "NVIDIA RTX 3060"
+  - "FastAPI"
+  - "Docker"
+featured: false
+status: "En développement"
+icon: "🤖"
+iconColor: "#ff0080"
+glowColor: "rgba(255, 0, 128, 0.3)"
+stats:
+  - label: "Modèles"
+    value: "5+"
+  - label: "VRAM"
+    value: "12GB"
