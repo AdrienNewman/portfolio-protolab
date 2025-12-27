@@ -1,0 +1,52 @@
+---
+---
+<div id="project-protolab" class="modal-overlay">
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h2 class="modal-title">
+                <div class="modal-title-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+                Infrastructure Protolab
+            </h2>
+            <button class="modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-section">
+                <h4 class="modal-section-title">Présentation</h4>
+                <p class="modal-text">Protolab est mon laboratoire personnel, une infrastructure complète simulant un environnement d'entreprise. Ce projet m'a permis de mettre en pratique l'ensemble de mes compétences TSSR dans un contexte réaliste.</p>
+            </div>
+            <div class="modal-section">
+                <h4 class="modal-section-title">Architecture Technique</h4>
+                <ul class="modal-list">
+                    <li><strong>Hyperviseur :</strong> Proxmox VE 8.x sur serveur physique dédié (AMD Ryzen 7 5800X, 32GB RAM, RTX 3060)</li>
+                    <li><strong>Firewall :</strong> Palo Alto PA-VM-50 avec 4 interfaces (WAN, LAN, DMZ, VPN)</li>
+                    <li><strong>Active Directory :</strong> Windows Server 2022 (DC01) — Protolab.local</li>
+                    <li><strong>Réseau :</strong> 3 VLANs segmentés (Production, Admin, DMZ) avec routing inter-VLAN</li>
+                    <li><strong>Monitoring :</strong> Stack OpenTelemetry + Victoria Logs + Grafana</li>
+                </ul>
+            </div>
+            <div class="modal-section">
+                <h4 class="modal-section-title">Fonctionnalités Clés</h4>
+                <ul class="modal-list">
+                    <li><strong>VPN GlobalProtect :</strong> Accès distant sécurisé avec authentification LDAP</li>
+                    <li><strong>GPU Passthrough :</strong> RTX 3060 dédiée aux workloads IA (Ollama)</li>
+                    <li><strong>Backup automatisé :</strong> Snapshots Proxmox + exports AD + config Palo Alto</li>
+                    <li><strong>Zero Trust :</strong> Politiques de sécurité deny-by-default</li>
+                </ul>
+            </div>
+            <div class="modal-section">
+                <h4 class="modal-section-title">Stack Technique</h4>
+                <div class="modal-tags">
+                    <span class="modal-tag">Proxmox VE</span>
+                    <span class="modal-tag">Palo Alto PAN-OS</span>
+                    <span class="modal-tag">Windows Server 2022</span>
+                    <span class="modal-tag">Active Directory</span>
+                    <span class="modal-tag">Docker</span>
+                    <span class="modal-tag">Grafana</span>
+                    <span class="modal-tag">OpenTelemetry</span>
+                    <span class="modal-tag">Bash</span>
+                    <span class="modal-tag">PowerShell</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

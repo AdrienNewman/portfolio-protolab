@@ -1,5 +1,59 @@
 ---
 // Documentation Section Component
+import { getCollection } from 'astro:content';
+import { getIconPath, getIconColor } from '../../utils/icons';
+import { CATEGORY_CONFIG } from '../../utils/categoryMapping';
+
+// Fetch toutes les documentations
+const allDocs = await getCollection('docs');
+
+// Trier par date (plus récent d'abord)
+const sortedDocs = allDocs.sort((a, b) =>
+  b.data.date.getTime() - a.data.date.getTime()
+);
+
+// Grouper par catégorie
+const docsByCategory = sortedDocs.reduce((acc, doc) => {
+  const cat = doc.data.category;
+  if (!acc[cat]) acc[cat] = [];
+  acc[cat].push(doc);
+  return acc;
+}, {} as Record<string, typeof allDocs>);
+
+// Calculer statistiques réelles
+const totalDocs = allDocs.length;
+const totalWords = allDocs.reduce((sum, doc) => {
+  return sum + doc.body.split(/\s+/).length;
+}, 0);
+const estimatedHours = Math.round(totalDocs * 3);
+const allTags = [...new Set(allDocs.flatMap(d => d.data.tags || []))];
+const techCount = allTags.length;
+
+// Préparer les icônes pour les stats hero
+const iconFile = getIconPath('file');
+const iconDocument = getIconPath('document');
+const iconClock = getIconPath('clock');
+const iconCode = getIconPath('code');
+
+// Regrouper les docs par mois pour la timeline
+const docsByMonth = sortedDocs.reduce((acc, doc) => {
+    const monthKey = doc.data.date.toLocaleDateString('fr-FR', {
+        month: 'long',
+        year: 'numeric'
+    });
+    if (!acc[monthKey]) {
+        acc[monthKey] = [];
+    }
+    acc[monthKey].push(doc);
+    return acc;
+}, {} as Record<string, typeof sortedDocs>);
+
+// Trier les mois par date décroissante
+const sortedMonths = Object.entries(docsByMonth).sort((a, b) => {
+    const dateA = new Date(a[1][0].data.date);
+    const dateB = new Date(b[1][0].data.date);
+    return dateB.getTime() - dateA.getTime();
+});
 ---
 
 <section class="section doc-section" id="documentation">
@@ -7,29 +61,37 @@
         <div class="section-header">
             <span class="section-label">Documentation_PROTOLAB</span>
             <h2 class="section-title">Mon <span>Catalogue</span> Technique</h2>
-            <p class="section-desc">98 documents techniques rédigés pendant 2 mois de projet intensif. Une documentation exhaustive couvrant l'ensemble de l'infrastructure Protolab.</p>
+            <p class="section-desc">{totalDocs} documents techniques couvrant l'ensemble de l'infrastructure Protolab.</p>
         </div>
 
         <!-- Stats Hero -->
         <div class="doc-stats-hero">
             <div class="doc-stat-card">
-                <div class="doc-stat-icon">📄</div>
-                <div class="doc-stat-value" data-count="98">0</div>
+                <div class="doc-stat-icon">
+                    <svg viewBox="0 0 24 24" fill="#00ffff"><path d={iconFile} /></svg>
+                </div>
+                <div class="doc-stat-value" data-count={totalDocs}>0</div>
                 <div class="doc-stat-label">Documents</div>
             </div>
             <div class="doc-stat-card">
-                <div class="doc-stat-icon">📝</div>
-                <div class="doc-stat-value" data-count="146617" data-suffix="K">0</div>
+                <div class="doc-stat-icon">
+                    <svg viewBox="0 0 24 24" fill="#ff0080"><path d={iconDocument} /></svg>
+                </div>
+                <div class="doc-stat-value" data-count={Math.floor(totalWords / 1000)} data-suffix="K">0</div>
                 <div class="doc-stat-label">Mots écrits</div>
             </div>
             <div class="doc-stat-card">
-                <div class="doc-stat-icon">⏱️</div>
-                <div class="doc-stat-value" data-count="300" data-prefix="+">0</div>
+                <div class="doc-stat-icon">
+                    <svg viewBox="0 0 24 24" fill="#00ff88"><path d={iconClock} /></svg>
+                </div>
+                <div class="doc-stat-value" data-count={estimatedHours} data-prefix="+">0</div>
                 <div class="doc-stat-label">Heures de travail</div>
             </div>
             <div class="doc-stat-card">
-                <div class="doc-stat-icon">💻</div>
-                <div class="doc-stat-value" data-count="30" data-prefix="+">0</div>
+                <div class="doc-stat-icon">
+                    <svg viewBox="0 0 24 24" fill="#ffcc00"><path d={iconCode} /></svg>
+                </div>
+                <div class="doc-stat-value" data-count={techCount} data-prefix="+">0</div>
                 <div class="doc-stat-label">Technologies</div>
             </div>
         </div>
@@ -38,59 +100,25 @@
         <div class="doc-categories">
             <div class="doc-categories-header">
                 <h3 class="doc-categories-title">Catégories <span>Documentées</span></h3>
-                <span class="doc-filter-info">// 10 catégories • Cliquez pour filtrer</span>
+                <span class="doc-filter-info">// {Object.keys(docsByCategory).length} catégories • Cliquez pour filtrer</span>
             </div>
             <div class="doc-categories-grid">
-                <div class="doc-category-card" style="--category-color: #0078D4;" data-category="active-directory">
-                    <div class="doc-category-icon">🏢</div>
-                    <div class="doc-category-name">Active Directory</div>
-                    <div class="doc-category-count">13 docs</div>
-                </div>
-                <div class="doc-category-card" style="--category-color: #E74856;" data-category="reseau">
-                    <div class="doc-category-icon">🌐</div>
-                    <div class="doc-category-name">Réseau & Sécurité</div>
-                    <div class="doc-category-count">23 docs</div>
-                </div>
-                <div class="doc-category-card" style="--category-color: #10893E;" data-category="monitoring">
-                    <div class="doc-category-icon">📊</div>
-                    <div class="doc-category-name">Monitoring & Logs</div>
-                    <div class="doc-category-count">26 docs</div>
-                </div>
-                <div class="doc-category-card" style="--category-color: #5C2D91;" data-category="documentation">
-                    <div class="doc-category-icon">📚</div>
-                    <div class="doc-category-name">Documentation Tech</div>
-                    <div class="doc-category-count">10 docs</div>
-                </div>
-                <div class="doc-category-card" style="--category-color: #D83B01;" data-category="securite">
-                    <div class="doc-category-icon">🔒</div>
-                    <div class="doc-category-name">Sécurité</div>
-                    <div class="doc-category-count">8 docs</div>
-                </div>
-                <div class="doc-category-card" style="--category-color: #00BCF2;" data-category="architecture">
-                    <div class="doc-category-icon">🏗️</div>
-                    <div class="doc-category-name">Architecture</div>
-                    <div class="doc-category-count">6 docs</div>
-                </div>
-                <div class="doc-category-card" style="--category-color: #8764B8;" data-category="backup">
-                    <div class="doc-category-icon">💾</div>
-                    <div class="doc-category-name">Backup & DR</div>
-                    <div class="doc-category-count">5 docs</div>
-                </div>
-                <div class="doc-category-card" style="--category-color: #7719AA;" data-category="multimedia">
-                    <div class="doc-category-icon">🎬</div>
-                    <div class="doc-category-name">Multimédia</div>
-                    <div class="doc-category-count">4 docs</div>
-                </div>
-                <div class="doc-category-card" style="--category-color: #498205;" data-category="virtualisation">
-                    <div class="doc-category-icon">📦</div>
-                    <div class="doc-category-name">Virtualisation</div>
-                    <div class="doc-category-count">2 docs</div>
-                </div>
-                <div class="doc-category-card" style="--category-color: #FFB900;" data-category="llm">
-                    <div class="doc-category-icon">🤖</div>
-                    <div class="doc-category-name">LLM & IA</div>
-                    <div class="doc-category-count">1 doc</div>
-                </div>
+                {Object.entries(CATEGORY_CONFIG).map(([catKey, catInfo]) => {
+                    const docCount = docsByCategory[catKey]?.length || 0;
+                    if (docCount === 0) return null; // Skip catégories vides
+
+                    return (
+                        <div class="doc-category-card" style={`--category-color: ${catInfo.color};`} data-category={catKey}>
+                            <div class="doc-category-icon">
+                                <svg viewBox="0 0 24 24" fill={catInfo.color}>
+                                    <path d={getIconPath(catInfo.icon)} />
+                                </svg>
+                            </div>
+                            <div class="doc-category-name">{catInfo.displayName}</div>
+                            <div class="doc-category-count">{docCount} doc{docCount > 1 ? 's' : ''}</div>
+                        </div>
+                    );
+                })}
             </div>
         </div>
 
@@ -100,47 +128,69 @@
                 <h3 class="doc-timeline-title">Timeline <span>du Projet</span></h3>
             </div>
             <div class="doc-timeline-container">
-                <!-- Décembre 2025 -->
-                <div class="doc-timeline-month">
-                    <div class="doc-timeline-month-title">Décembre 2025</div>
-                    <div class="doc-timeline-items">
-                        <div class="doc-timeline-item">
-                            <div class="doc-timeline-item-icon">📊</div>
-                            <div class="doc-timeline-item-content">
-                                <div class="doc-timeline-item-title">Stack Observabilité Complète</div>
-                                <div class="doc-timeline-item-meta">26 docs<span class="doc-timeline-item-type">MD</span></div>
-                            </div>
-                        </div>
-                        <div class="doc-timeline-item">
-                            <div class="doc-timeline-item-icon">🌐</div>
-                            <div class="doc-timeline-item-content">
-                                <div class="doc-timeline-item-title">Infrastructure Réseau</div>
-                                <div class="doc-timeline-item-meta">23 docs<span class="doc-timeline-item-type">MD</span></div>
-                            </div>
+                {sortedMonths.map(([monthKey, docs]) => (
+                    <div class="doc-timeline-month">
+                        <div class="doc-timeline-month-title">{monthKey.charAt(0).toUpperCase() + monthKey.slice(1)}</div>
+                        <div class="doc-timeline-items">
+                            {docs.slice(0, 3).map(doc => {
+                                const categoryInfo = CATEGORY_CONFIG[doc.data.category as keyof typeof CATEGORY_CONFIG];
+                                return (
+                                    <div class="doc-timeline-item">
+                                        <div class="doc-timeline-item-icon">
+                                            <svg viewBox="0 0 24 24" fill={categoryInfo.color}>
+                                                <path d={getIconPath(categoryInfo.icon)} />
+                                            </svg>
+                                        </div>
+                                        <div class="doc-timeline-item-content">
+                                            <div class="doc-timeline-item-title">{doc.data.title}</div>
+                                            <div class="doc-timeline-item-meta">
+                                                {categoryInfo.displayName}
+                                                <span class="doc-timeline-item-type">MD</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
-                </div>
+                ))}
+            </div>
+        </div>
 
-                <!-- Novembre 2025 -->
-                <div class="doc-timeline-month">
-                    <div class="doc-timeline-month-title">Novembre 2025</div>
-                    <div class="doc-timeline-items">
-                        <div class="doc-timeline-item">
-                            <div class="doc-timeline-item-icon">🏢</div>
-                            <div class="doc-timeline-item-content">
-                                <div class="doc-timeline-item-title">Active Directory & GPO</div>
-                                <div class="doc-timeline-item-meta">13 docs<span class="doc-timeline-item-type">MD</span></div>
+        <!-- Liste des documentations réelles -->
+        <div class="doc-list-section">
+            <div class="doc-list-header">
+                <h3 class="doc-list-title">Documentations <span>Disponibles</span></h3>
+                <p class="doc-list-desc">Cliquez sur une documentation pour la consulter</p>
+            </div>
+            <div class="doc-list-grid">
+                {sortedDocs.map(doc => {
+                    const categoryInfo = CATEGORY_CONFIG[doc.data.category];
+                    return (
+                        <div class="doc-list-card" data-doc-slug={doc.slug}>
+                            <div class="doc-card-header">
+                                <span class="doc-card-category" style={`--cat-color: ${categoryInfo.color}`}>
+                                    {categoryInfo.displayName}
+                                </span>
+                                <span class="doc-card-date">
+                                    {doc.data.date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                </span>
                             </div>
+                            <h4 class="doc-card-title">{doc.data.title}</h4>
+                            <p class="doc-card-description">{doc.data.description}</p>
+                            {doc.data.tags && doc.data.tags.length > 0 && (
+                                <div class="doc-card-tags">
+                                    {doc.data.tags.slice(0, 3).map(tag => (
+                                        <span class="doc-card-tag">{tag}</span>
+                                    ))}
+                                    {doc.data.tags.length > 3 && (
+                                        <span class="doc-card-tag-more">+{doc.data.tags.length - 3}</span>
+                                    )}
+                                </div>
+                            )}
                         </div>
-                        <div class="doc-timeline-item">
-                            <div class="doc-timeline-item-icon">📚</div>
-                            <div class="doc-timeline-item-content">
-                                <div class="doc-timeline-item-title">Documentation Technique</div>
-                                <div class="doc-timeline-item-meta">10 docs<span class="doc-timeline-item-type">MD</span></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                    );
+                })}
             </div>
         </div>
     </div>
@@ -288,9 +338,17 @@
     }
 
     .doc-stat-icon {
-        font-size: 1.5rem;
-        margin-bottom: 0.5rem;
-        opacity: 0.7;
+        width: 32px;
+        height: 32px;
+        margin: 0 auto 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .doc-stat-icon svg {
+        width: 100%;
+        height: 100%;
     }
 
     /* Categories Grid */
@@ -363,8 +421,17 @@
     }
 
     .doc-category-icon {
-        font-size: 1.75rem;
+        width: 32px;
+        height: 32px;
         margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .doc-category-icon svg {
+        width: 100%;
+        height: 100%;
     }
 
     .doc-category-name {
@@ -482,8 +549,13 @@
         justify-content: center;
         background: rgba(0, 255, 255, 0.1);
         border: 1px solid rgba(0, 255, 255, 0.3);
-        font-size: 1rem;
         flex-shrink: 0;
+        padding: 6px;
+    }
+
+    .doc-timeline-item-icon svg {
+        width: 100%;
+        height: 100%;
     }
 
     .doc-timeline-item-content {
@@ -522,6 +594,139 @@
         background: rgba(255, 0, 128, 0.1);
         border-color: rgba(255, 0, 128, 0.3);
         color: var(--neon-magenta);
+    }
+
+    /* Documentation List Section */
+    .doc-list-section {
+        margin-top: 4rem;
+        padding-top: 4rem;
+        border-top: 1px solid var(--gray-mid);
+    }
+
+    .doc-list-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .doc-list-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 2.5rem;
+        letter-spacing: 0.05em;
+        color: var(--white);
+        margin-bottom: 0.5rem;
+    }
+
+    .doc-list-title span {
+        color: var(--neon-cyan);
+    }
+
+    .doc-list-desc {
+        font-size: 0.9rem;
+        color: var(--gray-light);
+    }
+
+    .doc-list-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .doc-list-card {
+        background: rgba(26, 26, 26, 0.5);
+        border: 1px solid var(--gray-mid);
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .doc-list-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+    }
+
+    .doc-list-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .doc-list-card:hover {
+        border-color: var(--neon-cyan);
+        background: rgba(0, 255, 255, 0.03);
+        transform: translateY(-3px);
+    }
+
+    .doc-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .doc-card-category {
+        font-family: 'Space Mono', monospace;
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--cat-color, var(--neon-cyan));
+        background: rgba(255, 255, 255, 0.05);
+        padding: 0.25rem 0.5rem;
+        border: 1px solid currentColor;
+    }
+
+    .doc-card-date {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.7rem;
+        color: var(--gray-light);
+    }
+
+    .doc-card-title {
+        font-family: 'Space Mono', monospace;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--white);
+        margin-bottom: 0.75rem;
+        line-height: 1.4;
+    }
+
+    .doc-card-description {
+        font-size: 0.85rem;
+        color: var(--gray-light);
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+
+    .doc-card-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .doc-card-tag {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.65rem;
+        color: var(--neon-cyan);
+        background: rgba(0, 255, 255, 0.1);
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        padding: 0.2rem 0.5rem;
+    }
+
+    .doc-card-tag-more {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.65rem;
+        color: var(--gray-light);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--gray-mid);
+        padding: 0.2rem 0.5rem;
     }
 
     /* Responsive */

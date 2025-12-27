@@ -1,0 +1,46 @@
+---
+import { getIconPath, getIconColor } from '../../utils/icons';
+const icon = getIconPath('docker');
+const color = getIconColor('docker');
+---
+
+<div id="modal-cloud" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">
+                <div class="modal-title-icon"><svg viewBox="0 0 24 24" fill={color}><path d={icon} /></svg></div>
+                Cloud Local
+            </h2>
+            <button class="modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-section">
+                <h4 class="modal-section-title">Description</h4>
+                <ul class="modal-list">
+                    <li>Cloud privé local basé sur Proxmox / containers</li>
+                    <li>Gestion des identités, orchestration légère</li>
+                    <li>Sauvegarde, monitoring et gestion des quotas</li>
+                </ul>
+            </div>
+            <div class="modal-section">
+                <h4 class="modal-section-title">Bénéfices</h4>
+                <ul class="modal-list">
+                    <li>Contrôle complet des données et coûts</li>
+                    <li>Latence réduite pour services internes</li>
+                    <li>Personnalisation des stacks et sécurité renforcée</li>
+                </ul>
+            </div>
+            <div class="modal-section">
+                <h4 class="modal-section-title">Compétences Génériques</h4>
+                <ul class="modal-list">
+                    <li>Architecture de cloud privé</li>
+                    <li>Gestion containers et images</li>
+                    <li>Sécurité et IAM</li>
+                </ul>
+            </div>
+            <button class="modal-cta" onclick="scrollToSection('projets');">
+                Voir les projets <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+        </div>
+    </div>
+</div>

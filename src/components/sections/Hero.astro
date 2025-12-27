@@ -13,11 +13,15 @@
     <div class="hero-content">
         <div class="status-badge"><div class="status-dot"></div><span>Disponible pour opportunités</span></div>
         <h1 class="hero-title">
-            <span class="line line-1 glitch" data-text="Adrien">Adrien</span>
-            <span class="line line-2 glitch" data-text="Mercadier">Mercadier</span>
+            <div class="line line-1">
+                <span class="glitch" data-text="Adrien">Adrien</span>
+            </div>
+            <div class="line line-2">
+                <span class="glitch" data-text="Mercadier">Mercadier</span>
+            </div>
         </h1>
         <p class="hero-subtitle">Technicien Supérieur <span>Systèmes & Réseaux</span></p>
-        <div class="typing-wrapper"><span class="typing-text"></span></div>
+        <div class="typing-wrapper"><span class="typing-text"></span><span class="typing-cursor">|</span></div>
         <div class="cta-wrapper">
             <a href="#contact" class="cta-button magnetic">
                 <span>Me Contacter</span>
@@ -36,7 +40,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding: 2rem;
+        padding: 6rem 2rem 2rem;
         z-index: 1;
         overflow: hidden;
     }
@@ -111,36 +115,52 @@
     }
 
     .hero-title {
-        font-family: 'Space Mono', monospace;
-        font-size: clamp(2rem, 10vw, 6rem);
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: clamp(3rem, 8vw, 6rem);
         line-height: 1;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.02em;
         text-transform: uppercase;
         margin-bottom: 1.5rem;
         opacity: 0;
     }
 
-    .hero-title .line { display: block; }
+    .hero-title .line {
+        display: block;
+        text-align: center;
+    }
 
-    .hero-title .line-1 {
+    .hero-title .line-1 .glitch {
         color: var(--white);
     }
 
-    .hero-title .line-2 {
+    .hero-title .line-2 .glitch {
         color: var(--neon-cyan);
     }
 
-    .glitch { position: relative; cursor: pointer; }
+    .glitch {
+        position: relative;
+        cursor: pointer;
+        display: inline-block;
+        width: auto;
+    }
     .glitch:hover { animation: glitch-main 0.3s infinite; }
 
     .glitch::before, .glitch::after {
         content: attr(data-text);
         position: absolute;
         top: 0;
-        left: 0;
-        width: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: max-content;
         height: 100%;
         opacity: 0;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: inherit;
+        letter-spacing: inherit;
+        line-height: inherit;
+        text-transform: inherit;
+        pointer-events: none;
+        white-space: nowrap;
     }
 
     .glitch:hover::before { animation: glitch-1 0.3s infinite; color: var(--glitch-1); z-index: -1; opacity: 0.8; }
@@ -155,19 +175,19 @@
     }
 
     @keyframes glitch-1 {
-        0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
-        20% { clip-path: inset(20% 0 60% 0); transform: translate(-5px); }
-        40% { clip-path: inset(40% 0 40% 0); transform: translate(5px); }
-        60% { clip-path: inset(60% 0 20% 0); transform: translate(-5px); }
-        80% { clip-path: inset(80% 0 0% 0); transform: translate(5px); }
+        0%, 100% { clip-path: inset(0 0 0 0); transform: translateX(-50%) translate(0); }
+        20% { clip-path: inset(20% 0 60% 0); transform: translateX(-50%) translate(-5px); }
+        40% { clip-path: inset(40% 0 40% 0); transform: translateX(-50%) translate(5px); }
+        60% { clip-path: inset(60% 0 20% 0); transform: translateX(-50%) translate(-5px); }
+        80% { clip-path: inset(80% 0 0% 0); transform: translateX(-50%) translate(5px); }
     }
 
     @keyframes glitch-2 {
-        0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
-        20% { clip-path: inset(80% 0 0% 0); transform: translate(5px); }
-        40% { clip-path: inset(60% 0 20% 0); transform: translate(-5px); }
-        60% { clip-path: inset(40% 0 40% 0); transform: translate(5px); }
-        80% { clip-path: inset(20% 0 60% 0); transform: translate(-5px); }
+        0%, 100% { clip-path: inset(0 0 0 0); transform: translateX(-50%) translate(0); }
+        20% { clip-path: inset(80% 0 0% 0); transform: translateX(-50%) translate(5px); }
+        40% { clip-path: inset(60% 0 20% 0); transform: translateX(-50%) translate(-5px); }
+        60% { clip-path: inset(40% 0 40% 0); transform: translateX(-50%) translate(5px); }
+        80% { clip-path: inset(20% 0 60% 0); transform: translateX(-50%) translate(-5px); }
     }
 
     .hero-subtitle {
@@ -183,18 +203,23 @@
 
     .hero-subtitle span { color: var(--neon-magenta); }
 
-    .typing-wrapper { height: 2rem; margin-bottom: 2.5rem; opacity: 0; }
+    .typing-wrapper { height: 2rem; margin-bottom: 2.5rem; opacity: 0; text-align: center; }
 
     .typing-text {
         font-family: 'JetBrains Mono', monospace;
         font-size: 1rem;
         color: var(--neon-cyan);
-        border-right: 2px solid var(--neon-cyan);
-        padding-right: 5px;
-        animation: blink 0.7s infinite;
     }
 
-    @keyframes blink { 0%, 100% { border-color: var(--neon-cyan); } 50% { border-color: transparent; } }
+    .typing-cursor {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 1rem;
+        color: var(--neon-cyan);
+        animation: blink 0.7s infinite;
+        margin-left: 2px;
+    }
+
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
     .cta-wrapper { position: relative; display: inline-block; opacity: 0; transform: translateY(30px); }
 
@@ -280,8 +305,8 @@
     .stat-label { font-size: 0.625rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-light); }
 
     @media (max-width: 768px) {
-        .hero { padding: 1rem; }
-        .hero-title { font-size: clamp(1.5rem, 8vw, 4rem); }
+        .hero { padding: 5rem 1rem 1rem; }
+        .hero-title { font-size: clamp(2rem, 8vw, 4rem); }
         .hero-subtitle { font-size: 0.75rem; }
         .cta-button { padding: 1rem 2rem; font-size: 0.875rem; }
         .stats-sidebar { display: none; }

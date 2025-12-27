@@ -1,0 +1,441 @@
+---
+// DocModal.astro - Modal overlay pour afficher les documentations complètes
+---
+
+<div id="doc-modal" class="doc-modal" data-modal-state="closed">
+    <div class="doc-modal-overlay" data-modal-close></div>
+
+    <div class="doc-modal-container">
+        <!-- Header du modal -->
+        <div class="doc-modal-header">
+            <div class="doc-modal-header-content">
+                <div class="doc-modal-breadcrumb">
+                    <span class="doc-modal-category"></span>
+                    <span class="doc-modal-separator">/</span>
+                    <span class="doc-modal-date"></span>
+                </div>
+                <h2 class="doc-modal-title"></h2>
+                <p class="doc-modal-description"></p>
+            </div>
+            <button class="doc-modal-close" data-modal-close aria-label="Fermer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Métadonnées -->
+        <div class="doc-modal-meta">
+            <div class="doc-modal-tags" id="doc-modal-tags"></div>
+            <div class="doc-modal-stats">
+                <span class="doc-modal-stat">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 6v6l4 2" />
+                        <circle cx="12" cy="12" r="10" />
+                    </svg>
+                    <span id="doc-modal-reading-time">5 min</span>
+                </span>
+                <span class="doc-modal-stat">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                    <span id="doc-modal-words">~2000 mots</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- Contenu de la documentation -->
+        <div class="doc-modal-content">
+            <div id="doc-modal-body" class="doc-modal-body markdown-content">
+                <!-- Le contenu Markdown sera injecté ici -->
+            </div>
+        </div>
+
+        <!-- Navigation entre docs -->
+        <div class="doc-modal-navigation">
+            <button class="doc-modal-nav-btn" id="doc-modal-prev" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6" />
+                </svg>
+                <span>Précédent</span>
+            </button>
+            <button class="doc-modal-nav-btn" id="doc-modal-next" disabled>
+                <span>Suivant</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6" />
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .doc-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+
+    .doc-modal[data-modal-state="open"] {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    .doc-modal-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(8px);
+        cursor: pointer;
+    }
+
+    .doc-modal-container {
+        position: relative;
+        width: 100%;
+        max-width: 1200px;
+        max-height: 90vh;
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0, 255, 255, 0.3);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+    }
+
+    .doc-modal[data-modal-state="open"] .doc-modal-container {
+        transform: scale(1);
+    }
+
+    /* Header */
+    .doc-modal-header {
+        position: relative;
+        padding: 2rem;
+        border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        background: linear-gradient(135deg, rgba(0, 255, 255, 0.05) 0%, rgba(0, 255, 255, 0.02) 100%);
+    }
+
+    .doc-modal-header-content {
+        max-width: calc(100% - 60px);
+    }
+
+    .doc-modal-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 0.75rem;
+    }
+
+    .doc-modal-category {
+        padding: 0.25rem 0.75rem;
+        background: rgba(0, 255, 255, 0.1);
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        border-radius: 4px;
+        font-weight: 500;
+        color: #00ffff;
+    }
+
+    .doc-modal-separator {
+        color: rgba(255, 255, 255, 0.3);
+    }
+
+    .doc-modal-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #fff;
+        margin: 0 0 0.5rem 0;
+        line-height: 1.3;
+    }
+
+    .doc-modal-description {
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin: 0;
+        line-height: 1.6;
+    }
+
+    .doc-modal-close {
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .doc-modal-close:hover {
+        background: rgba(255, 0, 0, 0.1);
+        border-color: rgba(255, 0, 0, 0.3);
+        transform: rotate(90deg);
+    }
+
+    .doc-modal-close svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    /* Métadonnées */
+    .doc-modal-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 2rem;
+        border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .doc-modal-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .doc-modal-tag {
+        padding: 0.25rem 0.75rem;
+        background: rgba(0, 255, 255, 0.05);
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        border-radius: 12px;
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .doc-modal-stats {
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    .doc-modal-stat {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    .doc-modal-stat svg {
+        width: 16px;
+        height: 16px;
+        color: #00ffff;
+    }
+
+    /* Contenu */
+    .doc-modal-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 2rem;
+    }
+
+    .doc-modal-content::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .doc-modal-content::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.3);
+    }
+
+    .doc-modal-content::-webkit-scrollbar-thumb {
+        background: rgba(0, 255, 255, 0.3);
+        border-radius: 4px;
+    }
+
+    .doc-modal-content::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 255, 255, 0.5);
+    }
+
+    /* Style du contenu Markdown */
+    .markdown-content {
+        color: rgba(255, 255, 255, 0.9);
+        line-height: 1.8;
+    }
+
+    .markdown-content h1,
+    .markdown-content h2,
+    .markdown-content h3,
+    .markdown-content h4 {
+        color: #fff;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .markdown-content h1 {
+        font-size: 2rem;
+        border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+        padding-bottom: 0.5rem;
+    }
+
+    .markdown-content h2 {
+        font-size: 1.5rem;
+        color: #00ffff;
+    }
+
+    .markdown-content h3 {
+        font-size: 1.25rem;
+    }
+
+    .markdown-content p {
+        margin: 1rem 0;
+    }
+
+    .markdown-content code {
+        background: rgba(0, 255, 255, 0.1);
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+        font-family: 'Fira Code', monospace;
+        font-size: 0.9em;
+        color: #00ffff;
+    }
+
+    .markdown-content pre {
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 1.5rem;
+        overflow-x: auto;
+        margin: 1.5rem 0;
+    }
+
+    .markdown-content pre code {
+        background: none;
+        border: none;
+        padding: 0;
+        color: #fff;
+    }
+
+    .markdown-content ul,
+    .markdown-content ol {
+        margin: 1rem 0;
+        padding-left: 2rem;
+    }
+
+    .markdown-content li {
+        margin: 0.5rem 0;
+    }
+
+    .markdown-content a {
+        color: #00ffff;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .markdown-content a:hover {
+        border-bottom-color: #00ffff;
+    }
+
+    .markdown-content blockquote {
+        border-left: 4px solid #00ffff;
+        padding-left: 1.5rem;
+        margin: 1.5rem 0;
+        color: rgba(255, 255, 255, 0.7);
+        font-style: italic;
+    }
+
+    /* Navigation */
+    .doc-modal-navigation {
+        display: flex;
+        justify-content: space-between;
+        padding: 1.5rem 2rem;
+        border-top: 1px solid rgba(0, 255, 255, 0.2);
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .doc-modal-nav-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: rgba(0, 255, 255, 0.05);
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        border-radius: 8px;
+        color: #fff;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .doc-modal-nav-btn:hover:not(:disabled) {
+        background: rgba(0, 255, 255, 0.1);
+        border-color: rgba(0, 255, 255, 0.4);
+        transform: translateX(0);
+    }
+
+    .doc-modal-nav-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+
+    .doc-modal-nav-btn svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .doc-modal-nav-btn#doc-modal-prev:hover:not(:disabled) {
+        transform: translateX(-4px);
+    }
+
+    .doc-modal-nav-btn#doc-modal-next:hover:not(:disabled) {
+        transform: translateX(4px);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .doc-modal {
+            padding: 1rem;
+        }
+
+        .doc-modal-header,
+        .doc-modal-meta,
+        .doc-modal-content,
+        .doc-modal-navigation {
+            padding: 1.5rem;
+        }
+
+        .doc-modal-title {
+            font-size: 1.5rem;
+        }
+
+        .doc-modal-meta {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .doc-modal-navigation {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .doc-modal-nav-btn {
+            justify-content: center;
+        }
+    }
+</style>

@@ -1,0 +1,24 @@
+---
+import { getIconPath, getIconColor } from '../../utils/icons';
+const icon = getIconPath('docker');
+const color = getIconColor('docker');
+---
+
+<div id="preview-cloud" class="skill-preview-modal" data-detail-modal="modal-cloud">
+    <div class="skill-preview-header">
+        <div class="skill-preview-icon">
+            <svg viewBox="0 0 24 24" fill={color}><path d={icon} /></svg>
+        </div>
+        <h3 class="skill-preview-title">Cloud Local</h3>
+    </div>
+    <p class="skill-preview-desc">Conception de cloud privé : services conteneurisés, orchestration.</p>
+    <div class="skill-preview-tags">
+        <span class="skill-preview-tag">Private Cloud</span>
+        <span class="skill-preview-tag">Containers</span>
+        <span class="skill-preview-tag">IAM</span>
+    </div>
+    <button class="skill-preview-cta">
+        En savoir plus
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+</div>

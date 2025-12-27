@@ -1,0 +1,57 @@
+---
+---
+<div id="project-observability" class="modal-overlay">
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h2 class="modal-title">
+                <div class="modal-title-icon modal-title-icon-green"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+                Stack Observabilité
+            </h2>
+            <button class="modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-section">
+                <h4 class="modal-section-title">Présentation</h4>
+                <p class="modal-text">Pipeline de collecte et visualisation de logs centralisé, permettant une observabilité complète de l'infrastructure Protolab. Basé sur les standards CNCF avec OpenTelemetry.</p>
+            </div>
+            <div class="modal-section">
+                <h4 class="modal-section-title">Architecture du Pipeline</h4>
+                <ul class="modal-list">
+                    <li><strong>Collecteur :</strong> OpenTelemetry Collector — point d'entrée unique</li>
+                    <li><strong>Stockage :</strong> Victoria Logs — haute performance, faible empreinte</li>
+                    <li><strong>Visualisation :</strong> Grafana — dashboards temps réel</li>
+                    <li><strong>Alerting :</strong> Grafana Alerting avec notifications</li>
+                </ul>
+            </div>
+            <div class="modal-section">
+                <h4 class="modal-section-title">Sources de Données</h4>
+                <ul class="modal-list">
+                    <li><strong>Palo Alto :</strong> Logs firewall via Syslog (traffic, threat, system)</li>
+                    <li><strong>Windows Server :</strong> Event Logs (Security, Application, System)</li>
+                    <li><strong>Linux :</strong> Journald + fichiers logs applicatifs</li>
+                    <li><strong>Docker :</strong> Logs conteneurs via driver OTLP</li>
+                </ul>
+            </div>
+            <div class="modal-section">
+                <h4 class="modal-section-title">Dashboards Créés</h4>
+                <ul class="modal-list">
+                    <li><strong>Security Overview :</strong> Tentatives d'intrusion, authentifications échouées</li>
+                    <li><strong>Firewall Traffic :</strong> Flux réseau, top applications, menaces bloquées</li>
+                    <li><strong>Infrastructure Health :</strong> État des VMs, ressources, uptime</li>
+                    <li><strong>AD Audit :</strong> Connexions utilisateurs, modifications GPO</li>
+                </ul>
+            </div>
+            <div class="modal-section">
+                <h4 class="modal-section-title">Stack Technique</h4>
+                <div class="modal-tags">
+                    <span class="modal-tag">OpenTelemetry</span>
+                    <span class="modal-tag">Victoria Logs</span>
+                    <span class="modal-tag">Grafana</span>
+                    <span class="modal-tag">Syslog</span>
+                    <span class="modal-tag">Docker Compose</span>
+                    <span class="modal-tag">OTLP</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

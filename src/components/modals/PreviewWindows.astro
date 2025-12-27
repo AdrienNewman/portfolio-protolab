@@ -1,0 +1,25 @@
+---
+import { getIconPath, getIconColor } from '../../utils/icons';
+const icon = getIconPath('windows');
+const color = getIconColor('windows');
+---
+
+<div id="preview-windows" class="skill-preview-modal" data-detail-modal="modal-windows">
+    <div class="skill-preview-header">
+        <div class="skill-preview-icon">
+            <svg viewBox="0 0 24 24" fill={color}><path d={icon} /></svg>
+        </div>
+        <h3 class="skill-preview-title">Windows Server</h3>
+    </div>
+    <p class="skill-preview-desc">Administration Active Directory, GPO, DNS, DHCP. Déploiement et gestion d'infrastructures Windows.</p>
+    <div class="skill-preview-tags">
+        <span class="skill-preview-tag">AD DS</span>
+        <span class="skill-preview-tag">GPO</span>
+        <span class="skill-preview-tag">DNS</span>
+        <span class="skill-preview-tag">PowerShell</span>
+    </div>
+    <button class="skill-preview-cta">
+        En savoir plus
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+</div>

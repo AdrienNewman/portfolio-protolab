@@ -5,8 +5,50 @@ import Navbar from '../components/layout/Navbar.astro';
 import MobileMenu from '../components/layout/MobileMenu.astro';
 import Hero from '../components/sections/Hero.astro';
 import Skills from '../components/sections/Skills.astro';
-import Projects from '../components/sections/Projects.astro';
+import Profile from '../components/sections/Profile.astro';
+import ProjectGallery from '../components/ui/ProjectGallery.astro';
 import Documentation from '../components/sections/Documentation.astro';
+import Contact from '../components/sections/Contact.astro';
+import Footer from '../components/layout/Footer.astro';
+import PreviewWindows from '../components/modals/PreviewWindows.astro';
+import PreviewLinux from '../components/modals/PreviewLinux.astro';
+import PreviewPaloalto from '../components/modals/PreviewPaloalto.astro';
+import PreviewProxmox from '../components/modals/PreviewProxmox.astro';
+import PreviewObservability from '../components/modals/PreviewObservability.astro';
+import PreviewLLM from '../components/modals/PreviewLLM.astro';
+import PreviewBackup from '../components/modals/PreviewBackup.astro';
+import PreviewCloud from '../components/modals/PreviewCloud.astro';
+import ModalWindows from '../components/modals/ModalWindows.astro';
+import ModalLinux from '../components/modals/ModalLinux.astro';
+import ModalPaloalto from '../components/modals/ModalPaloalto.astro';
+import ModalProxmox from '../components/modals/ModalProxmox.astro';
+import ModalObservability from '../components/modals/ModalObservability.astro';
+import ModalLLM from '../components/modals/ModalLLM.astro';
+import ModalBackup from '../components/modals/ModalBackup.astro';
+import ModalCloud from '../components/modals/ModalCloud.astro';
+import ProjectProtolab from '../components/modals/ProjectProtolab.astro';
+import ProjectLLM from '../components/modals/ProjectLLM.astro';
+import ProjectObservability from '../components/modals/ProjectObservability.astro';
+import { getIconPath, getIconColor } from '../utils/icons';
+
+// Préparer les icônes pour les modals
+const iconWindows = getIconPath('windows');
+const iconLinux = getIconPath('linux');
+const iconPaloAlto = getIconPath('paloaltonetworks');
+const iconProxmox = getIconPath('proxmox');
+const iconGrafana = getIconPath('grafana');
+const iconNvidia = getIconPath('nvidia');
+const iconGit = getIconPath('git');
+const iconDocker = getIconPath('docker');
+
+const colorWindows = getIconColor('windows');
+const colorLinux = getIconColor('linux');
+const colorPaloAlto = getIconColor('paloaltonetworks');
+const colorProxmox = getIconColor('proxmox');
+const colorGrafana = getIconColor('grafana');
+const colorNvidia = getIconColor('nvidia');
+const colorGit = getIconColor('git');
+const colorDocker = getIconColor('docker');
 ---
 
 <BaseLayout
@@ -16,219 +58,219 @@ import Documentation from '../components/sections/Documentation.astro';
     <!-- Terminal Boot Screen -->
     <TerminalBoot />
 
+    <!-- Navigation -->
+    <Navbar />
+    <MobileMenu />
+
     <!-- Main Portfolio -->
     <div id="main-portfolio">
-        <!-- Navigation -->
-        <Navbar />
-        <MobileMenu />
-
-        <!-- Sections -->
+        <!-- Page Sections -->
         <Hero />
-
-        <!-- Profile Section -->
-        <section class="section" id="profil">
-            <div class="skills-container">
-                <div class="section-header">
-                    <span class="section-label">User_Profile</span>
-                    <h2 class="section-title">Qui est <span>L'Admin ?</span></h2>
-                </div>
-
-                <div class="profile-grid">
-                    <!-- Terminal Bio -->
-                    <div class="profile-terminal-wrapper">
-                        <div class="terminal-header">
-                            <div class="terminal-buttons">
-                                <span class="t-btn close"></span>
-                                <span class="t-btn min"></span>
-                                <span class="t-btn max"></span>
-                            </div>
-                            <div class="terminal-title">user_bio.log</div>
-                        </div>
-                        <div class="profile-terminal-body">
-                            <p class="term-line"><span class="term-prompt">➜</span> <span class="term-cmd">whoami</span></p>
-                            <p class="term-output">Adrien Mercadier, 39 ans. Étudiant TSSR passionné.</p>
-
-                            <p class="term-line"><span class="term-prompt">➜</span> <span class="term-cmd">cat background.txt</span></p>
-                            <div class="term-text-block">
-                                <p>> Initialisation du protocole de reconversion...</p>
-                                <p>> <span class="highlight-magenta">ERROR 404:</span> Routine not found.</p>
-                                <p>Après <strong>5 ans de gestion E-commerce</strong> (SMA Diffusion) et <strong>15 ans de restauration</strong>, j'ai migré mon OS vers ma véritable passion : l'IT.</p>
-                                <p>Ce background n'est pas obsolète. C'est mon firmware de base. Il m'a appris à gérer des crashs en production et à optimiser des flux logistiques bien avant de toucher à un serveur.</p>
-                            </div>
-
-                            <p class="term-line"><span class="term-prompt">➜</span> <span class="term-cmd">echo $CURRENT_STATUS</span></p>
-                            <p class="term-output text-neon-green">READY_TO_DEPLOY</p>
-                        </div>
-                    </div>
-
-                    <!-- Soft Skills -->
-                    <div class="soft-skills-wrapper">
-                        <h3 class="soft-title">Attributs Système <span class="blink">_</span></h3>
-
-                        <div class="soft-skill-item">
-                            <div class="soft-info">
-                                <span class="soft-label">Gestion de Crise (Load Balancing)</span>
-                                <span class="soft-val">98%</span>
-                            </div>
-                            <div class="soft-bar-bg">
-                                <div class="soft-bar-fill fill-magenta" style="width: 98%"></div>
-                            </div>
-                        </div>
-
-                        <div class="soft-skill-item">
-                            <div class="soft-info">
-                                <span class="soft-label">Management & Leadership</span>
-                                <span class="soft-val">90%</span>
-                            </div>
-                            <div class="soft-bar-bg">
-                                <div class="soft-bar-fill fill-cyan" style="width: 90%"></div>
-                            </div>
-                        </div>
-
-                        <div class="soft-skill-item">
-                            <div class="soft-info">
-                                <span class="soft-label">Relation Client (User Support)</span>
-                                <span class="soft-val">95%</span>
-                            </div>
-                            <div class="soft-bar-bg">
-                                <div class="soft-bar-fill fill-green" style="width: 95%"></div>
-                            </div>
-                        </div>
-
-                        <div class="soft-skill-item">
-                            <div class="soft-info">
-                                <span class="soft-label">Adaptabilité (Hot Swapping)</span>
-                                <span class="soft-val">100%</span>
-                            </div>
-                            <div class="soft-bar-bg">
-                                <div class="soft-bar-fill fill-yellow" style="width: 100%"></div>
-                            </div>
-                        </div>
-
-                        <div class="mini-stats-grid">
-                            <div class="mini-stat">
-                                <span class="ms-icon">⚡</span>
-                                <span class="ms-label">Réactif</span>
-                            </div>
-                            <div class="mini-stat">
-                                <span class="ms-icon">🛡️</span>
-                                <span class="ms-label">Fiable</span>
-                            </div>
-                            <div class="mini-stat">
-                                <span class="ms-icon">🤝</span>
-                                <span class="ms-label">Humain</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <Skills />
-        <Projects />
+        <Profile />
+        <ProjectGallery />
         <Documentation />
+        <Contact />
 
-        <!-- Contact Section -->
-        <section class="contact-section" id="contact">
-            <div class="container">
-                <div class="section-header">
-                    <span class="section-label">Contact</span>
-                    <h2 class="section-title">Restons en <span>Contact</span></h2>
-                    <p class="section-desc">Disponible pour des opportunités de collaboration ou d'emploi en tant que TSSR.</p>
+        <!-- Project modals extracted to components -->
+        <ProjectProtolab />
+        <ProjectLLM />
+        <ProjectObservability />
+
+        <!-- Preview modals (hover) -->
+        <PreviewWindows />
+        <PreviewLinux />
+        <PreviewPaloalto />
+        <PreviewProxmox />
+        <PreviewObservability />
+        <PreviewLLM />
+        <PreviewBackup />
+        <PreviewCloud />
+
+        <!-- Detail modals -->
+        <ModalWindows />
+        <ModalLinux />
+        <ModalPaloalto />
+        <ModalProxmox />
+        <ModalObservability />
+        <ModalLLM />
+        <ModalBackup />
+        <ModalCloud />
+
+        <!-- ============================================
+             PROJECT MODALS
+             ============================================ -->
+        <!-- Protolab Modal -->
+        <div id="project-protolab" class="modal-overlay">
+            <div class="modal-content modal-large">
+                <div class="modal-header">
+                    <h2 class="modal-title">
+                        <div class="modal-title-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+                        Infrastructure Protolab
+                    </h2>
+                    <button class="modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
                 </div>
-
-                <div class="contact-content">
-                    <div class="contact-links">
-                        <a href="mailto:adrien@protolab.local" class="contact-link">
-                            <span class="contact-icon">✉</span>
-                            <span>adrien@protolab.local</span>
-                        </a>
-                        <a href="https://linkedin.com/in/adrienmercadier" class="contact-link" target="_blank" rel="noopener">
-                            <span class="contact-icon">in</span>
-                            <span>LinkedIn</span>
-                        </a>
-                        <a href="https://github.com/adrienmercadier" class="contact-link" target="_blank" rel="noopener">
-                            <span class="contact-icon">gh</span>
-                            <span>GitHub</span>
-                        </a>
+                <div class="modal-body">
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">Présentation</h4>
+                        <p class="modal-text">Protolab est mon laboratoire personnel, une infrastructure complète simulant un environnement d'entreprise. Ce projet m'a permis de mettre en pratique l'ensemble de mes compétences TSSR dans un contexte réaliste.</p>
+                    </div>
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">Architecture Technique</h4>
+                        <ul class="modal-list">
+                            <li><strong>Hyperviseur :</strong> Proxmox VE 8.x sur serveur physique dédié (AMD Ryzen 7 5800X, 32GB RAM, RTX 3060)</li>
+                            <li><strong>Firewall :</strong> Palo Alto PA-VM-50 avec 4 interfaces (WAN, LAN, DMZ, VPN)</li>
+                            <li><strong>Active Directory :</strong> Windows Server 2022 (DC01) — Protolab.local</li>
+                            <li><strong>Réseau :</strong> 3 VLANs segmentés (Production, Admin, DMZ) avec routing inter-VLAN</li>
+                            <li><strong>Monitoring :</strong> Stack OpenTelemetry + Victoria Logs + Grafana</li>
+                        </ul>
+                    </div>
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">Fonctionnalités Clés</h4>
+                        <ul class="modal-list">
+                            <li><strong>VPN GlobalProtect :</strong> Accès distant sécurisé avec authentification LDAP</li>
+                            <li><strong>GPU Passthrough :</strong> RTX 3060 dédiée aux workloads IA (Ollama)</li>
+                            <li><strong>Backup automatisé :</strong> Snapshots Proxmox + exports AD + config Palo Alto</li>
+                            <li><strong>Zero Trust :</strong> Politiques de sécurité deny-by-default</li>
+                        </ul>
+                    </div>
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">Stack Technique</h4>
+                        <div class="modal-tags">
+                            <span class="modal-tag">Proxmox VE</span>
+                            <span class="modal-tag">Palo Alto PAN-OS</span>
+                            <span class="modal-tag">Windows Server 2022</span>
+                            <span class="modal-tag">Active Directory</span>
+                            <span class="modal-tag">Docker</span>
+                            <span class="modal-tag">Grafana</span>
+                            <span class="modal-tag">OpenTelemetry</span>
+                            <span class="modal-tag">Bash</span>
+                            <span class="modal-tag">PowerShell</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-inner">
-                <div class="footer-left">
-                    <span class="footer-text">© 2025 Adrien Mercadier</span>
-                    <span class="footer-separator">|</span>
-                    <span class="footer-text">TSSR - Infrastructure & Systems</span>
-                </div>
-                <div class="footer-right">
-                    <span class="footer-text">Hébergé sur Protolab</span>
-                </div>
-            </div>
-        </footer>
-
-        <!-- Back to Top Button -->
-        <button class="back-to-top" id="back-to-top" aria-label="Retour en haut">
-            <span>↑</span>
-        </button>
-
-        <!-- Modals for Skill Cards -->
-        <div id="modal-windows" class="modal-overlay">
-            <div class="modal-content">
+        <!-- LLM Modal -->
+        <div id="project-llm" class="modal-overlay">
+            <div class="modal-content modal-large">
                 <div class="modal-header">
-                    <h2 class="modal-title">Windows Server & Active Directory</h2>
-                    <button class="modal-close" aria-label="Fermer">×</button>
+                    <h2 class="modal-title">
+                        <div class="modal-title-icon modal-title-icon-magenta"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6"/></svg></div>
+                        LLM Local + GPU
+                    </h2>
+                    <button class="modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
                 </div>
                 <div class="modal-body">
-                    <h4>Architecture Technique</h4>
-                    <ul>
-                        <li>Domain Controller (DC01) sur Windows Server 2022</li>
-                        <li>Structure OUs organisée</li>
-                        <li>DNS intégré avec zones de recherche inverse</li>
-                        <li>DHCP haute dispo</li>
-                    </ul>
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">Présentation</h4>
+                        <p class="modal-text">Déploiement d'une infrastructure IA locale permettant d'exécuter des modèles de langage (LLM) avec accélération GPU. Ce projet combine virtualisation avancée et technologies d'intelligence artificielle.</p>
+                    </div>
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">Architecture Technique</h4>
+                        <ul class="modal-list">
+                            <li><strong>GPU Passthrough :</strong> NVIDIA RTX 3060 12GB dédiée via IOMMU/VFIO</li>
+                            <li><strong>Runtime :</strong> Ollama pour l'exécution des modèles LLM</li>
+                            <li><strong>Interface :</strong> Open WebUI pour l'interaction utilisateur</li>
+                            <li><strong>Routing :</strong> LiteLLM pour le load-balancing multi-modèles</li>
+                            <li><strong>Conteneurisation :</strong> Docker avec nvidia-container-toolkit</li>
+                        </ul>
+                    </div>
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">Modèles Déployés</h4>
+                        <ul class="modal-list">
+                            <li><strong>Llama 3.1 8B :</strong> Modèle généraliste pour conversations</li>
+                            <li><strong>CodeLlama 7B :</strong> Assistance au développement</li>
+                            <li><strong>Mistral 7B :</strong> Alternative performante</li>
+                            <li><strong>Phi-3 :</strong> Modèle compact pour inférence rapide</li>
+                        </ul>
+                    </div>
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">Défis Techniques Résolus</h4>
+                        <ul class="modal-list">
+                            <li>Configuration IOMMU et groupes de GPU dans Proxmox</li>
+                            <li>Installation drivers NVIDIA dans environnement virtualisé</li>
+                            <li>Optimisation mémoire VRAM pour modèles volumineux</li>
+                            <li>Sécurisation de l'accès via reverse-proxy authentifié</li>
+                        </ul>
+                    </div>
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">Stack Technique</h4>
+                        <div class="modal-tags">
+                            <span class="modal-tag">Ollama</span>
+                            <span class="modal-tag">Open WebUI</span>
+                            <span class="modal-tag">LiteLLM</span>
+                            <span class="modal-tag">CUDA 12</span>
+                            <span class="modal-tag">Docker</span>
+                            <span class="modal-tag">NVIDIA Container Toolkit</span>
+                            <span class="modal-tag">Proxmox GPU Passthrough</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div id="modal-linux" class="modal-overlay">
-            <div class="modal-content">
+        <!-- Observability Modal -->
+        <div id="project-observability" class="modal-overlay">
+            <div class="modal-content modal-large">
                 <div class="modal-header">
-                    <h2 class="modal-title">Linux & Scripting Bash</h2>
-                    <button class="modal-close" aria-label="Fermer">×</button>
+                    <h2 class="modal-title">
+                        <div class="modal-title-icon modal-title-icon-green"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+                        Stack Observabilité
+                    </h2>
+                    <button class="modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
                 </div>
                 <div class="modal-body">
-                    <h4>Environnement & Outils</h4>
-                    <ul>
-                        <li>Administration Debian 12 / Ubuntu Server</li>
-                        <li>Scripting Bash avancé</li>
-                        <li>Gestion des services avec systemd</li>
-                        <li>Conteneurisation Docker</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div id="modal-paloalto" class="modal-overlay">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title">Palo Alto Firewall NextGen</h2>
-                    <button class="modal-close" aria-label="Fermer">×</button>
-                </div>
-                <div class="modal-body">
-                    <h4>Infrastructure & Configuration</h4>
-                    <ul>
-                        <li>Configuration de firewalls Next-Gen</li>
-                        <li>Politiques de sécurité</li>
-                        <li>NAT & VPN GlobalProtect</li>
-                    </ul>
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">Présentation</h4>
+                        <p class="modal-text">Pipeline de collecte et visualisation de logs centralisé, permettant une observabilité complète de l'infrastructure Protolab. Basé sur les standards CNCF avec OpenTelemetry.</p>
+                    </div>
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">Architecture du Pipeline</h4>
+                        <ul class="modal-list">
+                            <li><strong>Collecteur :</strong> OpenTelemetry Collector — point d'entrée unique</li>
+                            <li><strong>Stockage :</strong> Victoria Logs — haute performance, faible empreinte</li>
+                            <li><strong>Visualisation :</strong> Grafana — dashboards temps réel</li>
+                            <li><strong>Alerting :</strong> Grafana Alerting avec notifications</li>
+                        </ul>
+                    </div>
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">Sources de Données</h4>
+                        <ul class="modal-list">
+                            <li><strong>Palo Alto :</strong> Logs firewall via Syslog (traffic, threat, system)</li>
+                            <li><strong>Windows Server :</strong> Event Logs (Security, Application, System)</li>
+                            <li><strong>Linux :</strong> Journald + fichiers logs applicatifs</li>
+                            <li><strong>Docker :</strong> Logs conteneurs via driver OTLP</li>
+                        </ul>
+                    </div>
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">Dashboards Créés</h4>
+                        <ul class="modal-list">
+                            <li><strong>Security Overview :</strong> Tentatives d'intrusion, authentifications échouées</li>
+                            <li><strong>Firewall Traffic :</strong> Flux réseau, top applications, menaces bloquées</li>
+                            <li><strong>Infrastructure Health :</strong> État des VMs, ressources, uptime</li>
+                            <li><strong>AD Audit :</strong> Connexions utilisateurs, modifications GPO</li>
+                        </ul>
+                    </div>
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">Stack Technique</h4>
+                        <div class="modal-tags">
+                            <span class="modal-tag">OpenTelemetry</span>
+                            <span class="modal-tag">Victoria Logs</span>
+                            <span class="modal-tag">Grafana</span>
+                            <span class="modal-tag">Syslog</span>
+                            <span class="modal-tag">Docker Compose</span>
+                            <span class="modal-tag">OTLP</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Footer -->
+    <Footer />
 </BaseLayout>
 
 <style is:global>
@@ -754,60 +796,5 @@ import Documentation from '../components/sections/Documentation.astro';
             console.log('Portfolio HTML length:', portfolio.innerHTML.length);
             console.log('Portfolio has visible class:', portfolio.classList.contains('visible'));
         }
-
-        // Initialize modals
-        initModals();
     });
-
-    // Modal functionality
-    function initModals() {
-        // Add click handlers to skill cards
-        document.querySelectorAll('.skill-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const modalId = card.getAttribute('data-modal');
-                if (modalId) {
-                    openModal(modalId);
-                }
-            });
-        });
-
-        // Close buttons
-        document.querySelectorAll('.modal-close').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                closeAllModals();
-            });
-        });
-
-        // Close on overlay click
-        document.querySelectorAll('.modal-overlay').forEach(overlay => {
-            overlay.addEventListener('click', (e) => {
-                if (e.target === overlay) {
-                    closeAllModals();
-                }
-            });
-        });
-
-        // Close on Escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeAllModals();
-            }
-        });
-    }
-
-    function openModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-    }
-
-    function closeAllModals() {
-        document.querySelectorAll('.modal-overlay').forEach(modal => {
-            modal.classList.remove('active');
-        });
-        document.body.style.overflow = '';
-    }
 </script>

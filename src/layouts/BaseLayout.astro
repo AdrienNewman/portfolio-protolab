@@ -1,4 +1,6 @@
 ---
+import DocModal from '../components/ui/DocModal.astro';
+
 interface Props {
   title?: string;
   description?: string;
@@ -38,6 +40,9 @@ const {
     <!-- Main Content -->
     <slot />
 
+    <!-- Documentation Modal -->
+    <DocModal />
+
     <!-- Three.js via CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
@@ -45,5 +50,8 @@ const {
     <script is:inline src="/scripts/custom-cursor.js"></script>
     <script is:inline src="/scripts/three-background.js"></script>
     <script is:inline src="/scripts/scroll-animations.js"></script>
+    <script is:inline src="/scripts/typing-effect.js"></script>
+    <script is:inline src="/scripts/modal-system.js"></script>
+    <script is:inline src="/scripts/doc-counter.js"></script>
 </body>
 </html>

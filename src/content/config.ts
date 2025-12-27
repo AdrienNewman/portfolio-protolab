@@ -4,7 +4,7 @@ const docsCollection = defineCollection({
     type: 'content',
     schema: z.object({
         title: z.string(),
-        description: z.string().optional(),
+        description: z.string(),
         category: z.enum([
             'active-directory',
             'paloalto',
@@ -15,11 +15,18 @@ const docsCollection = defineCollection({
             'docker',
             'backup',
             'network',
-            'security'
+            'security',
+            'documentation',
+            'architecture',
+            'multimedia',
+            'llm'
         ]),
-        date: z.date().optional(),
-        tags: z.array(z.string()).optional(),
+        date: z.date(),
+        tags: z.array(z.string()).default([]),
         author: z.string().default('Adrien Mercadier'),
+        readingTime: z.number().optional(),
+        featured: z.boolean().default(false),
+        difficulty: z.enum(['beginner', 'intermediate', 'advanced']).optional(),
     }),
 });
 

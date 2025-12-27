@@ -1,0 +1,46 @@
+---
+import { getIconPath, getIconColor } from '../../utils/icons';
+const icon = getIconPath('git');
+const color = getIconColor('git');
+---
+
+<div id="modal-backup" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">
+                <div class="modal-title-icon"><svg viewBox="0 0 24 24" fill={color}><path d={icon} /></svg></div>
+                Gestion de Backup
+            </h2>
+            <button class="modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-section">
+                <h4 class="modal-section-title">Principes</h4>
+                <ul class="modal-list">
+                    <li>Stratégie 3-2-1 : plusieurs copies, stockage hors site</li>
+                    <li>Combinaison snapshots, exports et copies déportées</li>
+                    <li>Tests réguliers de restauration et documentation</li>
+                </ul>
+            </div>
+            <div class="modal-section">
+                <h4 class="modal-section-title">Bonnes Pratiques</h4>
+                <ul class="modal-list">
+                    <li>Automatisation (scripts, cron, runners)</li>
+                    <li>Chiffrement en transit et au repos</li>
+                    <li>Monitoring des jobs et alerting</li>
+                </ul>
+            </div>
+            <div class="modal-section">
+                <h4 class="modal-section-title">Compétences Génériques</h4>
+                <ul class="modal-list">
+                    <li>Planification et automatisation de sauvegardes</li>
+                    <li>Gestion des snapshots et rétention</li>
+                    <li>Procédures de restauration testées</li>
+                </ul>
+            </div>
+            <button class="modal-cta" onclick="scrollToSection('projets');">
+                Voir les projets <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+        </div>
+    </div>
+</div>

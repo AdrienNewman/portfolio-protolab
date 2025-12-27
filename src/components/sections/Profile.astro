@@ -1,0 +1,148 @@
+---
+// Profile Section Component - "Qui est l'admin"
+---
+
+<section class="section" id="profil">
+    <div class="profile-container">
+        <div class="section-header">
+            <span class="section-label">À propos</span>
+            <h2 class="section-title">Qui est <span>l'Admin</span></h2>
+            <p class="section-desc">Reconversion IT après 20 ans dans la restauration et l'e-commerce. Parce que gérer des crashs, ça ne date pas d'hier.</p>
+        </div>
+
+        <div class="profile-grid">
+        <!-- Left Panel: Terminal Display -->
+        <div class="profile-terminal-wrapper" aria-label="Terminal affichant les informations de profil">
+            <div class="terminal-header">
+                <div class="terminal-buttons">
+                    <span class="t-btn close"></span>
+                    <span class="t-btn min"></span>
+                    <span class="t-btn max"></span>
+                </div>
+                <div class="terminal-title">~/profile/adrien.conf</div>
+            </div>
+            <div class="profile-terminal-body">
+                <div class="term-line">
+                    <span class="term-prompt">user@protolab:~$</span>
+                    <span class="term-cmd">cat /etc/profile/adrien.conf</span>
+                </div>
+                <div class="term-output">
+                    USER: Adrien Mercadier<br>
+                    ROLE: Technicien Supérieur Systèmes & Réseaux<br>
+                    AGE: 39 ans<br>
+                    STATUS: <span class="highlight-magenta">████████████████████ READY_TO_DEPLOY</span>
+                </div>
+
+                <div class="term-line">
+                    <span class="term-prompt">user@protolab:~$</span>
+                    <span class="term-cmd">cat /var/log/career.log</span>
+                </div>
+                <div class="term-output">
+                    &gt; Initialisation du protocole de reconversion...<br>
+                    &gt; <span class="highlight-magenta">ERROR 404: Routine not found.</span>
+                </div>
+
+                <div class="term-text-block">
+                    <p>Après 5 ans E-commerce + 15 ans restauration → Migration vers l'IT</p>
+                    <p class="text-neon-green">Ce background n'est pas obsolète. C'est mon firmware de base.</p>
+                    <p>J'ai appris à gérer des crashs en production bien avant de toucher à un serveur.</p>
+                </div>
+
+                <div class="term-line">
+                    <span class="term-prompt">user@protolab:~$</span>
+                    <span class="blink">█</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Soft Skills -->
+        <div class="soft-skills-wrapper">
+            <h3 class="soft-title">Soft Skills ///</h3>
+
+            <div class="soft-skill-item">
+                <div class="soft-info">
+                    <span class="soft-label">Gestion de Crise</span>
+                    <span class="soft-val">98%</span>
+                </div>
+                <div class="soft-bar-bg">
+                    <div class="soft-bar-fill fill-cyan" style="width: 98%"></div>
+                </div>
+            </div>
+
+            <div class="soft-skill-item">
+                <div class="soft-info">
+                    <span class="soft-label">Management & Leadership</span>
+                    <span class="soft-val">90%</span>
+                </div>
+                <div class="soft-bar-bg">
+                    <div class="soft-bar-fill fill-magenta" style="width: 90%"></div>
+                </div>
+            </div>
+
+            <div class="soft-skill-item">
+                <div class="soft-info">
+                    <span class="soft-label">Relation Client</span>
+                    <span class="soft-val">95%</span>
+                </div>
+                <div class="soft-bar-bg">
+                    <div class="soft-bar-fill fill-green" style="width: 95%"></div>
+                </div>
+            </div>
+
+            <div class="soft-skill-item">
+                <div class="soft-info">
+                    <span class="soft-label">Adaptabilité</span>
+                    <span class="soft-val">100%</span>
+                </div>
+                <div class="soft-bar-bg">
+                    <div class="soft-bar-fill fill-yellow" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+
+<style>
+    .section { position: relative; z-index: 1; padding: 8rem 2rem; }
+
+    .section-header { text-align: center; margin-bottom: 5rem; }
+
+    .section-label {
+        display: inline-block;
+        font-family: 'Space Mono', monospace;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: var(--neon-cyan);
+        margin-bottom: 1rem;
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--neon-cyan);
+    }
+
+    .section-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: clamp(3rem, 8vw, 6rem);
+        letter-spacing: 0.02em;
+        line-height: 1;
+        margin-bottom: 1.5rem;
+    }
+
+    .section-title span { color: var(--neon-cyan); }
+
+    .section-desc {
+        font-size: 1rem;
+        color: var(--gray-light);
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.8;
+    }
+
+    .profile-container { max-width: 1400px; margin: 0 auto; }
+
+    @media (max-width: 768px) {
+        .section { padding: 5rem 1.5rem; }
+        .section-header { margin-bottom: 3rem; }
+    }
+</style>

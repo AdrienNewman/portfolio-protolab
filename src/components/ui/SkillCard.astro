@@ -1,23 +1,29 @@
 ---
 // Skill Card Component
+import { getIconPath, getIconColor } from '../../utils/icons';
+
 interface Props {
     number: string;
     title: string;
     description?: string;
     tags?: string[];
-    icon: string;
+    iconName: string;
     preview?: string;
     modal?: string;
 }
 
-const { number, title, description, tags, icon, preview, modal } = Astro.props;
+const { number, title, description, tags, iconName, preview, modal } = Astro.props;
+const iconPath = getIconPath(iconName);
+const iconColor = getIconColor(iconName);
 ---
 
 <div class="skill-card" data-tilt data-preview={preview} data-modal={modal}>
     <div class="skill-card-inner">
         <span class="skill-number">{number}</span>
         <div class="skill-icon">
-            <svg viewBox="0 0 24 24" set:html={icon} />
+            <svg viewBox="0 0 24 24" fill={iconColor}>
+                <path d={iconPath} />
+            </svg>
         </div>
         <h3 class="skill-title">{title}</h3>
         {description && <p class="skill-desc">{description}</p>}
@@ -34,7 +40,7 @@ const { number, title, description, tags, icon, preview, modal } = Astro.props;
         position: relative;
         background: linear-gradient(135deg, rgba(26, 26, 26, 0.8), rgba(10, 10, 10, 0.9));
         border: 2px solid var(--gray-mid);
-        padding: 1.5rem;
+        padding: 1.5rem 1.5rem 1.5rem 1.5rem;
         aspect-ratio: 1;
         display: flex;
         flex-direction: column;
@@ -79,7 +85,14 @@ const { number, title, description, tags, icon, preview, modal } = Astro.props;
     .skill-card:hover::before { transform: scaleX(1); }
     .skill-card:hover::after { opacity: 1; }
 
-    .skill-card-inner { position: relative; z-index: 1; }
+    .skill-card-inner {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
 
     .skill-icon {
         width: 50px;
@@ -92,6 +105,7 @@ const { number, title, description, tags, icon, preview, modal } = Astro.props;
         margin-bottom: 1rem;
         transition: all 0.4s ease;
         position: relative;
+        flex-shrink: 0;
     }
 
     .skill-icon::before {
@@ -107,8 +121,8 @@ const { number, title, description, tags, icon, preview, modal } = Astro.props;
     .skill-card:hover .skill-icon { background: var(--black); border-color: transparent; }
     .skill-card:hover .skill-icon::before { opacity: 1; }
 
-    .skill-icon :global(svg) { width: 28px; height: 28px; stroke: var(--neon-cyan); stroke-width: 1.5; fill: none; transition: all 0.4s ease; }
-    .skill-card:hover .skill-icon :global(svg) { stroke: var(--white); }
+    .skill-icon :global(svg) { width: 28px; height: 28px; transition: all 0.4s ease; }
+    .skill-card:hover .skill-icon :global(svg) { filter: brightness(1.2); }
 
     .skill-number {
         position: absolute;
@@ -125,10 +139,13 @@ const { number, title, description, tags, icon, preview, modal } = Astro.props;
 
     .skill-title {
         font-family: 'Bebas Neue', sans-serif;
-        font-size: 1.25rem;
-        letter-spacing: 0.05em;
+        font-size: 1.1rem;
+        letter-spacing: 0.02em;
         text-align: center;
         margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .skill-desc { display: none; }

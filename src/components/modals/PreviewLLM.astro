@@ -1,0 +1,24 @@
+---
+import { getIconPath, getIconColor } from '../../utils/icons';
+const icon = getIconPath('nvidia');
+const color = getIconColor('nvidia');
+---
+
+<div id="preview-llm" class="skill-preview-modal" data-detail-modal="modal-llm">
+    <div class="skill-preview-header">
+        <div class="skill-preview-icon">
+            <svg viewBox="0 0 24 24" fill={color}><path d={icon} /></svg>
+        </div>
+        <h3 class="skill-preview-title">Local LLM</h3>
+    </div>
+    <p class="skill-preview-desc">Déploiement d'environnements IA locaux avec accélération GPU.</p>
+    <div class="skill-preview-tags">
+        <span class="skill-preview-tag">Ollama</span>
+        <span class="skill-preview-tag">CUDA</span>
+        <span class="skill-preview-tag">Open WebUI</span>
+    </div>
+    <button class="skill-preview-cta">
+        En savoir plus
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+</div>

@@ -1,0 +1,46 @@
+---
+import { getIconPath, getIconColor } from '../../utils/icons';
+const icon = getIconPath('nvidia');
+const color = getIconColor('nvidia');
+---
+
+<div id="modal-llm" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">
+                <div class="modal-title-icon"><svg viewBox="0 0 24 24" fill={color}><path d={icon} /></svg></div>
+                Local LLM & Déploiement IA
+            </h2>
+            <button class="modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-section">
+                <h4 class="modal-section-title">Contexte</h4>
+                <ul class="modal-list">
+                    <li>Déploiement local de modèles LLM avec accélération GPU</li>
+                    <li>Orchestration simple pour servir plusieurs modèles</li>
+                    <li>Interfaces web légères pour tests et intégrations</li>
+                </ul>
+            </div>
+            <div class="modal-section">
+                <h4 class="modal-section-title">Tâches Typiques</h4>
+                <ul class="modal-list">
+                    <li>Installation et configuration d'Ollama / runtime LLM</li>
+                    <li>Gestion des ressources GPU (CUDA, drivers, passthrough)</li>
+                    <li>Exposition sécurisée via reverse-proxy</li>
+                </ul>
+            </div>
+            <div class="modal-section">
+                <h4 class="modal-section-title">Compétences Génériques</h4>
+                <ul class="modal-list">
+                    <li>Déploiement local de modèles IA</li>
+                    <li>Optimisation GPU et monitoring</li>
+                    <li>Orchestration et autoscaling léger</li>
+                </ul>
+            </div>
+            <button class="modal-cta" onclick="scrollToSection('projets');">
+                Voir les projets <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+        </div>
+    </div>
+</div>
