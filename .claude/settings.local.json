@@ -13,7 +13,11 @@
       "Bash(curl:*)",
       "Bash(ls:*)",
       "Bash(cat:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(dir \"c:\\\\Users\\\\Beweb\\\\Documents\\\\Serveur Proxmox\\\\PROTOLAB\\\\Porte Folio\\\\portefolio V3\\\\src\\\\pages\")",
+      "Bash(dir \"c:\\\\Users\\\\Beweb\\\\Documents\\\\Serveur Proxmox\\\\PROTOLAB\\\\Porte Folio\\\\portefolio V3\\\\public\")",
+      "Bash(dir:*)",
+      "Bash(.ts\" || echo \"Directory structure checked \")"
     ]
   }
 }
