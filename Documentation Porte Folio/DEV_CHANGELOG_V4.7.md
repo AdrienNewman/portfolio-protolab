@@ -2,7 +2,7 @@
 
 ## RESUME
 
-**Version**: V4.7
+**Version**: V4.7 → V4.7.1
 **Date**: 28 décembre 2025
 **Titre**: Section LIVE_LAB - Monitoring infrastructure Protolab en temps réel
 
@@ -17,8 +17,9 @@ Nouvelle section "preuve par le code" positionnée entre Projects et Documentati
 **Contenu affiché:**
 
 - Status global (ONLINE / DEGRADED / OFFLINE)
-- Services cards (Proxmox, Palo Alto, DC01, Grafana)
-- Métriques CPU, RAM, Disk avec barres de progression
+- Services cards (Proxmox, Palo Alto, DC01, Grafana) avec métriques individuelles
+- Métriques CPU, RAM par service (V4.7.1)
+- Métriques CPU, RAM, Disk globales avec barres de progression
 - Trafic réseau IN/OUT en temps réel
 - Timestamp de dernière mise à jour
 
@@ -30,8 +31,9 @@ Nouvel endpoint `/api/lab-status.json` qui query VictoriaMetrics via PromQL.
 
 - Server-Side Rendering avec `prerender = false`
 - Cache serveur 60 secondes
-- Queries parallèles pour performance
+- Queries parallèles pour performance (batch queries V4.7.1)
 - Fallback gracieux si VictoriaMetrics indisponible
+- Métriques individuelles par service via regex PromQL (V4.7.1)
 
 ### 3. Client Polling
 
@@ -93,20 +95,41 @@ sum(rate(pve_network_transmit_bytes{job="proxmox"}[5m]))
 
 # Uptime
 pve_uptime_seconds{job="proxmox",id="node/proxmox"}
+
+# V4.7.1 - Batch queries par service
+pve_up{job="proxmox",id=~"node/proxmox|qemu/102|qemu/103|lxc/203"}
+pve_cpu_usage_ratio{job="proxmox",id=~"node/proxmox|qemu/102|qemu/103|lxc/203"}
+pve_memory_usage_bytes{job="proxmox",id=~"node/proxmox|qemu/102|qemu/103|lxc/203"}
+pve_memory_size_bytes{job="proxmox",id=~"node/proxmox|qemu/102|qemu/103|lxc/203"}
+pve_uptime_seconds{job="proxmox",id=~"node/proxmox|qemu/102|qemu/103|lxc/203"}
 ```
+
+### Mapping des services (V4.7.1)
+
+| Service      | Proxmox ID     | Type |
+|--------------|----------------|------|
+| Proxmox VE   | `node/proxmox` | node |
+| Palo Alto FW | `qemu/102`     | qemu |
+| Windows DC01 | `qemu/103`     | qemu |
+| Grafana OSS  | `lxc/203`      | lxc  |
 
 ### Structure de réponse API
 
 ```typescript
+interface ServiceMetrics {
+  id: string;
+  name: string;
+  type: 'node' | 'qemu' | 'lxc';  // V4.7.1
+  status: 'up' | 'down' | 'unknown';
+  uptime?: string;
+  cpu?: number;      // V4.7.1 - percentage
+  memory?: number;   // V4.7.1 - percentage
+}
+
 interface LabStatusResponse {
   timestamp: string;
   status: 'online' | 'degraded' | 'offline';
-  services: {
-    id: string;
-    name: string;
-    status: 'up' | 'down' | 'unknown';
-    uptime?: string;
-  }[];
+  services: ServiceMetrics[];
   resources: {
     cpu: { percent: number };
     memory: { percent: number; usedGB?: number; totalGB?: number };
@@ -153,6 +176,9 @@ export default defineConfig({
 - [x] Uptime formaté en jours/heures
 - [x] Polling fonctionne toutes les 30s
 - [x] Fallback offline si VictoriaMetrics down
+- [x] V4.7.1: CPU/RAM individuels par service (Proxmox, Palo Alto, DC01, Grafana)
+- [x] V4.7.1: Memory cappée à 100% pour VMs QEMU (évite valeurs aberrantes)
+- [x] V4.7.1: Indicateurs couleur sur métriques services (warning/critical)
 
 ---
 
@@ -166,8 +192,9 @@ export default defineConfig({
 
 ## PROCHAINES ETAPES
 
-- [ ] Ajouter métriques Palo Alto (quand OTEL reconnecté)
-- [ ] Ajouter métriques Windows DC01
+- [x] ~~Ajouter métriques Palo Alto~~ (V4.7.1 - via Proxmox Exporter)
+- [x] ~~Ajouter métriques Windows DC01~~ (V4.7.1 - via Proxmox Exporter)
+- [ ] Métriques RAM réelle (Windows Exporter / Node Exporter / QEMU Guest Agent)
 - [ ] Chatbot ARIA (Ollama)
 - [ ] Terminal interactif
 - [ ] Log viewer VictoriaLogs
@@ -183,4 +210,5 @@ export default defineConfig({
 ---
 
 **Document créé le**: 28/12/2025
+**Dernière MAJ**: 28/12/2025 (V4.7.1)
 **Statut**: COMPLETE
