@@ -250,6 +250,29 @@ Le portfolio implémente les bonnes pratiques d'accessibilité web (WCAG 2.1) :
 
 ## Changelog
 
+### V4.6 (28 décembre 2025)
+
+- **Section Certifications** : Nouvelle section dans le profil avec badge Cisco Networking Basics
+- **Badge Credly** : Image locale avec lien vers Credly (remplace iframe problématique)
+- **Alignement Terminal/Skills** : Grid stretch pour hauteurs égales des colonnes
+- **Optimisation zoom 100%** : Réduction des tailles pour meilleure lisibilité
+
+### V4.5 (28 décembre 2025)
+
+- **Accessibilité WCAG 2.1** : Skip-link, ARIA labels, focus visible, reduced-motion
+- **Guide SEO** : Documentation complète pour déploiement en production
+
+### V4.4 (28 décembre 2025)
+
+- **NetDefender boss system** : Système de boss avec narratives riches
+- **Easter egg amélioré** : Jeu complet avec progression OSI
+
+### V4.3 (28 décembre 2025)
+
+- **Starfield background** : Fond visible entre les sections
+- **Mobile menu UX** : Parallaxe et fermeture améliorées
+- **Floating packet** : Easter egg visible sur tout le site
+
 ### V3.12 (27 décembre 2025)
 
 - **Icônes technologies** : Affichage d'icônes SVG colorées (couleurs Simple Icons) dans le header du modal documentation
@@ -272,7 +295,7 @@ Le portfolio implémente les bonnes pratiques d'accessibilité web (WCAG 2.1) :
 - [x] Structure Astro créée
 - [x] Terminal boot fonctionnel avec skip
 - [x] Hero section avec effets glitch
-- [x] **Profile/Admin section avec terminal bio et soft skills**
+- [x] **Profile/Admin section avec terminal bio, soft skills et certifications**
 - [x] Skills section avec 8 cartes
 - [x] Projects section avec Content Collections
 - [x] Documentation section avec catégories

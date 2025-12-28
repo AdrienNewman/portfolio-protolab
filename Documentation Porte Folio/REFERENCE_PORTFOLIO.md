@@ -3,11 +3,42 @@
 Date de capture : 28 décembre 2025
 Répertoire : `portefolio V3`
 Branche : `master`
-Version : **V4.5**
+Version : **V4.6**
 
 **But du document** : fournir une référence complète de l'état actuel du site portfolio (structure, technologies, scripts, configuration, contenu et points d'attention) pour permettre une reprise par un LLM local (ex : Ollama, LlamaCPP) ou un service comme Claude Code. Inclus des exemples de prompts prêts à l'emploi et des commandes pour développement et déploiement.
 
 **NOTE** : ce fichier est une capture d'état — conservez-le avec le repo pour faciliter la continuité.
+
+---
+
+## Changelog V4.6 (28 décembre 2025)
+
+### Section Certifications
+
+- **Nouvelle section Certifications** : Section "Certifications ///" ajoutée sous les Soft Skills dans le profil
+- **Badge Cisco Networking Basics** : Image locale avec lien vers Credly (remplace iframe problématique)
+- **Placeholder badges** : Style "En cours..." pour certifications futures
+- **Effet glow** : Effet lumineux au hover sur les badges
+
+### Alignement Terminal / Soft Skills
+
+- **Grid stretch** : `align-items: stretch` pour hauteurs égales des colonnes
+- **Flexbox terminal** : Terminal wrapper en flex column avec body `flex: 1`
+- **Gap réduit** : 60px → 40px pour meilleure proportion
+
+### Optimisation tailles (zoom 100%)
+
+- **Terminal font** : 14px → 12px
+- **Badge size** : 90px width
+- **Placeholder** : 110x140px
+- **Soft skills** : Margins et font-sizes réduits
+
+### Fichiers modifiés V4.6
+
+- `src/components/sections/Profile.astro` : Section certifications complète avec styles
+- `src/pages/index.astro` : Styles profile-grid, terminal wrapper, soft skills
+- `public/images/badges/cisco-networking-basics.png` : Image badge Cisco (nouveau)
+- `Documentation Porte Folio/DEV_CHANGELOG_V4.6.md` : Changelog détaillé
 
 ---
 

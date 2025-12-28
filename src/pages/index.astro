@@ -337,8 +337,8 @@ const colorDocker = getIconColor('docker');
     .profile-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 60px;
-        align-items: center;
+        gap: 40px;
+        align-items: stretch;
         max-width: 1400px;
         margin: 0 auto;
     }
@@ -350,6 +350,8 @@ const colorDocker = getIconColor('docker');
         box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         overflow: hidden;
         transition: border-color 0.3s ease;
+        display: flex;
+        flex-direction: column;
     }
 
     .profile-terminal-wrapper:hover {
@@ -358,14 +360,14 @@ const colorDocker = getIconColor('docker');
 
     .terminal-header {
         background: var(--gray-dark);
-        padding: 10px 15px;
+        padding: 8px 12px;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
     }
 
-    .terminal-buttons { display: flex; gap: 6px; }
-    .t-btn { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+    .terminal-buttons { display: flex; gap: 5px; }
+    .t-btn { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
     .t-btn.close { background: #ff5f56; }
     .t-btn.min { background: #ffbd2e; }
     .t-btn.max { background: #27c93f; }
@@ -374,25 +376,29 @@ const colorDocker = getIconColor('docker');
         flex-grow: 1;
         text-align: center;
         font-family: 'Space Mono', monospace;
-        font-size: 14px;
+        font-size: 12px;
         color: var(--gray-light);
     }
 
     .profile-terminal-body {
-        padding: 20px;
+        padding: 15px;
         font-family: 'JetBrains Mono', monospace;
-        font-size: 14px;
-        line-height: 1.6;
+        font-size: 12px;
+        line-height: 1.5;
         color: var(--gray-light);
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 
     .term-line {
-        margin: 10px 0;
+        margin: 6px 0;
     }
 
     .term-prompt {
         color: var(--neon-green);
-        margin-right: 8px;
+        margin-right: 6px;
     }
 
     .term-cmd {
@@ -401,30 +407,31 @@ const colorDocker = getIconColor('docker');
 
     .term-output {
         color: var(--white);
-        margin: 5px 0 15px 0;
+        margin: 4px 0 10px 0;
     }
 
     .term-text-block {
-        margin: 15px 0;
-        padding-left: 15px;
+        margin: 10px 0;
+        padding-left: 12px;
         border-left: 2px solid var(--gray-mid);
         color: var(--gray-lighter);
     }
 
     .term-text-block p {
-        margin: 8px 0;
+        margin: 5px 0;
+        font-size: 11px;
     }
 
     .highlight-magenta { color: var(--neon-magenta); }
     .text-neon-green { color: var(--neon-green); font-weight: bold; }
 
-    .soft-skills-wrapper { padding: 20px; }
+    .soft-skills-wrapper { padding: 0; }
 
     .soft-title {
         font-family: 'Bebas Neue', sans-serif;
-        font-size: 32px;
+        font-size: 28px;
         color: var(--white);
-        margin-bottom: 30px;
+        margin-bottom: 20px;
         letter-spacing: 1px;
     }
 
@@ -435,14 +442,14 @@ const colorDocker = getIconColor('docker');
         50% { opacity: 0; }
     }
 
-    .soft-skill-item { margin-bottom: 24px; }
+    .soft-skill-item { margin-bottom: 16px; }
 
     .soft-info {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
         font-family: 'Space Mono', monospace;
-        font-size: 13px;
+        font-size: 11px;
         text-transform: uppercase;
     }
 
@@ -451,7 +458,7 @@ const colorDocker = getIconColor('docker');
 
     .soft-bar-bg {
         width: 100%;
-        height: 10px;
+        height: 8px;
         background: var(--gray-mid);
         position: relative;
         overflow: hidden;

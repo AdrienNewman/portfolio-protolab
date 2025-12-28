@@ -98,10 +98,42 @@
                     <div class="soft-bar-fill fill-yellow" style="width: 100%"></div>
                 </div>
             </div>
+
+            <!-- Certifications Section -->
+            <div class="certifications-section">
+                <h3 class="cert-title">Certifications ///</h3>
+                <div class="cert-badges-grid">
+                    <!-- Cisco Badge -->
+                    <a href="https://www.credly.com/badges/2a4bd7fc-138e-4ab0-9129-c0c9d10bab71/public_url"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="cert-badge-link"
+                       aria-label="Voir la certification Cisco Networking Basics sur Credly">
+                        <div class="cert-badge-wrapper">
+                            <img src="/images/badges/cisco-networking-basics.png"
+                                 alt="Cisco Networking Basics - Certification"
+                                 class="cert-badge-img"
+                                 width="150"
+                                 height="150" />
+                            <span class="cert-badge-name">Networking Basics</span>
+                            <span class="cert-badge-issuer">Cisco</span>
+                            <div class="cert-badge-glow"></div>
+                        </div>
+                    </a>
+                    <!-- Placeholder pour badges futurs -->
+                    <div class="cert-badge-placeholder">
+                        <div class="cert-placeholder-inner">
+                            <span class="cert-placeholder-icon">+</span>
+                            <span class="cert-placeholder-text">En cours...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     </div>
 </section>
+
 
 <style>
     .section { position: relative; z-index: 1; padding: 8rem 2rem; }
@@ -141,8 +173,168 @@
 
     .profile-container { max-width: 1400px; margin: 0 auto; }
 
+    /* ========================================
+       CERTIFICATIONS SECTION
+       ======================================== */
+    .certifications-section {
+        margin-top: 1.5rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid rgba(0, 255, 255, 0.2);
+    }
+
+    .cert-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 20px;
+        color: var(--white);
+        margin-bottom: 1rem;
+        letter-spacing: 1px;
+        position: relative;
+    }
+
+    .cert-title::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 50px;
+        height: 2px;
+        background: var(--neon-cyan);
+    }
+
+    .cert-badges-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    /* Badge link */
+    .cert-badge-link {
+        text-decoration: none;
+        display: block;
+    }
+
+    .cert-badge-wrapper {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .cert-badge-link:hover .cert-badge-wrapper {
+        transform: translateY(-3px);
+    }
+
+    .cert-badge-img {
+        display: block;
+        width: 90px;
+        height: auto;
+        margin-bottom: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .cert-badge-name {
+        display: block;
+        font-family: 'Space Mono', monospace;
+        font-size: 0.65rem;
+        font-weight: 700;
+        color: var(--white);
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        margin-bottom: 0.15rem;
+    }
+
+    .cert-badge-issuer {
+        display: block;
+        font-family: 'Space Mono', monospace;
+        font-size: 0.6rem;
+        color: var(--neon-cyan);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .cert-badge-glow {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80%;
+        height: 80%;
+        background: var(--neon-cyan);
+        opacity: 0.15;
+        filter: blur(20px);
+        z-index: -1;
+        transition: all 0.3s ease;
+        pointer-events: none;
+    }
+
+    .cert-badge-link:hover .cert-badge-glow {
+        background: var(--neon-magenta);
+        opacity: 0.3;
+    }
+
+    /* Placeholder pour badges futurs */
+    .cert-badge-placeholder {
+        width: 110px;
+        height: 140px;
+        border: 2px dashed var(--gray-mid);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .cert-badge-placeholder:hover {
+        border-color: var(--neon-cyan);
+        background: rgba(0, 255, 255, 0.05);
+    }
+
+    .cert-placeholder-inner {
+        text-align: center;
+        color: var(--gray-light);
+    }
+
+    .cert-placeholder-icon {
+        display: block;
+        font-size: 1.5rem;
+        margin-bottom: 0.3rem;
+        color: var(--gray-mid);
+        transition: color 0.3s ease;
+    }
+
+    .cert-badge-placeholder:hover .cert-placeholder-icon {
+        color: var(--neon-cyan);
+    }
+
+    .cert-placeholder-text {
+        font-family: 'Space Mono', monospace;
+        font-size: 0.6rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
     @media (max-width: 768px) {
         .section { padding: 5rem 1.5rem; }
         .section-header { margin-bottom: 3rem; }
+
+        .certifications-section {
+            margin-top: 1.5rem;
+        }
+
+        .cert-badges-grid {
+            justify-content: center;
+        }
+
+        .cert-badge-img {
+            width: 80px;
+        }
+
+        .cert-badge-placeholder {
+            width: 100px;
+            height: 130px;
+        }
     }
 </style>
