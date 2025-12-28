@@ -108,7 +108,9 @@
                        target="_blank"
                        rel="noopener noreferrer"
                        class="cert-badge-link"
-                       aria-label="Voir la certification Cisco Networking Basics sur Credly">
+                       data-cert-preview="preview-cisco"
+                       aria-label="Voir la certification Cisco Networking Basics sur Credly"
+                       aria-describedby="preview-cisco">
                         <div class="cert-badge-wrapper">
                             <img src="/images/badges/cisco-networking-basics.png"
                                  alt="Cisco Networking Basics - Certification"
@@ -131,6 +133,48 @@
             </div>
         </div>
     </div>
+    </div>
+
+    <!-- Cisco Certification Preview Modal -->
+    <div id="preview-cisco" class="cert-preview-modal">
+        <div class="cert-preview-header">
+            <div class="cert-preview-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                </svg>
+            </div>
+            <div class="cert-preview-title-block">
+                <h3 class="cert-preview-title glitch" data-text="NETWORKING BASICS">NETWORKING BASICS</h3>
+                <span class="cert-preview-issuer">Cisco NetAcad</span>
+            </div>
+        </div>
+        <div class="cert-preview-divider">────────────────────────────</div>
+        <div class="cert-preview-meta">
+            <span class="cert-preview-duration">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 6v6l4 2"/>
+                </svg>
+                Durée : 22h
+            </span>
+        </div>
+        <ul class="cert-preview-skills">
+            <li><span class="check">✓</span> Fondamentaux réseau & topologies</li>
+            <li><span class="check">✓</span> Modèles OSI/TCP-IP & protocoles</li>
+            <li><span class="check">✓</span> Adressage IP & subnetting</li>
+            <li><span class="check">✓</span> Switching & routing basique</li>
+            <li><span class="check">✓</span> Sécurité réseau essentiels</li>
+        </ul>
+        <a href="https://www.credly.com/badges/2a4bd7fc-138e-4ab0-9129-c0c9d10bab71/public_url"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="cert-preview-cta">
+            Voir sur Credly
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/>
+            </svg>
+        </a>
     </div>
 </section>
 

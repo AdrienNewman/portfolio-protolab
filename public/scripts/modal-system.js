@@ -123,6 +123,7 @@ function initModals() {
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape') {
             closeAllPreviews();
+            closeCertPreviews();
             closeDetailModals();
         }
     });
@@ -133,8 +134,62 @@ function initModals() {
         clearTimeout(scrollTimeout);
         scrollTimeout = setTimeout(() => {
             closeAllPreviews();
+            closeCertPreviews();
         }, 50);
     }, { passive: true });
+
+    // CERTIFICATION BADGES - Preview on hover (hover-only, no click override)
+    const certBadges = document.querySelectorAll('[data-cert-preview]');
+    const certPreviewModals = document.querySelectorAll('.cert-preview-modal');
+
+    certBadges.forEach(badge => {
+        const previewId = badge.dataset.certPreview;
+        const previewModal = document.getElementById(previewId);
+
+        if (!previewModal) {
+            console.warn('Cert preview modal not found:', previewId);
+            return;
+        }
+
+        // Show preview after 200ms delay on hover
+        badge.addEventListener('mouseenter', () => {
+            clearTimeout(cardHoverTimeout);
+            clearTimeout(modalHoverTimeout);
+
+            cardHoverTimeout = setTimeout(() => {
+                closeAllPreviews();
+                closeCertPreviews();
+                previewModal.classList.add('active');
+                requestAnimationFrame(() => {
+                    positionCertPreviewModal(previewModal, badge);
+                });
+            }, 200);
+        });
+
+        // Close preview when leaving badge (with delay to allow entering modal)
+        badge.addEventListener('mouseleave', () => {
+            clearTimeout(cardHoverTimeout);
+
+            modalHoverTimeout = setTimeout(() => {
+                if (previewModal && !previewModal.matches(':hover')) {
+                    previewModal.classList.remove('active');
+                }
+            }, 100);
+        });
+    });
+
+    // Keep cert preview modal open when hovering it
+    certPreviewModals.forEach(preview => {
+        preview.addEventListener('mouseenter', () => {
+            clearTimeout(modalHoverTimeout);
+        });
+
+        preview.addEventListener('mouseleave', () => {
+            modalHoverTimeout = setTimeout(() => {
+                preview.classList.remove('active');
+            }, 100);
+        });
+    });
 }
 
 /**
@@ -190,6 +245,59 @@ function closeAllPreviews() {
     document.querySelectorAll('.skill-preview-modal.active').forEach(m => {
         m.classList.remove('active');
     });
+}
+
+/**
+ * Close all certification preview modals
+ */
+function closeCertPreviews() {
+    document.querySelectorAll('.cert-preview-modal.active').forEach(m => {
+        m.classList.remove('active');
+    });
+}
+
+/**
+ * Position certification preview modal
+ * Similar to skill preview but adapted for smaller modal size
+ */
+function positionCertPreviewModal(modal, badge) {
+    const badgeRect = badge.getBoundingClientRect();
+    const modalWidth = 320;
+    const modalHeight = modal.offsetHeight || 350;
+    const gap = 15;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    let left, top;
+
+    // Try positioning to the right of the badge
+    left = badgeRect.right + gap;
+
+    // If doesn't fit on right, try left
+    if (left + modalWidth > viewportWidth - gap) {
+        left = badgeRect.left - modalWidth - gap;
+    }
+
+    // If still doesn't fit, center it horizontally
+    if (left < gap) {
+        left = Math.max(gap, (viewportWidth - modalWidth) / 2);
+    }
+
+    // Vertical positioning - align with badge center
+    top = badgeRect.top + (badgeRect.height / 2) - (modalHeight / 2);
+
+    // Ensure modal stays within viewport vertically
+    if (top + modalHeight > viewportHeight - gap) {
+        top = viewportHeight - modalHeight - gap;
+    }
+
+    if (top < gap) {
+        top = gap;
+    }
+
+    // Apply position
+    modal.style.left = `${Math.max(gap, left)}px`;
+    modal.style.top = `${Math.max(gap, top)}px`;
 }
 
 /**

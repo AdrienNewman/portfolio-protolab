@@ -232,6 +232,7 @@ Le portfolio implémente les bonnes pratiques d'accessibilité web (WCAG 2.1) :
 | Profile       | Inline    | index.astro (ligne 29) | Terminal bio + soft skills animées       |
 | Skills        | Composant | Skills.astro           | 8 cartes de compétences                  |
 | Projects      | Composant | Projects.astro         | Grille projets depuis Content Collection |
+| **LiveLab**   | Composant | LiveLab.astro          | **Dashboard temps réel Protolab**        |
 | Documentation | Composant | Documentation.astro    | Catégories docs + stats                  |
 | Contact       | Inline    | index.astro (ligne 132)| Formulaire de contact                    |
 | Footer        | Inline    | index.astro (ligne 160)| Footer avec copyright                    |
@@ -249,6 +250,15 @@ Le portfolio implémente les bonnes pratiques d'accessibilité web (WCAG 2.1) :
 - Modals pour les projets
 
 ## Changelog
+
+### V4.7 (28 décembre 2025)
+
+- **Section LIVE_LAB** : Nouvelle section "preuve par le code" avec monitoring temps réel
+- **API VictoriaMetrics** : Endpoint SSR `/api/lab-status.json` queryant Proxmox via PromQL
+- **Dashboard Infrastructure** : Affichage CPU, RAM, Disk, Network en temps réel
+- **Services Status** : Cards Proxmox (UP/DOWN), placeholders Palo Alto, DC01, Grafana
+- **Polling 30s** : Mise à jour automatique avec fallback offline
+- **UI Cyberpunk** : Design cohérent avec le reste du portfolio
 
 ### V4.6 (28 décembre 2025)
 
@@ -306,6 +316,7 @@ Le portfolio implémente les bonnes pratiques d'accessibilité web (WCAG 2.1) :
 - [x] Three.js background + Custom cursor
 - [x] Responsive design complet
 - [x] Build Docker + Nginx
+- [x] **LiveLab - Dashboard temps réel VictoriaMetrics**
 
 ### 🚧 À finaliser
 

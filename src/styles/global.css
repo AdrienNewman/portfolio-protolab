@@ -619,6 +619,283 @@ body {
 }
 
 /* ========================================
+   CERTIFICATION PREVIEW MODAL (Hover Tooltip)
+   ======================================== */
+.cert-preview-modal {
+    position: fixed;
+    background: var(--gray-dark);
+    border: 2px solid var(--neon-cyan);
+    padding: 1.5rem;
+    max-width: 320px;
+    width: 90vw;
+    z-index: 19000;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: translateY(10px);
+    box-shadow: 0 20px 60px rgba(0, 255, 255, 0.3),
+                0 0 40px rgba(0, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+/* Grid pattern background */
+.cert-preview-modal::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 1;
+    z-index: 0;
+}
+
+/* Radial glow effect */
+.cert-preview-modal::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(0, 255, 255, 0.15) 0%, transparent 70%);
+    opacity: 1;
+    z-index: 0;
+}
+
+.cert-preview-modal.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.cert-preview-header {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.cert-preview-icon {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gray-mid);
+    border: 2px solid var(--neon-cyan);
+    flex-shrink: 0;
+}
+
+.cert-preview-icon svg {
+    width: 24px;
+    height: 24px;
+    stroke: var(--neon-cyan);
+}
+
+.cert-preview-title-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+/* Titre avec effet glitch */
+.cert-preview-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    color: var(--neon-cyan);
+    margin: 0;
+    letter-spacing: 0.05em;
+    position: relative;
+    cursor: default;
+}
+
+.cert-preview-title.glitch:hover {
+    animation: glitch-main 0.3s infinite;
+}
+
+.cert-preview-title.glitch::before,
+.cert-preview-title.glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: inherit;
+    letter-spacing: inherit;
+    pointer-events: none;
+}
+
+.cert-preview-title.glitch:hover::before {
+    animation: glitch-1 0.3s infinite;
+    color: var(--glitch-1);
+    z-index: -1;
+    opacity: 0.8;
+}
+
+.cert-preview-title.glitch:hover::after {
+    animation: glitch-2 0.3s infinite;
+    color: var(--glitch-2);
+    z-index: -2;
+    opacity: 0.8;
+}
+
+.cert-preview-issuer {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--neon-magenta);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+/* Divider style terminal */
+.cert-preview-divider {
+    position: relative;
+    z-index: 1;
+    color: var(--neon-cyan);
+    opacity: 0.4;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+/* Meta info (durée) */
+.cert-preview-meta {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 1rem;
+}
+
+.cert-preview-duration {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--gray-lighter);
+    padding: 0.3rem 0.6rem;
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.cert-preview-duration svg {
+    stroke: var(--neon-cyan);
+}
+
+/* Liste des compétences */
+.cert-preview-skills {
+    position: relative;
+    z-index: 1;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.25rem 0;
+}
+
+.cert-preview-skills li {
+    color: var(--gray-lighter);
+    font-size: 0.8rem;
+    line-height: 1.6;
+    padding: 0.25rem 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.cert-preview-skills li .check {
+    color: var(--neon-green);
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+/* CTA Button */
+.cert-preview-cta {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: 2px solid var(--neon-cyan);
+    color: var(--neon-cyan);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.cert-preview-cta::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--neon-cyan);
+    transition: left 0.3s ease;
+    z-index: -1;
+}
+
+.cert-preview-cta:hover {
+    color: var(--black);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+.cert-preview-cta:hover::before {
+    left: 0;
+}
+
+.cert-preview-cta svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+}
+
+/* Glitch keyframes (referenced from Hero) */
+@keyframes glitch-main {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+}
+
+@keyframes glitch-1 {
+    0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+    20% { clip-path: inset(20% 0 60% 0); transform: translate(-3px); }
+    40% { clip-path: inset(40% 0 40% 0); transform: translate(3px); }
+    60% { clip-path: inset(60% 0 20% 0); transform: translate(-3px); }
+    80% { clip-path: inset(80% 0 0% 0); transform: translate(3px); }
+}
+
+@keyframes glitch-2 {
+    0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+    20% { clip-path: inset(80% 0 0% 0); transform: translate(3px); }
+    40% { clip-path: inset(60% 0 20% 0); transform: translate(-3px); }
+    60% { clip-path: inset(40% 0 40% 0); transform: translate(3px); }
+    80% { clip-path: inset(20% 0 60% 0); transform: translate(-3px); }
+}
+
+/* ========================================
    RESPONSIVE
    ======================================== */
 @media (max-width: 768px) {
@@ -658,6 +935,20 @@ body {
 
     .modal-section-title {
         font-size: 1.25rem;
+    }
+
+    /* Certification preview modal - mobile */
+    .cert-preview-modal {
+        max-width: 280px;
+        padding: 1.25rem;
+    }
+
+    .cert-preview-title {
+        font-size: 1.1rem;
+    }
+
+    .cert-preview-skills li {
+        font-size: 0.75rem;
     }
 }
 

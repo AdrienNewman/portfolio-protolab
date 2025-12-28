@@ -3,11 +3,64 @@
 Date de capture : 28 décembre 2025
 Répertoire : `portefolio V3`
 Branche : `master`
-Version : **V4.6**
+Version : **V4.7**
 
 **But du document** : fournir une référence complète de l'état actuel du site portfolio (structure, technologies, scripts, configuration, contenu et points d'attention) pour permettre une reprise par un LLM local (ex : Ollama, LlamaCPP) ou un service comme Claude Code. Inclus des exemples de prompts prêts à l'emploi et des commandes pour développement et déploiement.
 
 **NOTE** : ce fichier est une capture d'état — conservez-le avec le repo pour faciliter la continuité.
+
+---
+
+## Changelog V4.7 (28 décembre 2025)
+
+### Section LIVE_LAB - Dashboard Temps Réel
+
+- **Nouvelle section LIVE_LAB** : Section "preuve par le code" entre Projects et Documentation
+- **API SSR VictoriaMetrics** : Endpoint `/api/lab-status.json` avec queries PromQL
+- **Dashboard Infrastructure** : Affichage temps réel CPU, RAM, Disk, Network
+- **Services Status** : Cards pour Proxmox (actif), Palo Alto, DC01, Grafana (placeholders)
+- **Polling automatique** : Refresh toutes les 30 secondes avec fallback offline
+- **Cache serveur** : TTL 60s pour limiter les requêtes vers VictoriaMetrics
+
+### Architecture Technique V4.7
+
+```
+VictoriaMetrics (10.1.40.25:8428)
+        │ PromQL queries
+        ▼
+src/pages/api/lab-status.json.ts (SSR)
+        │ JSON response
+        ▼
+public/scripts/lab-status.js (polling 30s)
+        │ DOM updates
+        ▼
+src/components/sections/LiveLab.astro (UI)
+```
+
+### Fichiers créés V4.7
+
+- `.env` : Variables VICTORIA_METRICS_URL, VICTORIA_LOGS_URL
+- `src/pages/api/lab-status.json.ts` : API endpoint SSR avec cache
+- `src/components/sections/LiveLab.astro` : Section UI cyberpunk complète
+- `public/scripts/lab-status.js` : Client polling + DOM updates
+
+### Fichiers modifiés V4.7
+
+- `astro.config.mjs` : Ajout adapter @astrojs/node pour SSR
+- `package.json` : Dépendance @astrojs/node
+- `src/pages/index.astro` : Import LiveLab après ProjectGallery
+- `src/layouts/BaseLayout.astro` : Script lab-status.js
+
+### Métriques Proxmox affichées
+
+| Métrique | Query PromQL |
+|----------|--------------|
+| Status | `pve_up{id="node/proxmox"}` |
+| CPU % | `pve_cpu_usage_ratio{id="node/proxmox"}` |
+| RAM | `pve_memory_usage_bytes / pve_memory_size_bytes` |
+| Disk | `sum(pve_disk_usage_bytes{id=~"storage/.*"})` |
+| Network | `rate(pve_network_receive/transmit_bytes[5m])` |
+| Uptime | `pve_uptime_seconds{id="node/proxmox"}` |
 
 ---
 
