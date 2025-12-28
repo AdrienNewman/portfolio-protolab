@@ -1,6 +1,6 @@
 ---
 title: "NetDefender - Référence Technique du Mini-Jeu"
-description: "Documentation complète du jeu NetDefender : architecture modulaire, système OSI, easter egg et personnalisation"
+description: "Documentation complète du jeu NetDefender : architecture modulaire, système OSI, boss uniques, transitions narratives et personnalisation"
 category: web-front
 date: 2025-12-28
 tags:
@@ -10,6 +10,8 @@ tags:
   - threejs
   - easter-egg
   - osi
+  - boss-system
+  - narrative
 author: Adrien Mercadier
 difficulty: intermediate
 featured: true
@@ -58,13 +60,23 @@ public/scripts/game/
 ├── entities/
 │   ├── Player.js               # Vaisseau joueur
 │   ├── Enemy.js                # Ennemis (28 types)
-│   ├── Bullet.js               # Projectiles
+│   ├── Bullet.js               # Projectiles joueur
+│   ├── BossProjectile.js       # Projectiles des boss (NEW V4.4)
 │   └── PowerUp.js              # Bonus/malus
 ├── systems/
 │   ├── InputHandler.js         # Clavier, souris, tactile
 │   ├── ParticleSystem.js       # Explosions style portfolio
 │   ├── WaveManager.js          # Gestion des 7 vagues
 │   └── AudioManager.js         # Effets sonores
+├── behaviors/
+│   └── bossBehaviors.js        # 7 comportements uniques de boss (NEW V4.4)
+├── screens/
+│   ├── TransitionScreen.js     # Écran inter-vagues narratif (NEW V4.4)
+│   └── BossIntro.js            # Introduction dramatique des boss (NEW V4.4)
+├── content/
+│   └── narrativeContent.js     # Contenu narratif localisé FR (NEW V4.4)
+├── intro/
+│   └── IntroSequence.js        # Séquence cinématique d'intro
 └── effects/
     ├── GridBackground.js       # Grille 30px animée
     └── ScreenShake.js          # Tremblement sur dégâts
@@ -138,6 +150,142 @@ Chaque ennemi possède un comportement de mouvement unique :
 | `slow_tank` | Très lent, très résistant |
 | `erratic` | Mouvement imprévisible |
 | `wave` | Mouvement ondulatoire |
+
+## Système de Boss (V4.4)
+
+### 7 Boss Uniques par Couche OSI
+
+Chaque couche OSI possède un boss avec un comportement de combat unique et des projectiles spéciaux.
+
+| Couche | Boss ID | Nom | Attaque Principale |
+|--------|---------|-----|-------------------|
+| L7 | `boss_injection` | Bobby "DROP TABLE" Thompson | Requêtes SQL corrompues |
+| L6 | `boss_heartbleed` | Ivan "Heartbleed" Volkov | Mur de données volées |
+| L5 | `boss_cookie_theft` | Émilie "Session Stealer" Dupont | Cookies volés |
+| L4 | `boss_syn_flood` | Le Général SYN | Tempête SYN_FLOOD |
+| L3 | `boss_ip_masquerade` | Fantôme du Réseau | Clones IP masqués |
+| L2 | `boss_arp_flood` | Le Corrupteur de Frames | Inondation ARP |
+| L1 | `boss_guardian` | Gardien du Réseau | Pulse électromagnétique |
+
+### Comportements de Combat
+
+Chaque boss possède un système de phases avec des patterns d'attaque uniques :
+
+```javascript
+// Exemple : Bobby "DROP TABLE" (L7)
+{
+    behavior: 'boss_injection',
+    phases: [
+        { threshold: 100%, pattern: 'zigzag + single shot' },
+        { threshold: 75%, pattern: 'burst of 3 queries' },
+        { threshold: 50%, pattern: 'spread attack (5 projectiles)' },
+        { threshold: 25%, pattern: 'chain attack (rapid fire)' }
+    ]
+}
+```
+
+### Projectiles de Boss (`BossProjectile.js`)
+
+Les boss utilisent des projectiles visuellement distincts avec des couleurs thématiques :
+
+| Propriété | Valeur |
+|-----------|--------|
+| Taille | 8-12px (selon type) |
+| Couleur | Couleur du boss avec glow |
+| Vitesse | 3-8 (selon phase) |
+| Dégâts | 10-25 HP |
+
+### Définition d'un Comportement de Boss
+
+```javascript
+// Dans bossBehaviors.js
+export function updateBoss_injection(boss, deltaTime, gameState) {
+    // Phase detection
+    const healthPercent = boss.health / boss.maxHealth;
+
+    // Movement pattern
+    boss.x += Math.sin(boss.timer * 0.003) * 2;
+
+    // Shooting pattern (based on phase)
+    if (healthPercent > 0.75) {
+        // Phase 1: Tir simple
+        shootSingleProjectile(boss);
+    } else if (healthPercent > 0.5) {
+        // Phase 2: Burst de 3
+        shootBurst(boss, 3);
+    }
+    // ...
+}
+```
+
+## Système de Transitions Narratives (V4.4)
+
+### TransitionScreen
+
+Écran inter-vagues avec effets polish et contenu narratif riche.
+
+**Phases d'animation :**
+```
+idle → fadein → typing → stats → waiting → fadeout
+```
+
+**Effets visuels :**
+- Effet typewriter sur le texte
+- Scanlines CRT animées
+- Border glow pulsant
+- Glitch occasionnel (RGB split)
+- Compteurs de stats animés
+
+**Contenu affiché :**
+- Message de succès de la couche terminée
+- Briefing sur la prochaine menace
+- Tip éducatif OSI
+- Statistiques de la vague (ennemis, précision, bonus)
+
+### BossIntro
+
+Introduction dramatique avant l'apparition d'un boss.
+
+**Phases d'animation :**
+```
+idle → flash → siren → glitch → typewriter → hold → fadeout
+```
+
+**Effets visuels :**
+- Flash rouge intense
+- Bandes warning animées
+- Screen shake
+- RGB split + slices horizontales
+- Citation du boss avec typewriter
+- Barre de menace animée
+
+### Contenu Narratif (`narrativeContent.js`)
+
+Fichier centralisé contenant :
+- 7 introductions de boss (nom, titre, citation, capacité)
+- 7 transitions inter-couches (succès, briefing, menace, tip)
+- Descriptions des couches OSI
+- Tips éducatifs
+
+```javascript
+// Exemple de transition
+{
+    from: 7, to: 6,
+    successMessage: 'Couche APPLICATION - SÉCURISÉE',
+    briefing: 'Initialisation défense PRESENTATION...',
+    threat: 'Menaces de chiffrement détectées',
+    tip: 'La couche Présentation gère le chiffrement SSL/TLS'
+}
+
+// Exemple de boss intro
+{
+    bossId: 'boss_injection',
+    name: 'Bobby "DROP TABLE" Thompson',
+    title: 'MAÎTRE DE L\'INJECTION SQL',
+    quote: 'Ma mère m\'a appelé Robert\'); DROP TABLE--',
+    threatLevel: 'CRITIQUE'
+}
+```
 
 ### Définition d'un Ennemi
 

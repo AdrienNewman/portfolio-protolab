@@ -36,6 +36,13 @@ Branche : `master`
 - Contenu dynamique : `astro:content` Collections (`docs`, `projects`) définies dans `src/content/config.ts`
 
 **Changements récents (capture d'état)**
+- **V4.4** : Système de Boss complet + Transitions narratives
+  - 7 boss uniques avec comportements de combat distincts (`bossBehaviors.js`)
+  - Système de projectiles de boss (`BossProjectile.js`) avec patterns par phase
+  - Écrans de transition narratifs (`TransitionScreen.js`, `BossIntro.js`)
+  - Contenu narratif localisé FR (`narrativeContent.js`) : intros boss, transitions, tips OSI
+  - Effets polish : typewriter, scanlines CRT, glitch RGB, screen shake
+  - Voir [netdefender-game-reference.md](netdefender-game-reference.md) pour la documentation complète
 - **V4.2** : Retrait du Terminal Boot + Intro cinématique NetDefender
   - Suppression de `TerminalBoot.astro` et `terminal-boot.js` (animation redondante)
   - Portfolio s'affiche directement au chargement (pas de délai)
@@ -114,10 +121,13 @@ Remarques sur la logique des modals
 - `public/scripts/game/` : mini-jeu NetDefender (architecture modulaire)
   - `NetDefender.js` : orchestrateur principal
   - `config/gameConfig.js` : configuration OSI, ennemis, power-ups
-  - `entities/` : Player.js, Enemy.js, Bullet.js, PowerUp.js
+  - `entities/` : Player.js, Enemy.js, Bullet.js, PowerUp.js, BossProjectile.js (V4.4)
   - `systems/` : InputHandler.js, ParticleSystem.js, WaveManager.js, AudioManager.js
   - `effects/` : GridBackground.js, ScreenShake.js
   - `intro/IntroSequence.js` : séquence cinématique d'intro (flash, glitch, convergence, titre)
+  - `behaviors/bossBehaviors.js` : 7 comportements de combat boss uniques (V4.4)
+  - `screens/` : TransitionScreen.js, BossIntro.js - écrans narratifs (V4.4)
+  - `content/narrativeContent.js` : contenu narratif localisé FR (V4.4)
 - `public/fonts/` : polices Google (Bebas Neue, Space Mono, JetBrains Mono) référencées via CDN
 
 **6) Build & run (local)**
@@ -416,6 +426,11 @@ git reset --hard HEAD~1
 - [ ] Si besoin LLM local : configurer GPU host (drivers, nvidia-container-toolkit)
 
 **Actions terminées lors de cette capture :**
+- **V4.4** : Système de Boss complet + Transitions narratives
+  - 7 boss uniques : Bobby DROP TABLE (L7), Ivan Heartbleed (L6), Émilie Session Stealer (L5), Général SYN (L4), Fantôme du Réseau (L3), Corrupteur de Frames (L2), Gardien du Réseau (L1)
+  - Comportements de combat avec système de phases et projectiles
+  - Écrans de transition narratifs avec effets polish (typewriter, scanlines, glitch)
+  - Contenu narratif localisé en français
 - **V4.2** : Retrait du Terminal Boot, intro cinématique NetDefender complète
 - **V4.1** : Ajout de l'intro cinématique au clic sur le paquet flottant
 - **V4.0** : Intégration complète du mini-jeu NetDefender (easter egg OSI)
