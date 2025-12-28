@@ -31,14 +31,14 @@
         let pulsePhase = 0;
         let floatPhase = Math.random() * Math.PI * 2;
 
-        // Packet movement
+        // Packet movement - constrained to right side of screen
         let packetPosition = {
-            x: (Math.random() - 0.5) * 4,
-            y: (Math.random() - 0.5) * 2,
-            z: (Math.random() - 0.5) * 2
+            x: 1.5 + Math.random() * 1.0,  // Right side (1.5 to 2.5)
+            y: (Math.random() - 0.5) * 1.5,
+            z: (Math.random() - 0.5) * 1
         };
         let packetVelocity = {
-            x: (Math.random() - 0.5) * 0.002,
+            x: (Math.random() - 0.5) * 0.0015,
             y: (Math.random() - 0.5) * 0.001,
             z: 0
         };
@@ -47,58 +47,58 @@
         function createPacket() {
             packetGroup = new THREE.Group();
 
-            // Main cube (solid core)
-            const coreGeometry = new THREE.BoxGeometry(0.15, 0.1, 0.08);
+            // Main cube (solid core) - reduced by 50%
+            const coreGeometry = new THREE.BoxGeometry(0.075, 0.05, 0.04);
             const coreMaterial = new THREE.MeshBasicMaterial({
                 color: 0x00ffff,
                 transparent: true,
-                opacity: 0.8
+                opacity: 0.28
             });
             const core = new THREE.Mesh(coreGeometry, coreMaterial);
             packetGroup.add(core);
 
-            // Wireframe overlay
-            const wireGeometry = new THREE.BoxGeometry(0.16, 0.11, 0.09);
+            // Wireframe overlay - reduced by 50%
+            const wireGeometry = new THREE.BoxGeometry(0.08, 0.055, 0.045);
             const wireMaterial = new THREE.MeshBasicMaterial({
                 color: 0x00ffff,
                 wireframe: true,
                 transparent: true,
-                opacity: 0.6
+                opacity: 0.21
             });
             const wireframe = new THREE.Mesh(wireGeometry, wireMaterial);
             packetGroup.add(wireframe);
 
-            // Data bits (small cubes inside)
-            const bitGeometry = new THREE.BoxGeometry(0.02, 0.02, 0.02);
+            // Data bits (small cubes inside) - reduced by 50%
+            const bitGeometry = new THREE.BoxGeometry(0.01, 0.01, 0.01);
             const bitMaterial = new THREE.MeshBasicMaterial({
                 color: 0xffffff,
                 transparent: true,
-                opacity: 0.9
+                opacity: 0.35
             });
 
             for (let i = 0; i < 4; i++) {
                 const bit = new THREE.Mesh(bitGeometry, bitMaterial.clone());
                 bit.position.set(
-                    (i % 2 - 0.5) * 0.06,
-                    (Math.floor(i / 2) - 0.5) * 0.04,
-                    0.02
+                    (i % 2 - 0.5) * 0.03,
+                    (Math.floor(i / 2) - 0.5) * 0.02,
+                    0.01
                 );
                 bit.userData.isBit = true;
                 bit.userData.phase = i * 0.5;
                 packetGroup.add(bit);
             }
 
-            // Glow sprite
+            // Glow sprite - reduced by 50% and more subtle
             const glowTexture = createGlowTexture();
             const glowMaterial = new THREE.SpriteMaterial({
                 map: glowTexture,
                 color: 0x00ffff,
                 transparent: true,
-                opacity: 0.3,
+                opacity: 0.1,
                 blending: THREE.AdditiveBlending
             });
             const glow = new THREE.Sprite(glowMaterial);
-            glow.scale.set(0.4, 0.4, 1);
+            glow.scale.set(0.2, 0.2, 1);
             glow.userData.isGlow = true;
             packetGroup.add(glow);
 
@@ -229,6 +229,23 @@
 
             // Start animation
             animatePacket();
+
+            // Visibility based on scroll position (fade out when leaving hero section)
+            function updateVisibility() {
+                const heroSection = document.getElementById('accueil');
+                if (!heroSection) return;
+
+                const heroBottom = heroSection.offsetHeight;
+                const scrollY = window.scrollY;
+
+                // Fade out as we scroll past hero section
+                const opacity = Math.max(0, 1 - (scrollY / (heroBottom * 0.7)));
+                overlayCanvas.style.opacity = opacity;
+                overlayCanvas.style.pointerEvents = opacity > 0.1 ? 'auto' : 'none';
+            }
+
+            window.addEventListener('scroll', updateVisibility, { passive: true });
+            updateVisibility(); // Initial check
         }
 
         function animatePacket() {
@@ -246,14 +263,18 @@
                 packetPosition.y += packetVelocity.y;
                 packetPosition.y += Math.sin(floatPhase) * 0.001;
 
-                // Bounce off boundaries
-                if (Math.abs(packetPosition.x) > 2.5) {
-                    packetVelocity.x *= -1;
-                    packetPosition.x = Math.sign(packetPosition.x) * 2.5;
+                // Bounce off boundaries - constrained to right side
+                if (packetPosition.x < 1.0) {
+                    packetVelocity.x = Math.abs(packetVelocity.x);
+                    packetPosition.x = 1.0;
                 }
-                if (Math.abs(packetPosition.y) > 1.5) {
+                if (packetPosition.x > 2.8) {
+                    packetVelocity.x = -Math.abs(packetVelocity.x);
+                    packetPosition.x = 2.8;
+                }
+                if (Math.abs(packetPosition.y) > 1.2) {
                     packetVelocity.y *= -1;
-                    packetPosition.y = Math.sign(packetPosition.y) * 1.5;
+                    packetPosition.y = Math.sign(packetPosition.y) * 1.2;
                 }
 
                 // Apply position
@@ -269,8 +290,8 @@
                 // Update children
                 packetGroup.children.forEach(child => {
                     if (child.userData.isGlow) {
-                        child.material.opacity = isHovered ? 0.6 : 0.3 + Math.sin(pulsePhase * 2) * 0.1;
-                        child.scale.set(0.4 * pulse, 0.4 * pulse, 1);
+                        child.material.opacity = isHovered ? 0.3 : 0.1 + Math.sin(pulsePhase * 2) * 0.03;
+                        child.scale.set(0.2 * pulse, 0.2 * pulse, 1);
                         if (isHovered) {
                             child.material.color.setHex(0xff0080); // Magenta on hover
                         } else {
@@ -278,15 +299,15 @@
                         }
                     } else if (child.userData.isBit) {
                         const bitPulse = Math.sin(pulsePhase * 3 + child.userData.phase) * 0.5 + 0.5;
-                        child.material.opacity = 0.5 + bitPulse * 0.5;
+                        child.material.opacity = isHovered ? 0.5 + bitPulse * 0.3 : 0.2 + bitPulse * 0.2;
                     } else if (child.material && !child.material.wireframe) {
                         // Core
                         if (isHovered) {
                             child.material.color.setHex(0xff0080);
-                            child.material.opacity = 1;
+                            child.material.opacity = 0.5;
                         } else {
                             child.material.color.setHex(0x00ffff);
-                            child.material.opacity = 0.8;
+                            child.material.opacity = 0.28;
                         }
                     }
                 });
@@ -340,11 +361,17 @@
             targetCanvas.addEventListener('click', (event) => {
                 if (!isHovered) return;
 
-                // Launch the game!
+                // Launch the game with click position for intro animation!
                 console.log('FloatingPacket: Launching NetDefender!');
 
                 if (typeof window.openNetDefender === 'function') {
-                    window.openNetDefender();
+                    // Pass click position for cinematic intro
+                    window.openNetDefender(event.clientX, event.clientY);
+
+                    // Hide packet during game
+                    if (packetGroup) {
+                        packetGroup.visible = false;
+                    }
                 } else {
                     console.warn('FloatingPacket: openNetDefender not available');
                 }
@@ -352,9 +379,15 @@
 
             // Listen for game close to respawn packet
             window.addEventListener('netdefender-closed', () => {
-                // Respawn packet at random position
-                packetPosition.x = (Math.random() - 0.5) * 4;
-                packetPosition.y = (Math.random() - 0.5) * 2;
+                // Respawn packet at random position on right side
+                packetPosition.x = 1.5 + Math.random() * 1.0;
+                packetPosition.y = (Math.random() - 0.5) * 1.5;
+
+                // Make packet visible again
+                if (packetGroup) {
+                    packetGroup.visible = true;
+                }
+
                 console.log('FloatingPacket: Game closed, packet respawned');
             });
         }

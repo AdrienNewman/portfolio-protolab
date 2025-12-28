@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import TerminalBoot from '../components/effects/TerminalBoot.astro';
 import Navbar from '../components/layout/Navbar.astro';
 import MobileMenu from '../components/layout/MobileMenu.astro';
 import Hero from '../components/sections/Hero.astro';
@@ -55,9 +54,6 @@ const colorDocker = getIconColor('docker');
     title="Adrien Mercadier | TSSR - Portfolio"
     description="Portfolio de Adrien Mercadier - Technicien Supérieur Systèmes et Réseaux spécialisé en infrastructure, virtualisation et monitoring"
 >
-    <!-- Terminal Boot Screen -->
-    <TerminalBoot />
-
     <!-- Navigation -->
     <Navbar />
     <MobileMenu />
@@ -275,11 +271,6 @@ const colorDocker = getIconColor('docker');
 
 <style is:global>
     #main-portfolio {
-        opacity: 0;
-        transition: opacity 0.8s ease;
-    }
-
-    #main-portfolio.visible {
         opacity: 1;
     }
 
@@ -763,38 +754,8 @@ const colorDocker = getIconColor('docker');
 </style>
 
 <script>
-    // Debug: Log when portfolioReady event is received
-    document.addEventListener('portfolioReady', () => {
-        console.log('✓ Portfolio ready event received');
-        // Scroll to top when portfolio becomes visible
+    // Scroll to top on page load
+    document.addEventListener('DOMContentLoaded', () => {
         window.scrollTo({ top: 0, behavior: 'instant' });
-    });
-
-    // Fallback: If portfolio doesn't show after 3 seconds, force it
-    setTimeout(() => {
-        const portfolio = document.getElementById('main-portfolio');
-        if (portfolio && !portfolio.classList.contains('visible')) {
-            console.warn('⚠ Portfolio not visible after 3s, forcing display');
-            portfolio.classList.add('visible');
-            // Also scroll to top
-            window.scrollTo({ top: 0, behavior: 'instant' });
-        }
-    }, 3000);
-
-    // Debug on load
-    window.addEventListener('load', () => {
-        const portfolio = document.getElementById('main-portfolio');
-        const hero = document.querySelector('.hero');
-        const skills = document.querySelector('.skills-container');
-
-        console.log('=== DEBUG INFO ===');
-        console.log('Portfolio element:', portfolio ? 'FOUND' : 'NOT FOUND');
-        console.log('Hero element:', hero ? 'FOUND' : 'NOT FOUND');
-        console.log('Skills element:', skills ? 'FOUND' : 'NOT FOUND');
-
-        if (portfolio) {
-            console.log('Portfolio HTML length:', portfolio.innerHTML.length);
-            console.log('Portfolio has visible class:', portfolio.classList.contains('visible'));
-        }
     });
 </script>

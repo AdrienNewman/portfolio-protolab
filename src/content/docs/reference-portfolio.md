@@ -36,6 +36,17 @@ Branche : `master`
 - Contenu dynamique : `astro:content` Collections (`docs`, `projects`) définies dans `src/content/config.ts`
 
 **Changements récents (capture d'état)**
+- **V4.2** : Retrait du Terminal Boot + Intro cinématique NetDefender
+  - Suppression de `TerminalBoot.astro` et `terminal-boot.js` (animation redondante)
+  - Portfolio s'affiche directement au chargement (pas de délai)
+  - Nettoyage des listeners `portfolioReady` dans tous les scripts
+  - Nouvelle intro cinématique au clic sur le paquet flottant :
+    - `public/scripts/game/intro/IntroSequence.js` : séquence flash → glitch → convergence → titre
+    - Menu redesigné avec panel "THREAT ANALYSIS" et barres OSI animées
+- **V4.1** : Intro cinématique NetDefender
+  - Canvas dédié pour l'animation d'intro
+  - Explosion de particules depuis la position du clic
+  - Vaisseau qui arrive et "observe" la formation du titre
 - **V4.0** : Intégration du mini-jeu NetDefender (easter egg) - Voir [netdefender-game-reference.md](netdefender-game-reference.md) pour la documentation complète
   - Nouveau composant `src/components/game/GameOverlay.astro` (interface complète du jeu)
   - Scripts modulaires dans `public/scripts/game/` (entities, systems, effects, config)
@@ -43,10 +54,9 @@ Branche : `master`
   - 7 vagues OSI avec 28 types d'ennemis thématiques
 - `src/components/modals/` : la plupart des modals (preview + detail) ont été extraits depuis `index.astro` pour améliorer la maintenabilité et la lisibilité.
 - `src/components/ui/ProjectGallery.astro` : nouveau composant qui lit automatiquement la collection `projects` et rend des `ProjectCard` dynamiquement.
-- `src/pages/index.astro` : simplifié pour importer et rendre les composants modaux (ex : `Preview*`, `Modal*`, `Project*`) au lieu d'avoir tout inline. Correction : `ModalWindows` et `ModalLinux` ont été ajoutés dans le DOM (élimine les warnings "Modal not found for card").
-- `public/scripts/modal-system.js` : initialisation double (DOMContentLoaded + écoute `portfolioReady`), logique de positionnement, et CTA pour ouvrir la modal de détail depuis la preview.
-- `DocModalSystem` : nouveau système JS côté client dans `modal-system.js` pour ouvrir la documentation (load markdown via fetch `/docs/<slug>.md`, conversion basique markdown→HTML, navigation prev/next, hash deeplinking).
-- Build/dev : `npm install` a été utilisé pour recréer le lockfile après des blocages EPERM sur des binaires natifs (`esbuild`) — maintenant `npm run build` et `npm run dev` fonctionnent localement.
+- `src/pages/index.astro` : simplifié pour importer et rendre les composants modaux (ex : `Preview*`, `Modal*`, `Project*`) au lieu d'avoir tout inline.
+- `public/scripts/modal-system.js` : initialisation sur `DOMContentLoaded`, logique de positionnement, et CTA pour ouvrir la modal de détail depuis la preview.
+- `DocModalSystem` : système JS côté client dans `modal-system.js` pour ouvrir la documentation (load markdown via fetch `/docs/<slug>.md`, conversion basique markdown→HTML, navigation prev/next, hash deeplinking).
 
 **1) Informations techniques & dépendances**
 - `package.json` :
@@ -60,14 +70,15 @@ Branche : `master`
  Racine :
   - `package.json`, `astro.config.mjs`, `tsconfig.json`, `Dockerfile`, `docker-compose.yml`, `nginx.conf`, `README.md`
 - `public/` :
-  - `fonts/`, `images/`, `scripts/` : `terminal-boot.js`, `custom-cursor.js`, `three-background.js`, `scroll-animations.js`, `typing-effect.js`, `modal-system.js`, `doc-counter.js`
+  - `fonts/`, `images/`, `scripts/` : `custom-cursor.js`, `three-background.js`, `scroll-animations.js`, `typing-effect.js`, `modal-system.js`, `doc-counter.js`, `floating-packet.js`
+  - `scripts/game/` : mini-jeu NetDefender (architecture modulaire ES6)
 - `src/` :
-  - `components/` : composants Astro (layout, effects, sections, ui)
-    - `effects/TerminalBoot.astro`
-    - `layout/Navbar.astro`, `layout/MobileMenu.astro`
-    - `sections/Hero.astro`, `Skills.astro`, `Projects.astro`, `Documentation.astro`
+  - `components/` : composants Astro (layout, effects, sections, ui, game, modals)
+    - `layout/Navbar.astro`, `layout/MobileMenu.astro`, `layout/Footer.astro`
+    - `sections/Hero.astro`, `Skills.astro`, `Profile.astro`, `Documentation.astro`, `Contact.astro`
     - `ui/SkillCard.astro`, `ProjectCard.astro`, `DocModal.astro`
-    - `ui/ProjectGallery.astro` (nouveau) — génère la grille des projets depuis la collection `projects`
+    - `ui/ProjectGallery.astro` — génère la grille des projets depuis la collection `projects`
+    - `game/GameOverlay.astro` — interface complète du mini-jeu NetDefender
   - `content/` : `config.ts` (collections), `projects/*.yaml`, `docs/*.md`
   - `layouts/BaseLayout.astro` : gère fonts, canvas Three.js, inclusion des scripts (via `script is:inline src="/scripts/..."`)
   - `pages/index.astro` : page principale (architecture hybride : composants + parties inline), contient la quasi-totalité des modals (préviews et detail) et sections Profile/Contact/Footer
@@ -83,8 +94,7 @@ Conseil : respecter les types `zod` lors de la création de nouveaux fichiers de
 
 **4) Composants & responsabilités**
 - `BaseLayout.astro` : meta tags, fonts, import `global.css`, canvas `#three-canvas`, insertion des scripts CDN et inline, inclusion du `DocModal` global et du `GameOverlay` (NetDefender)
-- `GameOverlay.astro` : overlay plein écran pour le mini-jeu NetDefender (HUD, écrans start/pause/gameover, canvas de jeu)
-- `TerminalBoot.astro` + `public/scripts/terminal-boot.js` : écran de boot initial, dispatch d'un event `portfolioReady` qui déclenche l'affichage principal
+- `GameOverlay.astro` : overlay plein écran pour le mini-jeu NetDefender (HUD, écrans start/pause/gameover, canvas de jeu, intro cinématique)
 - `index.astro` : charge la plupart des composants, définit icônes et couleurs via `utils/icons.ts`, contient tous les modals de preview (level 1) et détail (level 2), ainsi que plusieurs `project modals` (Protolab, LLM, Observability...)
 - `three-background.js` : initialise le canvas Three.js (via CDN r128) pour l'effet de fond
 - `modal-system.js` : gère l'ouverture/fermeture des modals, liaison entre preview et detail
@@ -99,8 +109,7 @@ Remarques sur la logique des modals
 - `public/scripts/custom-cursor.js` : curseur magnétique personnalisé (interactions hover)
 - `public/scripts/three-background.js` : background particules Three.js
 - `public/scripts/scroll-animations.js` : IntersectionObserver pour animations et gestion nav
-- `public/scripts/terminal-boot.js` : logique boot + CustomEvent `portfolioReady`
-- `public/scripts/modal-system.js` : logique modals
+- `public/scripts/modal-system.js` : logique modals + DocModalSystem
 - `public/scripts/floating-packet.js` : easter egg - paquet 3D cliquable pour lancer NetDefender
 - `public/scripts/game/` : mini-jeu NetDefender (architecture modulaire)
   - `NetDefender.js` : orchestrateur principal
@@ -108,6 +117,7 @@ Remarques sur la logique des modals
   - `entities/` : Player.js, Enemy.js, Bullet.js, PowerUp.js
   - `systems/` : InputHandler.js, ParticleSystem.js, WaveManager.js, AudioManager.js
   - `effects/` : GridBackground.js, ScreenShake.js
+  - `intro/IntroSequence.js` : séquence cinématique d'intro (flash, glitch, convergence, titre)
 - `public/fonts/` : polices Google (Bebas Neue, Space Mono, JetBrains Mono) référencées via CDN
 
 **6) Build & run (local)**
@@ -399,15 +409,18 @@ git reset --hard HEAD~1
 
 **15) Checklist pour reprise rapide**
 - [ ] Cloner le repo, `npm install`
-- [ ] Lancer `npm run dev` et vérifier `terminal-boot` + `portfolioReady`
+- [ ] Lancer `npm run dev` et vérifier l'affichage direct du portfolio
+- [ ] Cliquer sur le paquet flottant (droite de l'écran) pour tester l'intro NetDefender
 - [ ] Lancer `npm run build` puis `docker build` pour vérifier l'image
 - [ ] Vérifier `src/content/projects/*.yaml` pour garantir la cohérence des champs
 - [ ] Si besoin LLM local : configurer GPU host (drivers, nvidia-container-toolkit)
 
 **Actions terminées lors de cette capture :**
+- **V4.2** : Retrait du Terminal Boot, intro cinématique NetDefender complète
+- **V4.1** : Ajout de l'intro cinématique au clic sur le paquet flottant
 - **V4.0** : Intégration complète du mini-jeu NetDefender (easter egg OSI)
-- Extraction/création des composants modals sous `src/components/modals/` et intégration dans `index.astro`.
-- Ajout de `ProjectGallery.astro` et intégration.
+- Extraction/création des composants modals sous `src/components/modals/` et intégration dans `index.astro`
+- Ajout de `ProjectGallery.astro` et intégration
 - Correction de la présence des modals Windows/Linux pour éliminer les warnings `Modal not found for card`.
 - Ajout des sections Profile, Contact et Footer
 - Correction de l'alignement de l'effet glitch sur le Hero (séparation HTML .line/.glitch)

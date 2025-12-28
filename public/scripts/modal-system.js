@@ -222,12 +222,6 @@ if (document.readyState === 'loading') {
     initModals();
 }
 
-// Also listen for portfolioReady event (after boot animation)
-document.addEventListener('portfolioReady', () => {
-    console.log('✓ Modal system initialized after boot');
-    initModals();
-});
-
 /**
  * ==============================================
  * DOCUMENTATION MODAL SYSTEM
@@ -962,9 +956,5 @@ class DocModalSystem {
 
 // Initialize Documentation Modal System
 document.addEventListener('DOMContentLoaded', () => {
-    window.docModalSystem = new DocModalSystem();
-});
-
-document.addEventListener('portfolioReady', () => {
     window.docModalSystem = new DocModalSystem();
 });

@@ -1,9 +1,12 @@
 ---
-// GameOverlay.astro - Full screen game container
+// GameOverlay.astro - Full screen game container with cinematic intro
 // Triggered by clicking the floating packet in Three.js background
 ---
 
 <div id="game-overlay" class="game-overlay">
+    <!-- Intro Canvas (for cinematic sequence) -->
+    <canvas id="intro-canvas" class="intro-canvas"></canvas>
+
     <!-- Game Canvas -->
     <canvas id="game-canvas"></canvas>
 
@@ -45,39 +48,90 @@
     <!-- Power-up Notification -->
     <div id="powerup-notification" class="powerup-notification"></div>
 
-    <!-- Start Screen -->
-    <div id="game-start-screen" class="game-screen start-screen">
-        <div class="screen-content">
-            <h1 class="game-title">
-                <span class="title-net">NET</span><span class="title-defender">DEFENDER</span>
-            </h1>
-            <p class="game-subtitle">OSI LAYER DEFENSE PROTOCOL</p>
-
-            <div class="game-description">
-                <p>Defend the network stack against cyber threats.</p>
-                <p>Traverse all 7 OSI layers from Application to Physical.</p>
+    <!-- Start Screen (redesigned, appears after intro) -->
+    <div id="game-start-screen" class="game-screen start-screen hidden">
+        <div class="start-content">
+            <!-- Title animated by CSS -->
+            <div class="start-title-container">
+                <h1 class="game-title animated-title">
+                    <span class="title-net">NET</span><span class="title-defender">DEFENDER</span>
+                </h1>
+                <p class="game-subtitle">OSI LAYER DEFENSE PROTOCOL</p>
             </div>
 
-            <div class="osi-preview">
-                <div class="osi-layer" style="--layer-color: #ff0080">L7 APPLICATION</div>
-                <div class="osi-layer" style="--layer-color: #ff0080">L6 PRESENTATION</div>
-                <div class="osi-layer" style="--layer-color: #00ff88">L5 SESSION</div>
-                <div class="osi-layer" style="--layer-color: #00ff88">L4 TRANSPORT</div>
-                <div class="osi-layer" style="--layer-color: #00ffff">L3 NETWORK</div>
-                <div class="osi-layer" style="--layer-color: #ffff00">L2 DATA LINK</div>
-                <div class="osi-layer" style="--layer-color: #ffff00">L1 PHYSICAL</div>
+            <!-- Threat Analysis Panel -->
+            <div class="threat-panel">
+                <div class="threat-header">
+                    <span class="threat-icon">!</span>
+                    <span class="threat-text">THREAT ANALYSIS</span>
+                </div>
+                <div class="osi-bars">
+                    <div class="osi-bar" data-layer="7" style="--bar-color: #ff0080">
+                        <span class="bar-label">L7 APPLICATION</span>
+                        <div class="bar-track"><div class="bar-fill"></div></div>
+                        <span class="bar-percent">0%</span>
+                    </div>
+                    <div class="osi-bar" data-layer="6" style="--bar-color: #ff0080">
+                        <span class="bar-label">L6 PRESENTATION</span>
+                        <div class="bar-track"><div class="bar-fill"></div></div>
+                        <span class="bar-percent">0%</span>
+                    </div>
+                    <div class="osi-bar" data-layer="5" style="--bar-color: #00ff88">
+                        <span class="bar-label">L5 SESSION</span>
+                        <div class="bar-track"><div class="bar-fill"></div></div>
+                        <span class="bar-percent">0%</span>
+                    </div>
+                    <div class="osi-bar" data-layer="4" style="--bar-color: #00ff88">
+                        <span class="bar-label">L4 TRANSPORT</span>
+                        <div class="bar-track"><div class="bar-fill"></div></div>
+                        <span class="bar-percent">0%</span>
+                    </div>
+                    <div class="osi-bar" data-layer="3" style="--bar-color: #00ffff">
+                        <span class="bar-label">L3 NETWORK</span>
+                        <div class="bar-track"><div class="bar-fill"></div></div>
+                        <span class="bar-percent">0%</span>
+                    </div>
+                    <div class="osi-bar" data-layer="2" style="--bar-color: #ffff00">
+                        <span class="bar-label">L2 DATA LINK</span>
+                        <div class="bar-track"><div class="bar-fill"></div></div>
+                        <span class="bar-percent">0%</span>
+                    </div>
+                    <div class="osi-bar" data-layer="1" style="--bar-color: #ffff00">
+                        <span class="bar-label">L1 PHYSICAL</span>
+                        <div class="bar-track"><div class="bar-fill"></div></div>
+                        <span class="bar-percent">0%</span>
+                    </div>
+                </div>
             </div>
 
-            <button class="game-btn start-btn" id="start-game-btn">
-                <span>INITIALIZE DEFENSE</span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                </svg>
-            </button>
+            <!-- Ship Preview (CSS animated) -->
+            <div class="ship-preview-container">
+                <div class="ship-preview">
+                    <div class="ship-body"></div>
+                    <div class="ship-wing left"></div>
+                    <div class="ship-wing right"></div>
+                    <div class="ship-thruster"></div>
+                </div>
+            </div>
 
-            <button class="game-btn exit-btn" id="exit-start-btn">
-                <span>RETURN TO PORTFOLIO</span>
-            </button>
+            <!-- Action Buttons -->
+            <div class="start-actions">
+                <button class="game-btn start-btn pulse-btn" id="start-game-btn">
+                    <span>INITIALIZE DEFENSE</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+
+                <div class="high-score-display">
+                    <span class="hs-label">HIGH SCORE</span>
+                    <span class="hs-value" id="menu-high-score">0</span>
+                </div>
+
+                <button class="game-btn exit-btn" id="exit-start-btn">
+                    <span>RETURN TO PORTFOLIO</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -190,7 +244,7 @@
         background: #000;
         opacity: 0;
         visibility: hidden;
-        transition: opacity 0.5s ease, visibility 0.5s ease;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
     }
 
     .game-overlay.active {
@@ -202,6 +256,24 @@
         display: block;
         width: 100%;
         height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    /* Intro Canvas */
+    .intro-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 250;
+        pointer-events: none;
+    }
+
+    .intro-canvas.hidden {
+        display: none;
     }
 
     /* ========================================
@@ -212,7 +284,7 @@
         inset: 0;
         pointer-events: none;
         z-index: 100;
-        display: flex;
+        display: none;
         flex-direction: column;
         justify-content: space-between;
         padding: 1.5rem;
@@ -355,7 +427,7 @@
     }
 
     /* ========================================
-       GAME SCREENS (Start, Pause, GameOver, Victory)
+       GAME SCREENS BASE
        ======================================== */
     .game-screen {
         position: absolute;
@@ -372,9 +444,286 @@
         display: none;
     }
 
+    /* ========================================
+       START SCREEN (REDESIGNED)
+       ======================================== */
+    .start-screen {
+        background: transparent;
+    }
+
+    .start-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+        max-width: 700px;
+        width: 100%;
+        padding: 2rem;
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Title */
+    .start-title-container {
+        text-align: center;
+    }
+
+    .game-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 5rem;
+        line-height: 1;
+        margin-bottom: 0.5rem;
+        letter-spacing: 0.05em;
+    }
+
+    .animated-title {
+        animation: titleGlow 2s ease-in-out infinite;
+    }
+
+    @keyframes titleGlow {
+        0%, 100% { filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.5)); }
+        50% { filter: drop-shadow(0 0 40px rgba(0, 255, 255, 0.8)); }
+    }
+
+    .title-net {
+        color: var(--neon-cyan);
+        text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+    }
+
+    .title-defender {
+        color: var(--white);
+    }
+
+    .game-subtitle {
+        font-family: 'Space Mono', monospace;
+        font-size: 0.9rem;
+        color: var(--neon-green);
+        letter-spacing: 0.3em;
+    }
+
+    /* Threat Panel */
+    .threat-panel {
+        width: 100%;
+        max-width: 500px;
+        background: rgba(10, 10, 10, 0.95);
+        border: 2px solid var(--neon-cyan);
+        padding: 1.5rem;
+        position: relative;
+    }
+
+    .threat-panel::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta), var(--neon-cyan));
+    }
+
+    .threat-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--gray-mid);
+    }
+
+    .threat-icon {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--neon-magenta);
+        color: #000;
+        font-weight: bold;
+        font-size: 1rem;
+        animation: iconPulse 1s ease-in-out infinite;
+    }
+
+    @keyframes iconPulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+    .threat-text {
+        font-family: 'Space Mono', monospace;
+        font-size: 0.8rem;
+        color: var(--neon-magenta);
+        letter-spacing: 0.1em;
+    }
+
+    .osi-bars {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .osi-bar {
+        display: grid;
+        grid-template-columns: 120px 1fr 40px;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .bar-label {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.65rem;
+        color: var(--bar-color);
+        letter-spacing: 0.05em;
+    }
+
+    .bar-track {
+        height: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--bar-color);
+        overflow: hidden;
+    }
+
+    .bar-fill {
+        height: 100%;
+        width: 0%;
+        background: var(--bar-color);
+        box-shadow: 0 0 10px var(--bar-color);
+        transition: width 0.3s ease;
+    }
+
+    .bar-percent {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.6rem;
+        color: var(--gray-light);
+        text-align: right;
+    }
+
+    /* Ship Preview */
+    .ship-preview-container {
+        padding: 1rem 0;
+    }
+
+    .ship-preview {
+        position: relative;
+        width: 60px;
+        height: 70px;
+        animation: shipFloat 2s ease-in-out infinite;
+    }
+
+    @keyframes shipFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .ship-body {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 15px solid transparent;
+        border-right: 15px solid transparent;
+        border-bottom: 40px solid var(--neon-cyan);
+        filter: drop-shadow(0 0 10px var(--neon-cyan));
+    }
+
+    .ship-wing {
+        position: absolute;
+        top: 25px;
+        width: 0;
+        height: 0;
+        border-top: 8px solid transparent;
+        border-bottom: 15px solid var(--neon-magenta);
+        filter: drop-shadow(0 0 5px var(--neon-magenta));
+    }
+
+    .ship-wing.left {
+        left: 5px;
+        border-right: 12px solid var(--neon-magenta);
+        border-left: none;
+    }
+
+    .ship-wing.right {
+        right: 5px;
+        border-left: 12px solid var(--neon-magenta);
+        border-right: none;
+    }
+
+    .ship-thruster {
+        position: absolute;
+        bottom: 5px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 10px;
+        height: 20px;
+        background: linear-gradient(to bottom, var(--neon-cyan), transparent);
+        border-radius: 50% 50% 50% 50% / 20% 20% 80% 80%;
+        animation: thrusterGlow 0.2s ease-in-out infinite;
+        filter: drop-shadow(0 0 10px var(--neon-cyan));
+    }
+
+    @keyframes thrusterGlow {
+        0%, 100% { opacity: 1; height: 20px; }
+        50% { opacity: 0.7; height: 25px; }
+    }
+
+    /* Start Actions */
+    .start-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .high-score-display {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.75rem 1.5rem;
+        border: 1px solid var(--gray-mid);
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    .hs-label {
+        font-family: 'Space Mono', monospace;
+        font-size: 0.6rem;
+        color: var(--gray-light);
+        letter-spacing: 0.1em;
+    }
+
+    .hs-value {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.5rem;
+        color: var(--neon-yellow);
+        text-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
+    }
+
+    .pulse-btn {
+        animation: btnPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes btnPulse {
+        0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); }
+        50% { box-shadow: 0 0 40px rgba(0, 255, 255, 0.6); }
+    }
+
+    /* ========================================
+       OTHER SCREENS (Pause, GameOver, Victory)
+       ======================================== */
     .screen-content {
         text-align: center;
-        max-width: 600px;
+        max-width: 500px;
         padding: 3rem;
         border: 2px solid var(--neon-cyan);
         background: var(--gray-dark);
@@ -394,62 +743,6 @@
         opacity: 0.3;
     }
 
-    /* Game Title */
-    .game-title {
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: 5rem;
-        line-height: 1;
-        margin-bottom: 0.5rem;
-        letter-spacing: 0.05em;
-    }
-
-    .title-net {
-        color: var(--neon-cyan);
-        text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
-    }
-
-    .title-defender {
-        color: var(--white);
-    }
-
-    .game-subtitle {
-        font-family: 'Space Mono', monospace;
-        font-size: 1rem;
-        color: var(--neon-green);
-        letter-spacing: 0.3em;
-        margin-bottom: 2rem;
-    }
-
-    .game-description {
-        color: var(--gray-lighter);
-        margin-bottom: 2rem;
-        line-height: 1.6;
-    }
-
-    .game-description p {
-        margin: 0.5rem 0;
-    }
-
-    /* OSI Preview */
-    .osi-preview {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-        margin-bottom: 2rem;
-    }
-
-    .osi-layer {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.7rem;
-        padding: 0.4rem 1rem;
-        background: rgba(0, 0, 0, 0.5);
-        border-left: 3px solid var(--layer-color);
-        color: var(--layer-color);
-        text-align: left;
-        letter-spacing: 0.1em;
-    }
-
-    /* Screen Titles */
     .screen-title {
         font-family: 'Bebas Neue', sans-serif;
         font-size: 3rem;
@@ -633,7 +926,30 @@
         }
 
         .game-title {
-            font-size: 3rem;
+            font-size: 2.5rem;
+        }
+
+        .game-subtitle {
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+        }
+
+        .start-content {
+            padding: 1rem;
+            gap: 1.5rem;
+        }
+
+        .threat-panel {
+            padding: 1rem;
+        }
+
+        .osi-bar {
+            grid-template-columns: 90px 1fr 35px;
+            gap: 0.5rem;
+        }
+
+        .bar-label {
+            font-size: 0.55rem;
         }
 
         .screen-content {
@@ -641,21 +957,24 @@
             margin: 1rem;
         }
 
-        .osi-preview {
+        .ship-preview-container {
             display: none;
         }
     }
 </style>
 
 <script is:inline>
-    // Game overlay controller
+    // Game overlay controller with cinematic intro
     class GameOverlayController {
         constructor() {
             this.overlay = document.getElementById('game-overlay');
             this.canvas = document.getElementById('game-canvas');
+            this.introCanvas = document.getElementById('intro-canvas');
             this.hud = document.getElementById('game-hud');
             this.game = null;
             this.gameLoaded = false;
+            this.introLoaded = false;
+            this.intro = null;
 
             // Screens
             this.startScreen = document.getElementById('game-start-screen');
@@ -673,6 +992,9 @@
             // Notification
             this.notification = document.getElementById('powerup-notification');
             this.notificationTimeout = null;
+
+            // OSI bars animation
+            this.osiAnimationInterval = null;
 
             this.bindEvents();
         }
@@ -695,13 +1017,45 @@
             document.getElementById('exit-gameover-btn')?.addEventListener('click', () => this.closeOverlay());
             document.getElementById('exit-victory-btn')?.addEventListener('click', () => this.closeOverlay());
 
-            // Escape key to close (when on start screen) or pause
+            // Escape key
             window.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && this.overlay.classList.contains('active')) {
                     if (!this.startScreen.classList.contains('hidden')) {
                         this.closeOverlay();
                     }
                 }
+            });
+
+            // Handle resize
+            window.addEventListener('resize', () => this.handleResize());
+        }
+
+        handleResize() {
+            if (this.introCanvas) {
+                this.introCanvas.width = window.innerWidth;
+                this.introCanvas.height = window.innerHeight;
+            }
+            if (this.intro) {
+                this.intro.resize();
+            }
+        }
+
+        loadIntroScript() {
+            return new Promise((resolve, reject) => {
+                if (this.introLoaded) {
+                    resolve();
+                    return;
+                }
+
+                const script = document.createElement('script');
+                script.type = 'module';
+                script.src = '/scripts/game/intro/IntroSequence.js';
+                script.onload = () => {
+                    this.introLoaded = true;
+                    resolve();
+                };
+                script.onerror = reject;
+                document.head.appendChild(script);
             });
         }
 
@@ -724,41 +1078,112 @@
             });
         }
 
-        async open() {
+        async open(packetX, packetY) {
             // Show overlay
             this.overlay.classList.add('active');
             document.body.style.overflow = 'hidden';
 
-            // Show start screen
+            // Setup intro canvas
+            this.introCanvas.width = window.innerWidth;
+            this.introCanvas.height = window.innerHeight;
+            this.introCanvas.classList.remove('hidden');
+
+            // Hide start screen initially (will show after intro)
+            this.startScreen.classList.add('hidden');
+
+            // Load and run intro sequence
+            try {
+                await this.loadIntroScript();
+                await new Promise(r => setTimeout(r, 100));
+
+                if (window.IntroSequence) {
+                    this.intro = new window.IntroSequence(this.introCanvas, () => {
+                        this.onIntroComplete();
+                    });
+                    this.intro.start(packetX, packetY);
+                } else {
+                    // Fallback: skip intro
+                    this.onIntroComplete();
+                }
+            } catch (err) {
+                console.error('Failed to load intro:', err);
+                this.onIntroComplete();
+            }
+
+            // Pre-load game in background
+            this.loadGameScript().catch(console.error);
+        }
+
+        onIntroComplete() {
+            // Hide intro canvas
+            this.introCanvas.classList.add('hidden');
+
+            // Show start screen with animation
             this.showScreen('start');
 
-            // Initialize game if needed
-            if (!this.game) {
-                try {
-                    // Load game script first
-                    await this.loadGameScript();
+            // Update high score display
+            const highScore = localStorage.getItem('netdefender_highscore') || 0;
+            document.getElementById('menu-high-score').textContent = parseInt(highScore).toLocaleString('fr-FR');
 
-                    // Wait a bit for the module to register
-                    await new Promise(r => setTimeout(r, 100));
+            // Animate OSI bars
+            this.animateOsiBars();
 
-                    // Create game instance (NetDefender is exposed on window)
-                    if (window.NetDefender) {
-                        this.game = new window.NetDefender('game-canvas');
+            // Initialize game if not already done
+            this.initGame();
+        }
 
-                        // Set up callbacks
-                        this.game.onScoreUpdate = (score) => this.updateScore(score);
-                        this.game.onHealthUpdate = (health, max) => this.updateHealth(health, max);
-                        this.game.onWaveUpdate = (wave, total, layer) => this.updateWave(wave, total, layer);
-                        this.game.onPause = (paused) => paused ? this.showScreen('pause') : this.showScreen('playing');
-                        this.game.onGameOver = (score, highScore) => this.showGameOver(score, highScore);
-                        this.game.onVictory = (score, highScore) => this.showVictory(score, highScore);
-                        this.game.onPowerUpCollect = (name, color, isPositive) => this.showPowerUpNotification(name, color);
-                    } else {
-                        console.error('NetDefender not available on window');
-                    }
-                } catch (err) {
-                    console.error('Failed to load game:', err);
+        animateOsiBars() {
+            const bars = document.querySelectorAll('.osi-bar');
+            const threatLevels = [95, 85, 70, 60, 45, 30, 15]; // Threat levels per layer
+
+            let currentBar = 0;
+
+            // Clear any existing animation
+            if (this.osiAnimationInterval) {
+                clearInterval(this.osiAnimationInterval);
+            }
+
+            this.osiAnimationInterval = setInterval(() => {
+                if (currentBar >= bars.length) {
+                    clearInterval(this.osiAnimationInterval);
+                    return;
                 }
+
+                const bar = bars[currentBar];
+                const fill = bar.querySelector('.bar-fill');
+                const percent = bar.querySelector('.bar-percent');
+                const targetPercent = threatLevels[currentBar];
+
+                fill.style.width = targetPercent + '%';
+                percent.textContent = targetPercent + '%';
+
+                currentBar++;
+            }, 150);
+        }
+
+        async initGame() {
+            if (this.game) return;
+
+            try {
+                await this.loadGameScript();
+                await new Promise(r => setTimeout(r, 100));
+
+                if (window.NetDefender) {
+                    this.game = new window.NetDefender('game-canvas');
+
+                    // Set up callbacks
+                    this.game.onScoreUpdate = (score) => this.updateScore(score);
+                    this.game.onHealthUpdate = (health, max) => this.updateHealth(health, max);
+                    this.game.onWaveUpdate = (wave, total, layer) => this.updateWave(wave, total, layer);
+                    this.game.onPause = (paused) => paused ? this.showScreen('pause') : this.showScreen('playing');
+                    this.game.onGameOver = (score, highScore) => this.showGameOver(score, highScore);
+                    this.game.onVictory = (score, highScore) => this.showVictory(score, highScore);
+                    this.game.onPowerUpCollect = (name, color, isPositive) => this.showPowerUpNotification(name, color);
+                } else {
+                    console.error('NetDefender not available on window');
+                }
+            } catch (err) {
+                console.error('Failed to load game:', err);
             }
         }
 
@@ -788,10 +1213,17 @@
             if (this.game) {
                 this.game.stop();
             }
+            if (this.intro) {
+                this.intro.stop();
+            }
+            if (this.osiAnimationInterval) {
+                clearInterval(this.osiAnimationInterval);
+            }
+
             this.overlay.classList.remove('active');
             document.body.style.overflow = '';
 
-            // Dispatch event for Three.js to know game closed
+            // Dispatch event for Three.js
             window.dispatchEvent(new CustomEvent('netdefender-closed'));
         }
 
@@ -890,7 +1322,7 @@
     // Initialize controller
     const gameController = new GameOverlayController();
 
-    // Expose for external triggering
-    window.openNetDefender = () => gameController.open();
+    // Expose for external triggering (with packet position)
+    window.openNetDefender = (packetX, packetY) => gameController.open(packetX, packetY);
     window.closeNetDefender = () => gameController.closeOverlay();
 </script>

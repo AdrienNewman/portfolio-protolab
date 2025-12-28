@@ -104,15 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(statsHero);
     }
 
-    // Initialize on portfolio ready event
-    document.addEventListener('portfolioReady', function() {
-        initDocCounters();
-    });
-
-    // Fallback if event doesn't fire
-    setTimeout(() => {
-        if (!document.querySelector('.doc-stat-value').textContent.match(/\d+/)) {
-            initDocCounters();
-        }
-    }, 1000);
+    // Initialize counters
+    initDocCounters();
 });

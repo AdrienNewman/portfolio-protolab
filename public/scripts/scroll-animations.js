@@ -135,9 +135,7 @@ function initPortfolio() {
     initBackToTop();
 }
 
-// Listen for custom event from terminal boot
-document.addEventListener('portfolioReady', function() {
+// Initialize portfolio on DOM ready
+document.addEventListener('DOMContentLoaded', function() {
     initPortfolio();
 });
-
-// Don't auto-init - will be called by terminal boot via event
