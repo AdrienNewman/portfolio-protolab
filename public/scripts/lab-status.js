@@ -146,7 +146,39 @@
             if (uptimeEl) {
                 uptimeEl.textContent = service.uptime || '--';
             }
+
+            // Update CPU metric
+            const cpuEl = card.querySelector('[data-cpu]');
+            if (cpuEl && service.cpu !== undefined) {
+                cpuEl.textContent = `${service.cpu}%`;
+                updateMetricColor(cpuEl, service.cpu);
+            } else if (cpuEl) {
+                cpuEl.textContent = '--%';
+                cpuEl.classList.remove('warning', 'critical');
+            }
+
+            // Update Memory metric
+            const memEl = card.querySelector('[data-memory]');
+            if (memEl && service.memory !== undefined) {
+                memEl.textContent = `${service.memory}%`;
+                updateMetricColor(memEl, service.memory);
+            } else if (memEl) {
+                memEl.textContent = '--%';
+                memEl.classList.remove('warning', 'critical');
+            }
         });
+    }
+
+    /**
+     * Update metric color based on value
+     */
+    function updateMetricColor(element, value) {
+        element.classList.remove('warning', 'critical');
+        if (value >= 90) {
+            element.classList.add('critical');
+        } else if (value >= 75) {
+            element.classList.add('warning');
+        }
     }
 
     /**

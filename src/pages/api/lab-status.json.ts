@@ -13,15 +13,20 @@ let cache: { data: LabStatusResponse | null; timestamp: number } = {
 };
 const CACHE_TTL = 60000; // 60 seconds
 
+interface ServiceMetrics {
+  id: string;
+  name: string;
+  type: 'node' | 'qemu' | 'lxc';
+  status: 'up' | 'down' | 'unknown';
+  uptime?: string;
+  cpu?: number;      // percentage
+  memory?: number;   // percentage
+}
+
 interface LabStatusResponse {
   timestamp: string;
   status: 'online' | 'degraded' | 'offline';
-  services: {
-    id: string;
-    name: string;
-    status: 'up' | 'down' | 'unknown';
-    uptime?: string;
-  }[];
+  services: ServiceMetrics[];
   resources: {
     cpu: { percent: number };
     memory: { percent: number; usedGB?: number; totalGB?: number };
@@ -33,6 +38,14 @@ interface LabStatusResponse {
   };
   cached: boolean;
 }
+
+// Service configuration - Proxmox IDs mapping
+const SERVICE_CONFIG = [
+  { id: 'proxmox', name: 'Proxmox VE', type: 'node' as const, pveId: 'node/proxmox' },
+  { id: 'paloalto', name: 'Palo Alto FW', type: 'qemu' as const, pveId: 'qemu/102' },
+  { id: 'dc01', name: 'Windows DC01', type: 'qemu' as const, pveId: 'qemu/103' },
+  { id: 'grafana', name: 'Grafana OSS', type: 'lxc' as const, pveId: 'lxc/203' },
+];
 
 // Helper to query VictoriaMetrics
 async function queryPrometheus(query: string): Promise<any> {
@@ -90,70 +103,91 @@ export const GET: APIRoute = async () => {
   }
 
   try {
-    // Query all metrics in parallel
-    // Filter for node/proxmox to get the hypervisor metrics (not individual VMs/CTs)
+    // Build service IDs for batch queries
+    const serviceIds = SERVICE_CONFIG.map(s => s.pveId);
+    const serviceIdRegex = serviceIds.join('|');
+
+    // Query all metrics in parallel - both global and per-service
     const [
-      upResult,
+      // Global Proxmox node metrics
       cpuResult,
       memUsedResult,
       memTotalResult,
       diskUsedResult,
       diskTotalResult,
-      uptimeResult,
       netInResult,
-      netOutResult
+      netOutResult,
+      // Per-service metrics (batch queries)
+      allUpResults,
+      allCpuResults,
+      allMemUsedResults,
+      allMemTotalResults,
+      allUptimeResults
     ] = await Promise.all([
-      queryPrometheus('pve_up{job="proxmox",id="node/proxmox"}'),
+      // Global metrics for Proxmox node
       queryPrometheus('pve_cpu_usage_ratio{job="proxmox",id="node/proxmox"}'),
       queryPrometheus('pve_memory_usage_bytes{job="proxmox",id="node/proxmox"}'),
       queryPrometheus('pve_memory_size_bytes{job="proxmox",id="node/proxmox"}'),
       queryPrometheus('sum(pve_disk_usage_bytes{job="proxmox",id=~"storage/.*"})'),
       queryPrometheus('sum(pve_disk_size_bytes{job="proxmox",id=~"storage/.*"})'),
-      queryPrometheus('pve_uptime_seconds{job="proxmox",id="node/proxmox"}'),
       queryPrometheus('sum(rate(pve_network_receive_bytes{job="proxmox"}[5m]))'),
-      queryPrometheus('sum(rate(pve_network_transmit_bytes{job="proxmox"}[5m]))')
+      queryPrometheus('sum(rate(pve_network_transmit_bytes{job="proxmox"}[5m]))'),
+      // Per-service batch queries
+      queryPrometheus(`pve_up{job="proxmox",id=~"${serviceIdRegex}"}`),
+      queryPrometheus(`pve_cpu_usage_ratio{job="proxmox",id=~"${serviceIdRegex}"}`),
+      queryPrometheus(`pve_memory_usage_bytes{job="proxmox",id=~"${serviceIdRegex}"}`),
+      queryPrometheus(`pve_memory_size_bytes{job="proxmox",id=~"${serviceIdRegex}"}`),
+      queryPrometheus(`pve_uptime_seconds{job="proxmox",id=~"${serviceIdRegex}"}`)
     ]);
 
-    // Parse values
-    const isUp = getFirstValue(upResult);
+    // Helper to extract value by ID from batch results
+    function getValueById(results: any[], targetId: string): number | null {
+      const match = results.find(r => r.metric?.id === targetId);
+      if (match?.value) {
+        return parseFloat(match.value[1]);
+      }
+      return null;
+    }
+
+    // Parse global values
     const cpuRatio = getFirstValue(cpuResult);
     const memUsed = getFirstValue(memUsedResult);
     const memTotal = getFirstValue(memTotalResult);
     const diskUsed = getFirstValue(diskUsedResult);
     const diskTotal = getFirstValue(diskTotalResult);
-    const uptimeSeconds = getFirstValue(uptimeResult);
     const netIn = getFirstValue(netInResult) || 0;
     const netOut = getFirstValue(netOutResult) || 0;
 
-    // Calculate percentages
+    // Calculate global percentages
     const cpuPercent = cpuRatio !== null ? Math.round(cpuRatio * 100) : 0;
     const memPercent = (memUsed && memTotal) ? Math.round((memUsed / memTotal) * 100) : 0;
     const diskPercent = (diskUsed && diskTotal) ? Math.round((diskUsed / diskTotal) * 100) : 0;
 
-    // Build services array
-    const services = [
-      {
-        id: 'proxmox',
-        name: 'Proxmox VE',
-        status: isUp === 1 ? 'up' as const : 'down' as const,
-        uptime: uptimeSeconds ? formatUptime(uptimeSeconds) : undefined
-      },
-      {
-        id: 'paloalto',
-        name: 'Palo Alto',
-        status: 'unknown' as const // Not connected yet
-      },
-      {
-        id: 'dc01',
-        name: 'Windows DC01',
-        status: 'unknown' as const // Not connected yet
-      },
-      {
-        id: 'grafana',
-        name: 'Grafana',
-        status: 'unknown' as const // Could add ping check
+    // Build services array with individual metrics
+    const services: ServiceMetrics[] = SERVICE_CONFIG.map(config => {
+      const isUp = getValueById(allUpResults, config.pveId);
+      const serviceCpu = getValueById(allCpuResults, config.pveId);
+      const serviceMemUsed = getValueById(allMemUsedResults, config.pveId);
+      const serviceMemTotal = getValueById(allMemTotalResults, config.pveId);
+      const serviceUptime = getValueById(allUptimeResults, config.pveId);
+
+      // Calculate memory percentage for this service
+      // Cap at 100% because QEMU VMs can report usage > size due to overhead
+      let memoryPercent: number | undefined;
+      if (serviceMemUsed !== null && serviceMemTotal !== null && serviceMemTotal > 0) {
+        memoryPercent = Math.min(100, Math.round((serviceMemUsed / serviceMemTotal) * 100));
       }
-    ];
+
+      return {
+        id: config.id,
+        name: config.name,
+        type: config.type,
+        status: isUp === 1 ? 'up' as const : (isUp === 0 ? 'down' as const : 'unknown' as const),
+        uptime: serviceUptime ? formatUptime(serviceUptime) : undefined,
+        cpu: serviceCpu !== null ? Math.round(serviceCpu * 100) : undefined,
+        memory: memoryPercent
+      };
+    });
 
     // Determine overall status
     const upServices = services.filter(s => s.status === 'up').length;

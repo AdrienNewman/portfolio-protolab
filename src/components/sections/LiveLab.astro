@@ -32,59 +32,107 @@
                 <div class="services-grid" data-lab-services>
                     <!-- Proxmox -->
                     <div class="service-card" data-service="proxmox">
-                        <div class="service-icon">
-                            <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                                <path d="M21.5 12c0-5.24-4.26-9.5-9.5-9.5S2.5 6.76 2.5 12s4.26 9.5 9.5 9.5 9.5-4.26 9.5-9.5zm-9.5 8c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
-                                <circle cx="12" cy="12" r="3"/>
-                            </svg>
+                        <div class="service-header">
+                            <div class="service-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                                    <path d="M21.5 12c0-5.24-4.26-9.5-9.5-9.5S2.5 6.76 2.5 12s4.26 9.5 9.5 9.5 9.5-4.26 9.5-9.5zm-9.5 8c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                            </div>
+                            <div class="service-info">
+                                <span class="service-name">Proxmox VE</span>
+                                <span class="service-status" data-status="unknown">--</span>
+                            </div>
+                            <div class="service-uptime" data-uptime>--</div>
                         </div>
-                        <div class="service-info">
-                            <span class="service-name">Proxmox VE</span>
-                            <span class="service-status" data-status="unknown">--</span>
+                        <div class="service-metrics">
+                            <div class="service-metric">
+                                <span class="metric-label">CPU</span>
+                                <span class="metric-value" data-cpu>--%</span>
+                            </div>
+                            <div class="service-metric">
+                                <span class="metric-label">RAM</span>
+                                <span class="metric-value" data-memory>--%</span>
+                            </div>
                         </div>
-                        <div class="service-uptime" data-uptime>--</div>
                     </div>
 
                     <!-- Palo Alto -->
                     <div class="service-card" data-service="paloalto">
-                        <div class="service-icon">
-                            <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
-                            </svg>
+                        <div class="service-header">
+                            <div class="service-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                                </svg>
+                            </div>
+                            <div class="service-info">
+                                <span class="service-name">Palo Alto FW</span>
+                                <span class="service-status" data-status="unknown">--</span>
+                            </div>
+                            <div class="service-uptime" data-uptime>--</div>
                         </div>
-                        <div class="service-info">
-                            <span class="service-name">Palo Alto</span>
-                            <span class="service-status" data-status="unknown">--</span>
+                        <div class="service-metrics">
+                            <div class="service-metric">
+                                <span class="metric-label">CPU</span>
+                                <span class="metric-value" data-cpu>--%</span>
+                            </div>
+                            <div class="service-metric">
+                                <span class="metric-label">RAM</span>
+                                <span class="metric-value" data-memory>--%</span>
+                            </div>
                         </div>
-                        <div class="service-uptime" data-uptime>--</div>
                     </div>
 
                     <!-- Windows DC -->
                     <div class="service-card" data-service="dc01">
-                        <div class="service-icon">
-                            <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                                <path d="M3 12V6.75l6-1.32v6.48L3 12zm17-9v8.75l-10 .15V5.21L20 3zM3 13l6 .09v6.81l-6-1.15V13zm17 .25V22l-10-1.91V13.1l10 .15z"/>
-                            </svg>
+                        <div class="service-header">
+                            <div class="service-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                                    <path d="M3 12V6.75l6-1.32v6.48L3 12zm17-9v8.75l-10 .15V5.21L20 3zM3 13l6 .09v6.81l-6-1.15V13zm17 .25V22l-10-1.91V13.1l10 .15z"/>
+                                </svg>
+                            </div>
+                            <div class="service-info">
+                                <span class="service-name">Windows DC01</span>
+                                <span class="service-status" data-status="unknown">--</span>
+                            </div>
+                            <div class="service-uptime" data-uptime>--</div>
                         </div>
-                        <div class="service-info">
-                            <span class="service-name">Windows DC01</span>
-                            <span class="service-status" data-status="unknown">--</span>
+                        <div class="service-metrics">
+                            <div class="service-metric">
+                                <span class="metric-label">CPU</span>
+                                <span class="metric-value" data-cpu>--%</span>
+                            </div>
+                            <div class="service-metric">
+                                <span class="metric-label">RAM</span>
+                                <span class="metric-value" data-memory>--%</span>
+                            </div>
                         </div>
-                        <div class="service-uptime" data-uptime>--</div>
                     </div>
 
                     <!-- Grafana -->
                     <div class="service-card" data-service="grafana">
-                        <div class="service-icon">
-                            <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                                <path d="M22.7 12.6c-.1-.4-.5-.7-.9-.7h-.2c-.4-.6-.9-1.2-1.5-1.6.1-.4.1-.9 0-1.3-.1-.4-.5-.6-.9-.5-.4.1-.7.4-.8.8-.4.2-.8.5-1.1.8-.3-.1-.6-.1-.9-.1-1.1 0-2.2.4-3 1.1-.4-.2-.8-.3-1.2-.3-.7 0-1.3.3-1.8.7-.5-.2-1.1-.3-1.7-.3-.6 0-1.2.1-1.7.4-.5-.3-1.1-.5-1.8-.5-.7 0-1.3.2-1.8.6-.3-.1-.6-.1-.9-.1-.9 0-1.6.5-2 1.2h-.1c-.5 0-.9.4-1 .9-.1.5.2 1 .7 1.1.3.7.9 1.3 1.6 1.6 0 .1 0 .2-.1.3-.1.5.2 1 .7 1.1.5.1 1-.1 1.2-.6.4.1.7.1 1.1.1h.3c.3.5.8.9 1.4 1.1.1.5.5.8 1 .8h.1c.5 0 .9-.4 1-.9.3 0 .7-.1 1-.2.4.4.9.6 1.5.6.3 0 .6-.1.9-.2.4.3.9.5 1.4.5.4 0 .8-.1 1.1-.3.5.2 1 .3 1.5.3.5 0 1-.1 1.4-.3.3.1.6.2 1 .2.8 0 1.5-.4 2-1 .5 0 .9-.3 1.1-.8.2-.5 0-1-.4-1.3.2-.4.3-.8.3-1.2 0-.2 0-.5-.1-.7.4-.4.6-.9.6-1.5-.1-.4-.2-.7-.4-1z"/>
-                            </svg>
+                        <div class="service-header">
+                            <div class="service-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                                    <path d="M22.7 12.6c-.1-.4-.5-.7-.9-.7h-.2c-.4-.6-.9-1.2-1.5-1.6.1-.4.1-.9 0-1.3-.1-.4-.5-.6-.9-.5-.4.1-.7.4-.8.8-.4.2-.8.5-1.1.8-.3-.1-.6-.1-.9-.1-1.1 0-2.2.4-3 1.1-.4-.2-.8-.3-1.2-.3-.7 0-1.3.3-1.8.7-.5-.2-1.1-.3-1.7-.3-.6 0-1.2.1-1.7.4-.5-.3-1.1-.5-1.8-.5-.7 0-1.3.2-1.8.6-.3-.1-.6-.1-.9-.1-.9 0-1.6.5-2 1.2h-.1c-.5 0-.9.4-1 .9-.1.5.2 1 .7 1.1.3.7.9 1.3 1.6 1.6 0 .1 0 .2-.1.3-.1.5.2 1 .7 1.1.5.1 1-.1 1.2-.6.4.1.7.1 1.1.1h.3c.3.5.8.9 1.4 1.1.1.5.5.8 1 .8h.1c.5 0 .9-.4 1-.9.3 0 .7-.1 1-.2.4.4.9.6 1.5.6.3 0 .6-.1.9-.2.4.3.9.5 1.4.5.4 0 .8-.1 1.1-.3.5.2 1 .3 1.5.3.5 0 1-.1 1.4-.3.3.1.6.2 1 .2.8 0 1.5-.4 2-1 .5 0 .9-.3 1.1-.8.2-.5 0-1-.4-1.3.2-.4.3-.8.3-1.2 0-.2 0-.5-.1-.7.4-.4.6-.9.6-1.5-.1-.4-.2-.7-.4-1z"/>
+                                </svg>
+                            </div>
+                            <div class="service-info">
+                                <span class="service-name">Grafana OSS</span>
+                                <span class="service-status" data-status="unknown">--</span>
+                            </div>
+                            <div class="service-uptime" data-uptime>--</div>
                         </div>
-                        <div class="service-info">
-                            <span class="service-name">Grafana</span>
-                            <span class="service-status" data-status="unknown">--</span>
+                        <div class="service-metrics">
+                            <div class="service-metric">
+                                <span class="metric-label">CPU</span>
+                                <span class="metric-value" data-cpu>--%</span>
+                            </div>
+                            <div class="service-metric">
+                                <span class="metric-label">RAM</span>
+                                <span class="metric-value" data-memory>--%</span>
+                            </div>
                         </div>
-                        <div class="service-uptime" data-uptime>--</div>
                     </div>
                 </div>
             </div>
@@ -329,8 +377,8 @@
         border: 1px solid rgba(255, 255, 255, 0.1);
         padding: 1rem;
         display: flex;
-        align-items: center;
-        gap: 1rem;
+        flex-direction: column;
+        gap: 0.75rem;
         transition: all 0.3s ease;
     }
 
@@ -341,6 +389,12 @@
 
     .service-card[data-active="true"] {
         border-color: var(--neon-green);
+    }
+
+    .service-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
     }
 
     .service-icon {
@@ -388,6 +442,45 @@
         font-size: 0.65rem;
         color: var(--gray-light);
         text-align: right;
+    }
+
+    /* Service Metrics */
+    .service-metrics {
+        display: flex;
+        gap: 1rem;
+        padding-top: 0.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .service-metric {
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .metric-label {
+        font-family: 'Space Mono', monospace;
+        font-size: 0.6rem;
+        font-weight: 700;
+        color: var(--gray-mid);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .metric-value {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--neon-cyan);
+    }
+
+    .metric-value.warning {
+        color: var(--neon-yellow);
+    }
+
+    .metric-value.critical {
+        color: var(--neon-magenta);
     }
 
     /* Resources Grid */
