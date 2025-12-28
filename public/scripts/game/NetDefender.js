@@ -33,8 +33,8 @@ export class NetDefender {
         // Core systems
         this.inputHandler = new InputHandler(this.canvas);
         this.particleSystem = new ParticleSystem();
-        this.waveManager = new WaveManager(this.canvas);
         this.audioManager = new AudioManager();
+        this.waveManager = new WaveManager(this.canvas, this.audioManager);
 
         // Effects
         this.screenShake = new ScreenShake();
@@ -109,6 +109,7 @@ export class NetDefender {
 
         // Start first wave
         this.waveManager.startWave(1);
+        this.waveManager.resetWaveStats();
         this.gridBackground.setLayerColor(7);
 
         // Resume audio context
@@ -133,6 +134,13 @@ export class NetDefender {
         // Handle pause toggle
         if (this.inputHandler.consumePause() && this.state === 'playing') {
             this.pause();
+        }
+
+        // Handle screen skip with SPACE or any key during screens
+        if (this.waveManager.isScreenActive()) {
+            if (this.inputHandler.shoot || this.inputHandler.consumeAnyKey()) {
+                this.waveManager.skipScreen();
+            }
         }
 
         // Update game state
@@ -197,8 +205,8 @@ export class NetDefender {
             }
         }
 
-        // Update wave manager (enemies)
-        this.waveManager.update(effectiveDelta);
+        // Update wave manager (enemies) - pass player for boss targeting
+        this.waveManager.update(effectiveDelta, this.player);
 
         // Update power-ups
         for (let i = this.powerUps.length - 1; i >= 0; i--) {
@@ -235,6 +243,7 @@ export class NetDefender {
             if (started) {
                 this.state = 'playing';
                 this.gridBackground.setLayerColor(this.waveManager.currentLayer.level);
+                this.waveManager.resetWaveStats(); // Reset stats for new wave
                 this.updateUI();
             } else {
                 // All waves complete - victory!
@@ -263,10 +272,14 @@ export class NetDefender {
                     this.particleSystem.createSpark(bullet.x, bullet.y, enemy.color, 'up');
                     this.bullets.splice(i, 1);
 
+                    // Track shot hit for accuracy
+                    this.waveManager.recordShot(true);
+
                     const killed = enemy.takeDamage();
 
                     if (killed) {
-                        // Enemy destroyed
+                        // Enemy destroyed - track for stats
+                        this.waveManager.recordEnemyDefeated();
                         this.score += enemy.points;
 
                         if (enemy.behavior === 'boss') {
@@ -342,6 +355,59 @@ export class NetDefender {
             if (this.intersects(playerBounds, powerUpBounds)) {
                 this.applyPowerUp(powerUp);
                 this.powerUps.splice(i, 1);
+            }
+        }
+
+        // Boss Projectiles vs Player
+        const bossProjectiles = this.waveManager.getBossProjectiles();
+        for (let i = bossProjectiles.length - 1; i >= 0; i--) {
+            const proj = bossProjectiles[i];
+            const projBounds = proj.getBounds();
+
+            if (this.intersects(playerBounds, projBounds)) {
+                // Hit by boss projectile
+                const isDead = this.player.takeDamage(proj.damage);
+                this.particleSystem.createDamageEffect(this.player.x, this.player.y);
+                this.particleSystem.createSpark(proj.x, proj.y, proj.color, 'down');
+                this.screenShake.triggerMedium();
+                this.audioManager.playDamage();
+                this.waveManager.removeBossProjectile(i);
+                this.updateUI();
+
+                if (isDead) {
+                    this.gameOver();
+                    return;
+                }
+            }
+        }
+
+        // Boss Hazards vs Player
+        const bossHazards = this.waveManager.getBossHazards();
+        for (let i = 0; i < bossHazards.length; i++) {
+            const hazard = bossHazards[i];
+
+            if (hazard.containsPoint(this.player.x, this.player.y)) {
+                // Player is in hazard zone
+                if (hazard.canDamage()) {
+                    const damage = hazard.getDamage();
+                    const isDead = this.player.takeDamage(damage);
+                    this.particleSystem.createDamageEffect(this.player.x, this.player.y);
+                    this.screenShake.triggerLight();
+                    this.updateUI();
+
+                    if (isDead) {
+                        this.gameOver();
+                        return;
+                    }
+                }
+            }
+        }
+
+        // Handle screen effects (like reverse controls)
+        const screenEffect = this.waveManager.getScreenEffect();
+        if (screenEffect && screenEffect.type === 'reverse_controls') {
+            if (!this.player.isReversed) {
+                this.player.activateReverse(screenEffect.duration);
             }
         }
     }
@@ -441,8 +507,17 @@ export class NetDefender {
             // Bullets
             this.bullets.forEach(b => b.draw(this.ctx));
 
+            // Boss hazards (draw below enemies)
+            this.waveManager.drawBossHazards(this.ctx);
+
             // Enemies
             this.waveManager.enemies.forEach(e => e.draw(this.ctx));
+
+            // Boss projectiles (draw above enemies)
+            this.waveManager.drawBossProjectiles(this.ctx);
+
+            // Boss attack effects (beams, rings)
+            this.waveManager.drawBossAttackEffects(this.ctx);
 
             // Player
             if (this.player) {
@@ -451,6 +526,9 @@ export class NetDefender {
 
             // Particles (on top)
             this.particleSystem.draw(this.ctx);
+
+            // Screen effects from boss attacks
+            this.waveManager.drawScreenEffect(this.ctx);
         }
 
         // Reset screen shake
@@ -460,6 +538,11 @@ export class NetDefender {
         // Draw wave transition overlay
         if (this.state === 'transition') {
             this.waveManager.drawTransition(this.ctx);
+        }
+
+        // Draw boss intro overlay (can appear during playing state)
+        if (this.waveManager.bossIntro.isActive()) {
+            this.waveManager.bossIntro.draw();
         }
 
         // Draw slow-mo indicator

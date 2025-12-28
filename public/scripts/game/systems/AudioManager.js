@@ -144,4 +144,213 @@ export class AudioManager {
             this.audioContext.resume();
         }
     }
+
+    // ============================================
+    // SYNTHESIZED SOUNDS (Web Audio API)
+    // For transition screens and boss intros
+    // ============================================
+
+    /**
+     * Play typing bip for terminal effect
+     */
+    playTypingBip() {
+        if (!this.enabled || !this.audioContext) return;
+
+        try {
+            const ctx = this.audioContext;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+
+            // Random pitch for variety
+            osc.frequency.value = 700 + Math.random() * 400;
+            osc.type = 'square';
+
+            // Quick envelope
+            const now = ctx.currentTime;
+            gain.gain.setValueAtTime(0.04 * this.masterVolume, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.start(now);
+            osc.stop(now + 0.04);
+        } catch (e) {
+            // Silently fail
+        }
+    }
+
+    /**
+     * Play line complete sweep sound
+     */
+    playLineComplete() {
+        if (!this.enabled || !this.audioContext) return;
+
+        try {
+            const ctx = this.audioContext;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(400, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.1);
+
+            const now = ctx.currentTime;
+            gain.gain.setValueAtTime(0.06 * this.masterVolume, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.start(now);
+            osc.stop(now + 0.1);
+        } catch (e) {
+            // Silently fail
+        }
+    }
+
+    /**
+     * Play stats counter tick
+     */
+    playStatsTick() {
+        if (!this.enabled || !this.audioContext) return;
+
+        try {
+            const ctx = this.audioContext;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+
+            osc.frequency.value = 1200 + Math.random() * 200;
+            osc.type = 'square';
+
+            const now = ctx.currentTime;
+            gain.gain.setValueAtTime(0.025 * this.masterVolume, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.start(now);
+            osc.stop(now + 0.02);
+        } catch (e) {
+            // Silently fail
+        }
+    }
+
+    /**
+     * Play boss alert siren (3 pulses)
+     */
+    playBossAlert() {
+        if (!this.enabled || !this.audioContext) return;
+
+        try {
+            const ctx = this.audioContext;
+
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    if (!this.enabled) return;
+
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+
+                    osc.frequency.value = 150;
+                    osc.type = 'sawtooth';
+
+                    const now = ctx.currentTime;
+                    gain.gain.setValueAtTime(0.12 * this.masterVolume, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.start(now);
+                    osc.stop(now + 0.18);
+                }, i * 220);
+            }
+        } catch (e) {
+            // Silently fail
+        }
+    }
+
+    /**
+     * Play boss name reveal impact
+     */
+    playBossReveal() {
+        if (!this.enabled || !this.audioContext) return;
+
+        try {
+            const ctx = this.audioContext;
+
+            // Low impact
+            const osc1 = ctx.createOscillator();
+            const gain1 = ctx.createGain();
+
+            osc1.frequency.value = 60;
+            osc1.type = 'sine';
+
+            const now = ctx.currentTime;
+            gain1.gain.setValueAtTime(0.2 * this.masterVolume, now);
+            gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+            osc1.connect(gain1);
+            gain1.connect(ctx.destination);
+
+            osc1.start(now);
+            osc1.stop(now + 0.4);
+
+            // Higher harmonic
+            const osc2 = ctx.createOscillator();
+            const gain2 = ctx.createGain();
+
+            osc2.frequency.value = 120;
+            osc2.type = 'triangle';
+
+            gain2.gain.setValueAtTime(0.08 * this.masterVolume, now);
+            gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+
+            osc2.connect(gain2);
+            gain2.connect(ctx.destination);
+
+            osc2.start(now);
+            osc2.stop(now + 0.3);
+        } catch (e) {
+            // Silently fail
+        }
+    }
+
+    /**
+     * Play transition swoosh sound
+     */
+    playTransitionSwoosh() {
+        if (!this.enabled || !this.audioContext) return;
+
+        try {
+            const ctx = this.audioContext;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            const filter = ctx.createBiquadFilter();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(200, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.15);
+            osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.3);
+
+            filter.type = 'lowpass';
+            filter.frequency.value = 2000;
+
+            const now = ctx.currentTime;
+            gain.gain.setValueAtTime(0.08 * this.masterVolume, now);
+            gain.gain.linearRampToValueAtTime(0.1 * this.masterVolume, now + 0.1);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.start(now);
+            osc.stop(now + 0.3);
+        } catch (e) {
+            // Silently fail
+        }
+    }
 }

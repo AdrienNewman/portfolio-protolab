@@ -14,6 +14,7 @@ export class InputHandler {
         this.down = false;
         this.shoot = false;
         this.pause = false;
+        this.anyKey = false;
 
         // Touch state
         this.touchActive = false;
@@ -82,6 +83,9 @@ export class InputHandler {
                 e.preventDefault();
                 break;
         }
+
+        // Track any key press for screen skipping
+        this.anyKey = true;
     }
 
     handleKeyUp(e) {
@@ -164,6 +168,12 @@ export class InputHandler {
         return wasPaused;
     }
 
+    consumeAnyKey() {
+        const wasPressed = this.anyKey;
+        this.anyKey = false;
+        return wasPressed;
+    }
+
     reset() {
         this.left = false;
         this.right = false;
@@ -171,6 +181,7 @@ export class InputHandler {
         this.down = false;
         this.shoot = false;
         this.pause = false;
+        this.anyKey = false;
     }
 
     destroy() {
