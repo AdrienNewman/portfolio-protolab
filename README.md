@@ -174,6 +174,33 @@ Contenu ici...
 
 4. Rebuild le projet: `npm run build`
 
+## Accessibilité
+
+Le portfolio implémente les bonnes pratiques d'accessibilité web (WCAG 2.1) :
+
+### Fonctionnalités implémentées
+
+| Fonctionnalité | Description |
+|----------------|-------------|
+| **Skip-to-content** | Lien d'accès rapide au contenu principal (visible au Tab) |
+| **Reduced motion** | Désactivation des animations si `prefers-reduced-motion` activé |
+| **ARIA labels** | Labels sur navigation, menus, boutons pour lecteurs d'écran |
+| **Focus visible** | Contour cyan visible lors de la navigation clavier |
+| **Aria-expanded** | État dynamique du menu mobile pour lecteurs d'écran |
+| **Sémantique HTML** | Utilisation de `<main>`, `<nav>`, `role="dialog"` |
+
+### Navigation clavier
+
+- `Tab` : Navigation entre éléments interactifs
+- `Enter` : Activer le lien/bouton focusé
+- `Escape` : Fermer le menu mobile
+
+### Test d'accessibilité
+
+1. Appuyez sur `Tab` au chargement - le skip-link apparaît
+2. Naviguez avec `Tab` - contour cyan visible sur les éléments
+3. Activez "Réduire les animations" dans votre OS - animations désactivées
+
 ## Technologies utilisées
 
 - **Astro 5.x** - Framework web statique avec composants

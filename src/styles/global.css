@@ -60,6 +60,35 @@ body {
 }
 
 /* ========================================
+   ACCESSIBILITY - SKIP LINK
+   ======================================== */
+.skip-link {
+    position: fixed;
+    top: -60px;
+    left: 20px;
+    padding: 0.75rem 1.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--neon-cyan);
+    border: 2px solid var(--neon-cyan);
+    text-decoration: none;
+    z-index: 100000;
+    transition: all 0.3s ease;
+}
+
+.skip-link:focus {
+    top: 20px;
+    background: var(--neon-cyan);
+    color: var(--black);
+    outline: none;
+    box-shadow: 0 0 20px var(--neon-cyan), 0 0 40px rgba(0, 255, 255, 0.3);
+}
+
+/* ========================================
    SCROLLBAR GLOBAL
    ======================================== */
 ::-webkit-scrollbar {
@@ -630,4 +659,38 @@ body {
     .modal-section-title {
         font-size: 1.25rem;
     }
+}
+
+/* ========================================
+   ACCESSIBILITY - REDUCED MOTION
+   ======================================== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ========================================
+   ACCESSIBILITY - FOCUS VISIBLE
+   ======================================== */
+:focus-visible {
+    outline: 2px solid var(--neon-cyan);
+    outline-offset: 3px;
+}
+
+/* Style spécifique pour les boutons et liens */
+a:focus-visible,
+button:focus-visible {
+    outline: 2px solid var(--neon-cyan);
+    outline-offset: 3px;
+}
+
+/* Désactiver outline par défaut (géré par focus-visible) */
+:focus:not(:focus-visible) {
+    outline: none;
 }

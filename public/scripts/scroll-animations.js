@@ -40,28 +40,29 @@ function initNavigation() {
     const navMobile = document.getElementById('nav-mobile');
 
     if (navToggle && navMobile) {
-        navToggle.addEventListener('click', () => {
-            navToggle.classList.toggle('active');
-            navMobile.classList.toggle('active');
-            document.body.classList.toggle('menu-open');
-        });
+        // Fonction pour ouvrir/fermer le menu avec accessibilité
+        const toggleMenu = (open) => {
+            const isOpen = open !== undefined ? open : !navMobile.classList.contains('active');
+            navToggle.classList.toggle('active', isOpen);
+            navMobile.classList.toggle('active', isOpen);
+            document.body.classList.toggle('menu-open', isOpen);
+            // Accessibilité: aria-hidden et aria-expanded
+            navMobile.setAttribute('aria-hidden', !isOpen);
+            navToggle.setAttribute('aria-expanded', isOpen);
+        };
+
+        navToggle.addEventListener('click', () => toggleMenu());
 
         // Close menu on link click
         const mobileLinks = navMobile.querySelectorAll('.nav-mobile-link');
         mobileLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                navToggle.classList.remove('active');
-                navMobile.classList.remove('active');
-                document.body.classList.remove('menu-open');
-            });
+            link.addEventListener('click', () => toggleMenu(false));
         });
 
         // Fermeture par touche Escape
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && navMobile.classList.contains('active')) {
-                navToggle.classList.remove('active');
-                navMobile.classList.remove('active');
-                document.body.classList.remove('menu-open');
+                toggleMenu(false);
             }
         });
 
@@ -70,9 +71,7 @@ function initNavigation() {
         if (navLogo) {
             navLogo.addEventListener('click', () => {
                 if (navMobile.classList.contains('active')) {
-                    navToggle.classList.remove('active');
-                    navMobile.classList.remove('active');
-                    document.body.classList.remove('menu-open');
+                    toggleMenu(false);
                 }
             });
         }

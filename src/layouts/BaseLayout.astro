@@ -28,6 +28,9 @@ const {
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Skip to content for accessibility -->
+    <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
     <!-- Custom Cursor -->
     <div class="custom-cursor" id="cursor"></div>
 
@@ -35,7 +38,9 @@ const {
     <canvas id="three-canvas"></canvas>
 
     <!-- Main Content -->
-    <slot />
+    <main id="main-content">
+        <slot />
+    </main>
 
     <!-- Documentation Modal -->
     <DocModal />

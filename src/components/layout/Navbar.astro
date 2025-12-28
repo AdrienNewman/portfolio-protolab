@@ -3,14 +3,14 @@
 import { navigationItems, ctaItem } from '../../config/navigation';
 ---
 
-<nav class="nav" id="nav">
+<nav class="nav" id="nav" role="navigation" aria-label="Navigation principale">
     <div class="nav-inner">
-        <a href="#accueil" class="nav-logo">
+        <a href="#accueil" class="nav-logo" aria-label="Adrien Mercadier - Retour à l'accueil">
             <span class="nav-logo-bracket">[</span>
             <span class="nav-logo-text">AM</span>
             <span class="nav-logo-bracket">]</span>
         </a>
-        <ul class="nav-menu">
+        <ul class="nav-menu" role="list">
             {navigationItems.map((item, index) => (
                 <li>
                     <a href={item.href} class={`nav-link ${index === 0 ? 'active' : ''}`}>

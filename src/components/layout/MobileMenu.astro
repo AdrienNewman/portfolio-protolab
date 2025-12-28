@@ -3,15 +3,17 @@
 import { navigationItems } from '../../config/navigation';
 ---
 
-<div class="nav-mobile" id="nav-mobile">
-    <ul class="nav-mobile-menu">
-        {navigationItems.map((item, index) => (
-            <li class="nav-mobile-item" style={`--item-index: ${index}`}>
-                <a href={item.href} class="nav-mobile-link">{item.label}</a>
-            </li>
-        ))}
-    </ul>
-    <div class="nav-mobile-deco">Adrien Mercadier — TSSR 2025</div>
+<div class="nav-mobile" id="nav-mobile" role="dialog" aria-label="Menu de navigation" aria-hidden="true">
+    <nav aria-label="Navigation mobile">
+        <ul class="nav-mobile-menu" role="list">
+            {navigationItems.map((item, index) => (
+                <li class="nav-mobile-item" style={`--item-index: ${index}`}>
+                    <a href={item.href} class="nav-mobile-link">{item.label}</a>
+                </li>
+            ))}
+        </ul>
+    </nav>
+    <div class="nav-mobile-deco" aria-hidden="true">Adrien Mercadier — TSSR 2025</div>
 </div>
 
 <style>

@@ -1,13 +1,33 @@
 # Référence — Portfolio Protolab
 
-Date de capture : 27 décembre 2025
+Date de capture : 28 décembre 2025
 Répertoire : `portefolio V3`
 Branche : `master`
-Version : **V3.12**
+Version : **V4.5**
 
 **But du document** : fournir une référence complète de l'état actuel du site portfolio (structure, technologies, scripts, configuration, contenu et points d'attention) pour permettre une reprise par un LLM local (ex : Ollama, LlamaCPP) ou un service comme Claude Code. Inclus des exemples de prompts prêts à l'emploi et des commandes pour développement et déploiement.
 
 **NOTE** : ce fichier est une capture d'état — conservez-le avec le repo pour faciliter la continuité.
+
+---
+
+## Changelog V4.5 (28 décembre 2025)
+
+### Accessibilité (WCAG 2.1)
+- **Skip-to-content link** : Lien d'accès rapide au contenu principal, visible au Tab, style identique au bouton CTA
+- **Reduced motion** : Support `prefers-reduced-motion` pour désactiver les animations CSS
+- **ARIA labels** : Labels sur navigation principale, menu mobile, logo, boutons
+- **Focus visible** : Contour cyan visible lors de la navigation clavier (`:focus-visible`)
+- **Aria-expanded** : État dynamique du menu mobile pour lecteurs d'écran
+- **Sémantique HTML** : Ajout de `<main id="main-content">`, `role="navigation"`, `role="dialog"`, `role="list"`
+
+### Fichiers modifiés V4.5
+- `src/layouts/BaseLayout.astro` : Skip-link, wrapper `<main>` avec id
+- `src/styles/global.css` : Styles skip-link, reduced-motion, focus-visible
+- `src/components/layout/Navbar.astro` : ARIA labels sur nav, logo, liste
+- `src/components/layout/MobileMenu.astro` : role="dialog", aria-hidden, nav wrapper
+- `public/scripts/scroll-animations.js` : toggleMenu() avec aria-hidden/aria-expanded
+- `Documentation Porte Folio/SEO_IMPLEMENTATION_GUIDE.md` : Nouveau guide SEO complet
 
 ---
 
