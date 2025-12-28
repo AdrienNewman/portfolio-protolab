@@ -55,6 +55,118 @@ function initNavigation() {
                 document.body.classList.remove('menu-open');
             });
         });
+
+        // Fermeture par touche Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && navMobile.classList.contains('active')) {
+                navToggle.classList.remove('active');
+                navMobile.classList.remove('active');
+                document.body.classList.remove('menu-open');
+            }
+        });
+
+        // Fermeture par clic sur le logo AM
+        const navLogo = document.querySelector('.nav-logo');
+        if (navLogo) {
+            navLogo.addEventListener('click', () => {
+                if (navMobile.classList.contains('active')) {
+                    navToggle.classList.remove('active');
+                    navMobile.classList.remove('active');
+                    document.body.classList.remove('menu-open');
+                }
+            });
+        }
+
+        // Scroll parallaxe des titres
+        let scrollOffset = 0;
+        const maxScroll = 400; // Scroll max avant fermeture
+        const mobileMenu = navMobile.querySelector('.nav-mobile-menu');
+
+        // Fonction pour fermer le menu et reset
+        const closeMenuAndReset = () => {
+            scrollOffset = 0;
+            if (mobileMenu) mobileMenu.style.transform = '';
+            navToggle.classList.remove('active');
+            navMobile.classList.remove('active');
+            document.body.classList.remove('menu-open');
+        };
+
+        // Scroll molette (desktop) - parallaxe
+        navMobile.addEventListener('wheel', (e) => {
+            if (!navMobile.classList.contains('active')) return;
+
+            scrollOffset += e.deltaY * 0.5;
+            scrollOffset = Math.max(0, scrollOffset); // Pas de scroll négatif
+
+            // Appliquer le décalage aux titres
+            if (mobileMenu) {
+                mobileMenu.style.transform = `translateY(-${scrollOffset}px)`;
+            }
+
+            // Fermer si scroll suffisant
+            if (scrollOffset > maxScroll) {
+                closeMenuAndReset();
+            }
+        }, { passive: true });
+
+        // Swipe sur mobile - parallaxe
+        let touchStartY = 0;
+        let touchCurrentY = 0;
+        let isSwiping = false;
+
+        navMobile.addEventListener('touchstart', (e) => {
+            touchStartY = e.changedTouches[0].screenY;
+            touchCurrentY = touchStartY;
+            isSwiping = true;
+        }, { passive: true });
+
+        navMobile.addEventListener('touchmove', (e) => {
+            if (!isSwiping || !navMobile.classList.contains('active')) return;
+
+            touchCurrentY = e.changedTouches[0].screenY;
+            const deltaY = touchStartY - touchCurrentY;
+
+            if (deltaY > 0) { // Swipe vers le haut
+                scrollOffset = deltaY;
+                if (mobileMenu) {
+                    mobileMenu.style.transform = `translateY(-${scrollOffset}px)`;
+                }
+            }
+        }, { passive: true });
+
+        navMobile.addEventListener('touchend', () => {
+            isSwiping = false;
+            // Fermer si swipe suffisant
+            if (scrollOffset > maxScroll / 2) {
+                closeMenuAndReset();
+            } else {
+                // Revenir à la position initiale
+                scrollOffset = 0;
+                if (mobileMenu) {
+                    mobileMenu.style.transition = 'transform 0.3s ease';
+                    mobileMenu.style.transform = '';
+                    setTimeout(() => {
+                        if (mobileMenu) mobileMenu.style.transition = '';
+                    }, 300);
+                }
+            }
+        }, { passive: true });
+
+        // Reset le scroll quand on ferme le menu par d'autres moyens
+        const originalCloseMenu = () => {
+            scrollOffset = 0;
+            if (mobileMenu) mobileMenu.style.transform = '';
+        };
+
+        // Observer les changements de classe pour reset
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'class' && !navMobile.classList.contains('active')) {
+                    originalCloseMenu();
+                }
+            });
+        });
+        observer.observe(navMobile, { attributes: true });
     }
 
     // Active link highlighting

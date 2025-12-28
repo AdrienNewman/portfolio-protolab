@@ -1,15 +1,15 @@
 ---
 // Mobile Menu Component
+import { navigationItems } from '../../config/navigation';
 ---
 
 <div class="nav-mobile" id="nav-mobile">
     <ul class="nav-mobile-menu">
-        <li class="nav-mobile-item"><a href="#accueil" class="nav-mobile-link">Accueil</a></li>
-        <li class="nav-mobile-item"><a href="#competences" class="nav-mobile-link">Compétences</a></li>
-        <li class="nav-mobile-item"><a href="#profil" class="nav-mobile-link">Profil</a></li>
-        <li class="nav-mobile-item"><a href="#projets" class="nav-mobile-link">Projets</a></li>
-        <li class="nav-mobile-item"><a href="#documentation" class="nav-mobile-link">Documentation</a></li>
-        <li class="nav-mobile-item"><a href="#contact" class="nav-mobile-link">Contact</a></li>
+        {navigationItems.map((item, index) => (
+            <li class="nav-mobile-item" style={`--item-index: ${index}`}>
+                <a href={item.href} class="nav-mobile-link">{item.label}</a>
+            </li>
+        ))}
     </ul>
     <div class="nav-mobile-deco">Adrien Mercadier — TSSR 2025</div>
 </div>
@@ -25,35 +25,63 @@
         z-index: 1001;
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
+        padding-top: 100px; /* Espace pour la navbar */
         opacity: 0;
         visibility: hidden;
         transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .nav-mobile.active { opacity: 1; visibility: visible; }
-    .nav-mobile-menu { list-style: none; text-align: center; }
-    .nav-mobile-item { margin: 1.5rem 0; overflow: hidden; }
+
+    /* Zone de fondu en haut pour faire disparaître les titres */
+    .nav-mobile::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 120px;
+        background: linear-gradient(to bottom, var(--black) 0%, var(--black) 50%, transparent 100%);
+        z-index: 10;
+        pointer-events: none;
+    }
+    .nav-mobile-menu {
+        list-style: none;
+        text-align: center;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .nav-mobile-item {
+        margin: 1.5rem 0;
+        overflow: hidden;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
 
     .nav-mobile-link {
         display: inline-block;
+        position: relative;
         font-family: 'Bebas Neue', sans-serif;
         font-size: clamp(2.5rem, 10vw, 5rem);
         color: var(--white);
         text-decoration: none;
         transform: translateY(100%);
         transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
+        transition-delay: calc(0.1s + var(--item-index, 0) * 0.05s);
     }
 
     .nav-mobile.active .nav-mobile-link { transform: translateY(0); }
-    .nav-mobile-item:nth-child(1) .nav-mobile-link { transition-delay: 0.1s; }
-    .nav-mobile-item:nth-child(2) .nav-mobile-link { transition-delay: 0.15s; }
-    .nav-mobile-item:nth-child(3) .nav-mobile-link { transition-delay: 0.2s; }
-    .nav-mobile-item:nth-child(4) .nav-mobile-link { transition-delay: 0.25s; }
-    .nav-mobile-item:nth-child(5) .nav-mobile-link { transition-delay: 0.3s; }
-    .nav-mobile-item:nth-child(6) .nav-mobile-link { transition-delay: 0.35s; }
-    .nav-mobile-link:hover { color: var(--neon-cyan); }
+
+    .nav-mobile-link:hover {
+        color: var(--neon-cyan);
+    }
 
     .nav-mobile-link::before {
         content: attr(data-index);

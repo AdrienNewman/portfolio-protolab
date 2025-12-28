@@ -223,29 +223,8 @@
                 renderer.setSize(window.innerWidth, window.innerHeight);
             });
 
-            // Enable pointer events for click detection
-            overlayCanvas.style.pointerEvents = 'auto';
-            overlayCanvas.style.cursor = 'default';
-
             // Start animation
             animatePacket();
-
-            // Visibility based on scroll position (fade out when leaving hero section)
-            function updateVisibility() {
-                const heroSection = document.getElementById('accueil');
-                if (!heroSection) return;
-
-                const heroBottom = heroSection.offsetHeight;
-                const scrollY = window.scrollY;
-
-                // Fade out as we scroll past hero section
-                const opacity = Math.max(0, 1 - (scrollY / (heroBottom * 0.7)));
-                overlayCanvas.style.opacity = opacity;
-                overlayCanvas.style.pointerEvents = opacity > 0.1 ? 'auto' : 'none';
-            }
-
-            window.addEventListener('scroll', updateVisibility, { passive: true });
-            updateVisibility(); // Initial check
         }
 
         function animatePacket() {
@@ -325,11 +304,37 @@
             animate();
         }
 
+        // Check if cursor is over an opaque DOM element (tile, card, etc.)
+        function isOverOpaqueElement(x, y) {
+            const elements = document.elementsFromPoint(x, y);
+            for (const el of elements) {
+                // Skip the packet canvas and body/html
+                if (el.id === 'packet-overlay' || el.id === 'three-canvas' ||
+                    el.tagName === 'BODY' || el.tagName === 'HTML') continue;
+
+                // Check if element has opaque background
+                const style = getComputedStyle(el);
+                const bg = style.backgroundColor;
+                const bgImage = style.backgroundImage;
+
+                // Has visible background color (not transparent)
+                if (bg && bg !== 'transparent' && bg !== 'rgba(0, 0, 0, 0)') {
+                    return true;
+                }
+                // Has background image
+                if (bgImage && bgImage !== 'none') {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         // Mouse interaction
         function setupInteraction() {
-            const targetCanvas = document.getElementById('packet-overlay') || canvas;
+            // Listen on document since canvas has pointer-events: none
+            // This allows clicking through to content while still detecting packet hover/click
 
-            targetCanvas.addEventListener('mousemove', (event) => {
+            document.addEventListener('mousemove', (event) => {
                 if (!packetMesh || !camera) return;
 
                 mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -341,10 +346,14 @@
                 const intersects = raycaster.intersectObjects(packetGroup.children, true);
 
                 const wasHovered = isHovered;
-                isHovered = intersects.length > 0;
+
+                // Packet is hoverable only if not behind an opaque element
+                const packetHit = intersects.length > 0;
+                const behindElement = isOverOpaqueElement(event.clientX, event.clientY);
+                isHovered = packetHit && !behindElement;
 
                 if (isHovered !== wasHovered) {
-                    targetCanvas.style.cursor = isHovered ? 'pointer' : 'default';
+                    document.body.style.cursor = isHovered ? 'pointer' : '';
 
                     // Update custom cursor if exists
                     const customCursor = document.getElementById('cursor');
@@ -358,8 +367,12 @@
                 }
             });
 
-            targetCanvas.addEventListener('click', (event) => {
+            document.addEventListener('click', (event) => {
                 if (!isHovered) return;
+
+                // Prevent click from propagating to elements below
+                event.preventDefault();
+                event.stopPropagation();
 
                 // Launch the game with click position for intro animation!
                 console.log('FloatingPacket: Launching NetDefender!');
@@ -375,7 +388,7 @@
                 } else {
                     console.warn('FloatingPacket: openNetDefender not available');
                 }
-            });
+            }, true); // Use capture phase to intercept before other handlers
 
             // Listen for game close to respawn packet
             window.addEventListener('netdefender-closed', () => {

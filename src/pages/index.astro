@@ -286,6 +286,11 @@ const colorDocker = getIconColor('docker');
         z-index: 1000 !important;
     }
 
+    /* Quand le menu mobile est ouvert, la navbar passe devant */
+    body.menu-open .nav {
+        z-index: 1003 !important;
+    }
+
     /* Make sure Three.js canvas is behind and doesn't take space */
     #three-canvas {
         position: fixed !important;
@@ -326,7 +331,7 @@ const colorDocker = getIconColor('docker');
     /* Profile Section */
     #profil {
         padding: 120px 40px;
-        background: var(--black);
+        background: transparent;
     }
 
     .profile-grid {
@@ -537,7 +542,7 @@ const colorDocker = getIconColor('docker');
     /* Contact Section */
     .contact-section {
         padding: 120px 40px;
-        background: var(--gray-dark);
+        background: transparent;
         text-align: center;
     }
 
