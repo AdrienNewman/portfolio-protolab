@@ -17,7 +17,15 @@
       "Bash(dir \"c:\\\\Users\\\\Beweb\\\\Documents\\\\Serveur Proxmox\\\\PROTOLAB\\\\Porte Folio\\\\portefolio V3\\\\src\\\\pages\")",
       "Bash(dir \"c:\\\\Users\\\\Beweb\\\\Documents\\\\Serveur Proxmox\\\\PROTOLAB\\\\Porte Folio\\\\portefolio V3\\\\public\")",
       "Bash(dir:*)",
-      "Bash(.ts\" || echo \"Directory structure checked \")"
+      "Bash(.ts\" || echo \"Directory structure checked \")",
+      "Bash(git add:*)",
+      "Bash(npm install:*)",
+      "Bash(python -m json.tool:*)",
+      "Bash(git show:*)",
+      "Bash(git checkout:*)",
+      "Bash(start prototypes/tesseract-hero-magnetic/index.html)",
+      "Bash(grep:*)",
+      "Bash(wc:*)"
     ]
   }
 }

@@ -75,10 +75,11 @@ const { title, description, stack, featured = false, status = "Production", stat
         transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+    /* Mode featured désactivé - tuiles uniformes */
     .project-card.project-featured {
-        grid-column: span 2;
-        display: grid;
-        grid-template-columns: 1.2fr 0.8fr;
+        /* grid-column: span 2; */
+        /* display: grid; */
+        /* grid-template-columns: 1.2fr 0.8fr; */
     }
 
     .project-bg {
@@ -133,7 +134,7 @@ const { title, description, stack, featured = false, status = "Production", stat
     .project-content {
         position: relative;
         z-index: 1;
-        padding: 2.5rem;
+        padding: 1.25rem;
         display: flex;
         flex-direction: column;
     }
@@ -142,19 +143,19 @@ const { title, description, stack, featured = false, status = "Production", stat
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 1.5rem;
+        margin-bottom: 0.75rem;
     }
 
     .project-status {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        font-size: 0.7rem;
+        gap: 0.4rem;
+        font-size: 0.6rem;
         font-weight: 700;
         letter-spacing: 0.15em;
         text-transform: uppercase;
         color: var(--neon-cyan);
-        padding: 0.4rem 0.8rem;
+        padding: 0.25rem 0.5rem;
         border: 1px solid rgba(0, 255, 255, 0.3);
         background: rgba(0, 255, 255, 0.05);
     }
@@ -176,30 +177,31 @@ const { title, description, stack, featured = false, status = "Production", stat
 
     .project-title {
         font-family: 'Bebas Neue', sans-serif;
-        font-size: 2.5rem;
+        font-size: 1.5rem;
         letter-spacing: 0.05em;
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
         line-height: 1.1;
     }
 
     .project-desc {
-        font-size: 0.95rem;
+        font-size: 0.8rem;
         color: var(--gray-light);
-        line-height: 1.7;
-        margin-bottom: 1.5rem;
+        line-height: 1.5;
+        margin-bottom: 0.75rem;
         flex-grow: 1;
+        text-transform: uppercase;
     }
 
     .project-stack {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.5rem;
-        margin-bottom: 1.5rem;
+        gap: 0.35rem;
+        margin-bottom: 0.75rem;
     }
 
     .project-stack span {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.6rem;
         font-weight: 700;
         letter-spacing: 0.1em;
         text-transform: uppercase;
@@ -217,8 +219,8 @@ const { title, description, stack, featured = false, status = "Production", stat
     .project-cta {
         display: inline-flex;
         align-items: center;
-        gap: 0.75rem;
-        font-size: 0.8rem;
+        gap: 0.5rem;
+        font-size: 0.65rem;
         font-weight: 700;
         letter-spacing: 0.15em;
         text-transform: uppercase;

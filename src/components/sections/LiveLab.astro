@@ -26,10 +26,13 @@
                 </div>
             </div>
 
-            <!-- Services Grid -->
-            <div class="services-section">
-                <h3 class="panel-title">/// SERVICES</h3>
-                <div class="services-grid" data-lab-services>
+            <!-- MANAGEMENT Category -->
+            <div class="category-section" data-category="management">
+                <div class="category-header">
+                    <h3 class="category-title">MANAGEMENT</h3>
+                    <span class="category-counter" data-category-counter>0/2</span>
+                </div>
+                <div class="services-grid">
                     <!-- Proxmox -->
                     <div class="service-card" data-service="proxmox">
                         <div class="service-header">
@@ -82,8 +85,157 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <!-- Windows DC -->
+            <!-- INFRASTRUCTURE Category -->
+            <div class="category-section" data-category="infrastructure">
+                <div class="category-header">
+                    <h3 class="category-title">INFRASTRUCTURE</h3>
+                    <span class="category-counter" data-category-counter>0/5</span>
+                </div>
+                <div class="services-grid">
+                    <!-- Grafana -->
+                    <div class="service-card" data-service="grafana">
+                        <div class="service-header">
+                            <div class="service-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                                    <path d="M22 5v2h-3v3h-2V7h-3V5h3V2h2v3h3zm-3 14H5V5h6V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-6h-2v6z"/>
+                                    <path d="M7 17h2v-7H7v7zm4 0h2v-4h-2v4zm4 0h2v-2h-2v2z"/>
+                                </svg>
+                            </div>
+                            <div class="service-info">
+                                <span class="service-name">Grafana</span>
+                                <span class="service-status" data-status="unknown">--</span>
+                            </div>
+                            <div class="service-uptime" data-uptime>--</div>
+                        </div>
+                        <div class="service-metrics">
+                            <div class="service-metric">
+                                <span class="metric-label">CPU</span>
+                                <span class="metric-value" data-cpu>--%</span>
+                            </div>
+                            <div class="service-metric">
+                                <span class="metric-label">RAM</span>
+                                <span class="metric-value" data-memory>--%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- VictoriaLogs -->
+                    <div class="service-card" data-service="victorialogs">
+                        <div class="service-header">
+                            <div class="service-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H6v-2h6v2zm4-4H6v-2h10v2zm0-4H6V7h10v2z"/>
+                                </svg>
+                            </div>
+                            <div class="service-info">
+                                <span class="service-name">VictoriaLogs</span>
+                                <span class="service-status" data-status="unknown">--</span>
+                            </div>
+                            <div class="service-uptime" data-uptime>--</div>
+                        </div>
+                        <div class="service-metrics">
+                            <div class="service-metric">
+                                <span class="metric-label">CPU</span>
+                                <span class="metric-value" data-cpu>--%</span>
+                            </div>
+                            <div class="service-metric">
+                                <span class="metric-label">RAM</span>
+                                <span class="metric-value" data-memory>--%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- OTel Collector -->
+                    <div class="service-card" data-service="otelcol">
+                        <div class="service-header">
+                            <div class="service-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                </svg>
+                            </div>
+                            <div class="service-info">
+                                <span class="service-name">OTel Collector</span>
+                                <span class="service-status" data-status="unknown">--</span>
+                            </div>
+                            <div class="service-uptime" data-uptime>--</div>
+                        </div>
+                        <div class="service-metrics">
+                            <div class="service-metric">
+                                <span class="metric-label">CPU</span>
+                                <span class="metric-value" data-cpu>--%</span>
+                            </div>
+                            <div class="service-metric">
+                                <span class="metric-label">RAM</span>
+                                <span class="metric-value" data-memory>--%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Control Plane -->
+                    <div class="service-card" data-service="controlplane">
+                        <div class="service-header">
+                            <div class="service-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                                    <path d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/>
+                                </svg>
+                            </div>
+                            <div class="service-info">
+                                <span class="service-name">Control Plane</span>
+                                <span class="service-status" data-status="unknown">--</span>
+                            </div>
+                            <div class="service-uptime" data-uptime>--</div>
+                        </div>
+                        <div class="service-metrics">
+                            <div class="service-metric">
+                                <span class="metric-label">CPU</span>
+                                <span class="metric-value" data-cpu>--%</span>
+                            </div>
+                            <div class="service-metric">
+                                <span class="metric-label">RAM</span>
+                                <span class="metric-value" data-memory>--%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MinIO -->
+                    <div class="service-card" data-service="minio">
+                        <div class="service-header">
+                            <div class="service-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                                    <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4s1.79-4 4-4h.71C7.37 7.69 9.48 6 12 6c3.04 0 5.5 2.46 5.5 5.5v.5H19c1.66 0 3 1.34 3 3s-1.34 3-3 3z"/>
+                                </svg>
+                            </div>
+                            <div class="service-info">
+                                <span class="service-name">MinIO</span>
+                                <span class="service-status" data-status="unknown">--</span>
+                            </div>
+                            <div class="service-uptime" data-uptime>--</div>
+                        </div>
+                        <div class="service-metrics">
+                            <div class="service-metric">
+                                <span class="metric-label">CPU</span>
+                                <span class="metric-value" data-cpu>--%</span>
+                            </div>
+                            <div class="service-metric">
+                                <span class="metric-label">RAM</span>
+                                <span class="metric-value" data-memory>--%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SERVICES Category -->
+            <div class="category-section" data-category="services">
+                <div class="category-header">
+                    <h3 class="category-title">SERVICES</h3>
+                    <span class="category-counter" data-category-counter>0/2</span>
+                </div>
+                <div class="services-grid">
+                    <!-- Windows DC01 -->
                     <div class="service-card" data-service="dc01">
                         <div class="service-header">
                             <div class="service-icon">
@@ -109,16 +261,16 @@
                         </div>
                     </div>
 
-                    <!-- Grafana -->
-                    <div class="service-card" data-service="grafana">
+                    <!-- Web Gateway -->
+                    <div class="service-card" data-service="webgateway">
                         <div class="service-header">
                             <div class="service-icon">
                                 <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                                    <path d="M22.7 12.6c-.1-.4-.5-.7-.9-.7h-.2c-.4-.6-.9-1.2-1.5-1.6.1-.4.1-.9 0-1.3-.1-.4-.5-.6-.9-.5-.4.1-.7.4-.8.8-.4.2-.8.5-1.1.8-.3-.1-.6-.1-.9-.1-1.1 0-2.2.4-3 1.1-.4-.2-.8-.3-1.2-.3-.7 0-1.3.3-1.8.7-.5-.2-1.1-.3-1.7-.3-.6 0-1.2.1-1.7.4-.5-.3-1.1-.5-1.8-.5-.7 0-1.3.2-1.8.6-.3-.1-.6-.1-.9-.1-.9 0-1.6.5-2 1.2h-.1c-.5 0-.9.4-1 .9-.1.5.2 1 .7 1.1.3.7.9 1.3 1.6 1.6 0 .1 0 .2-.1.3-.1.5.2 1 .7 1.1.5.1 1-.1 1.2-.6.4.1.7.1 1.1.1h.3c.3.5.8.9 1.4 1.1.1.5.5.8 1 .8h.1c.5 0 .9-.4 1-.9.3 0 .7-.1 1-.2.4.4.9.6 1.5.6.3 0 .6-.1.9-.2.4.3.9.5 1.4.5.4 0 .8-.1 1.1-.3.5.2 1 .3 1.5.3.5 0 1-.1 1.4-.3.3.1.6.2 1 .2.8 0 1.5-.4 2-1 .5 0 .9-.3 1.1-.8.2-.5 0-1-.4-1.3.2-.4.3-.8.3-1.2 0-.2 0-.5-.1-.7.4-.4.6-.9.6-1.5-.1-.4-.2-.7-.4-1z"/>
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
                                 </svg>
                             </div>
                             <div class="service-info">
-                                <span class="service-name">Grafana OSS</span>
+                                <span class="service-name">Web Gateway</span>
                                 <span class="service-status" data-status="unknown">--</span>
                             </div>
                             <div class="service-uptime" data-uptime>--</div>
@@ -139,7 +291,7 @@
 
             <!-- Resources Panel -->
             <div class="resources-section">
-                <h3 class="panel-title">/// RESOURCES</h3>
+                <h3 class="panel-title">/// RESOURCES (Proxmox Node)</h3>
                 <div class="resources-grid">
                     <!-- CPU -->
                     <div class="resource-meter" data-resource="cpu">
@@ -261,11 +413,14 @@
     }
 
     .section-desc {
-        font-size: 1rem;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.2rem;
         color: var(--gray-light);
         max-width: 500px;
         margin: 0 auto;
-        line-height: 1.6;
+        line-height: 1.4;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
     }
 
     /* Dashboard Container */
@@ -352,6 +507,62 @@
         margin-left: 0.5rem;
     }
 
+    /* Category Sections */
+    .category-section {
+        margin-bottom: 2rem;
+    }
+
+    .category-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .category-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.1rem;
+        letter-spacing: 0.15em;
+        margin: 0;
+    }
+
+    /* Category colors */
+    [data-category="management"] .category-title {
+        color: var(--neon-cyan);
+    }
+
+    [data-category="management"] .category-header {
+        border-bottom-color: rgba(0, 255, 255, 0.3);
+    }
+
+    [data-category="infrastructure"] .category-title {
+        color: var(--neon-green);
+    }
+
+    [data-category="infrastructure"] .category-header {
+        border-bottom-color: rgba(0, 255, 136, 0.3);
+    }
+
+    [data-category="services"] .category-title {
+        color: var(--neon-magenta);
+    }
+
+    [data-category="services"] .category-header {
+        border-bottom-color: rgba(255, 0, 255, 0.3);
+    }
+
+    .category-counter {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--gray-light);
+        padding: 0.25rem 0.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 2px;
+    }
+
     /* Panel Titles */
     .panel-title {
         font-family: 'Bebas Neue', sans-serif;
@@ -362,23 +573,19 @@
     }
 
     /* Services Grid */
-    .services-section {
-        margin-bottom: 2rem;
-    }
-
     .services-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 0.75rem;
     }
 
     .service-card {
         background: rgba(0, 0, 0, 0.4);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        padding: 1rem;
+        padding: 0.875rem;
         display: flex;
         flex-direction: column;
-        gap: 0.75rem;
+        gap: 0.5rem;
         transition: all 0.3s ease;
     }
 
@@ -391,15 +598,32 @@
         border-color: var(--neon-green);
     }
 
+    .service-card[data-active="false"] {
+        opacity: 0.5;
+        border-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .service-card[data-active="false"]:hover {
+        opacity: 0.7;
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
     .service-header {
         display: flex;
         align-items: center;
-        gap: 0.75rem;
+        gap: 0.5rem;
     }
 
     .service-icon {
         color: var(--gray-mid);
         flex-shrink: 0;
+        width: 20px;
+        height: 20px;
+    }
+
+    .service-icon svg {
+        width: 100%;
+        height: 100%;
     }
 
     .service-card[data-active="true"] .service-icon {
@@ -414,18 +638,21 @@
     .service-name {
         display: block;
         font-family: 'Space Mono', monospace;
-        font-size: 0.8rem;
+        font-size: 0.7rem;
         font-weight: 700;
         color: var(--white);
         text-transform: uppercase;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.03em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .service-status {
         display: block;
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.7rem;
-        margin-top: 0.25rem;
+        font-size: 0.6rem;
+        margin-top: 0.15rem;
         color: var(--gray-mid);
     }
 
@@ -439,16 +666,17 @@
 
     .service-uptime {
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.65rem;
+        font-size: 0.55rem;
         color: var(--gray-light);
         text-align: right;
+        white-space: nowrap;
     }
 
     /* Service Metrics */
     .service-metrics {
         display: flex;
-        gap: 1rem;
-        padding-top: 0.5rem;
+        gap: 0.75rem;
+        padding-top: 0.4rem;
         border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
 
@@ -461,16 +689,16 @@
 
     .metric-label {
         font-family: 'Space Mono', monospace;
-        font-size: 0.6rem;
+        font-size: 0.55rem;
         font-weight: 700;
         color: var(--gray-mid);
         text-transform: uppercase;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.03em;
     }
 
     .metric-value {
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.75rem;
+        font-size: 0.65rem;
         font-weight: 700;
         color: var(--neon-cyan);
     }
@@ -486,6 +714,9 @@
     /* Resources Grid */
     .resources-section {
         margin-bottom: 2rem;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(0, 255, 255, 0.2);
     }
 
     .resources-grid {
@@ -683,7 +914,7 @@
         }
 
         .services-grid {
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(2, 1fr);
         }
 
         .resources-grid {
@@ -697,6 +928,12 @@
 
         .network-stat {
             justify-content: center;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .services-grid {
+            grid-template-columns: 1fr;
         }
     }
 </style>

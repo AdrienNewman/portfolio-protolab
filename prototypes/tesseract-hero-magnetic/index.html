@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tesseract Hero - Magnetic Assembly | Prototype V2</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #000000;
+            --white: #ffffff;
+            --cyan: #00ffff;
+            --magenta: #ff0080;
+            --gray-light: #a0a0a0;
+        }
+
+        body {
+            background: var(--black);
+            color: var(--white);
+            font-family: 'JetBrains Mono', monospace;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #tesseract-container {
+            width: 100%;
+            max-width: 600px;
+            height: 400px;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .tesseract-name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2rem, 6vw, 3rem);
+            letter-spacing: 0.35em;
+            color: var(--white);
+            text-align: center;
+            margin-top: 2rem;
+            opacity: 0; /* Fade-in via JS */
+            filter: blur(10px); /* Blur initial */
+            text-shadow:
+                0 0 8px rgba(0, 255, 255, 0.4),
+                0 0 20px rgba(0, 255, 255, 0.2),
+                0 0 40px rgba(255, 0, 128, 0.1);
+        }
+
+        .hero-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.875rem, 2vw, 1.25rem);
+            color: var(--gray-light);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .hero-subtitle span {
+            color: var(--magenta);
+        }
+
+        /* Debug Panel */
+        .debug-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid var(--cyan);
+            padding: 1rem;
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--cyan);
+            display: none;
+            z-index: 1000;
+        }
+
+        .debug-panel.active {
+            display: block;
+        }
+
+        .debug-item {
+            margin: 0.25rem 0;
+        }
+
+        .debug-label {
+            color: var(--gray-light);
+            margin-right: 0.5rem;
+        }
+
+        .debug-value {
+            color: var(--cyan);
+            font-weight: bold;
+        }
+
+        /* Version Badge */
+        .version-badge {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 0, 128, 0.1);
+            border: 2px solid var(--magenta);
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+            color: var(--magenta);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            z-index: 1000;
+        }
+
+        /* Instructions */
+        .instructions {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--gray-light);
+            letter-spacing: 0.1em;
+        }
+
+        .instructions kbd {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid var(--cyan);
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--cyan);
+            margin: 0 0.25rem;
+        }
+
+        @media (max-width: 768px) {
+            #tesseract-container {
+                max-width: 100%;
+                height: 300px;
+            }
+
+            .tesseract-name {
+                font-size: clamp(1.5rem, 6vw, 2.5rem);
+                margin-top: 1rem;
+            }
+
+            .hero-subtitle {
+                font-size: 0.75rem;
+            }
+
+            .instructions {
+                font-size: 0.625rem;
+            }
+
+            .version-badge {
+                font-size: 0.625rem;
+                padding: 0.25rem 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Version Badge -->
+    <div class="version-badge">Magnetic Assembly V2</div>
+
+    <!-- Tesseract 3D Container -->
+    <div id="tesseract-container"></div>
+
+    <!-- Name below Tesseract -->
+    <h1 class="tesseract-name">ADRIEN MERCADIER</h1>
+    <p class="hero-subtitle">Technicien Supérieur <span>Systèmes & Réseaux</span></p>
+
+    <!-- Debug Panel -->
+    <div class="debug-panel" id="debug-panel">
+        <div class="debug-item">
+            <span class="debug-label">FPS:</span>
+            <span class="debug-value" id="debug-fps">60</span>
+        </div>
+        <div class="debug-item">
+            <span class="debug-label">Phase:</span>
+            <span class="debug-value" id="debug-phase">ASSEMBLY</span>
+        </div>
+        <div class="debug-item">
+            <span class="debug-label">Time:</span>
+            <span class="debug-value" id="debug-time">0.00s</span>
+        </div>
+        <div class="debug-item">
+            <span class="debug-label">Quality:</span>
+            <span class="debug-value" id="debug-quality">HIGH</span>
+        </div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="instructions">
+        Press <kbd>D</kbd> to toggle debug panel
+    </div>
+
+    <!-- Three.js via CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Tesseract Hero Modules -->
+    <script src="tesseract/TesseractGeometry.js"></script>
+    <script src="tesseract/AssemblyPhysics.js"></script>
+    <script src="tesseract/ParticleTrails.js"></script>
+    <script src="tesseract/FlashEffect.js"></script>
+    <script src="tesseract/LevitationController.js"></script>
+    <script src="tesseract-hero.js"></script>
+
+    <!-- Debug Controls -->
+    <script>
+        // Debug panel toggle
+        document.addEventListener('keydown', (e) => {
+            if (e.key.toLowerCase() === 'd') {
+                const panel = document.getElementById('debug-panel');
+                panel.classList.toggle('active');
+            }
+        });
+
+        // FPS Counter
+        let lastTime = performance.now();
+        let frames = 0;
+        let fps = 60;
+
+        function updateDebugPanel() {
+            frames++;
+            const now = performance.now();
+            const delta = now - lastTime;
+
+            if (delta >= 1000) {
+                fps = Math.round((frames * 1000) / delta);
+                document.getElementById('debug-fps').textContent = fps;
+
+                // Quality indicator
+                const quality = fps >= 50 ? 'HIGH' : fps >= 30 ? 'MEDIUM' : 'LOW';
+                document.getElementById('debug-quality').textContent = quality;
+
+                frames = 0;
+                lastTime = now;
+            }
+
+            // Update phase and time from tesseractHero
+            if (window.tesseractHero) {
+                document.getElementById('debug-phase').textContent = window.tesseractHero.phase;
+                const elapsed = window.tesseractHero.clock.getElapsedTime();
+                document.getElementById('debug-time').textContent = elapsed.toFixed(2) + 's';
+            }
+
+            requestAnimationFrame(updateDebugPanel);
+        }
+
+        updateDebugPanel();
+    </script>
+</body>
+</html>

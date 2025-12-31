@@ -1,13 +1,49 @@
 # Référence — Portfolio Protolab
 
-Date de capture : 28 décembre 2025
+Date de capture : 31 décembre 2025
 Répertoire : `portefolio V3`
 Branche : `master`
-Version : **V4.7**
+Version : **V4.8**
 
 **But du document** : fournir une référence complète de l'état actuel du site portfolio (structure, technologies, scripts, configuration, contenu et points d'attention) pour permettre une reprise par un LLM local (ex : Ollama, LlamaCPP) ou un service comme Claude Code. Inclus des exemples de prompts prêts à l'emploi et des commandes pour développement et déploiement.
 
 **NOTE** : ce fichier est une capture d'état — conservez-le avec le repo pour faciliter la continuité.
+
+---
+
+## Changelog V4.8 (31 décembre 2025)
+
+### Nouveaux Projets YAML
+
+- **Control-Plane IA** : Centre de commande IA avec MCP Server, Claude Code, Python
+- **Interface Web** : Portfolio Astro documenté comme projet
+
+### Prototypes Tesseract Hero
+
+Nouveau dossier `prototypes/` contenant des expérimentations WebGL :
+
+- **tesseract-hero/** : V1 Animation Marvel - descente tesseract cosmique
+- **tesseract-hero-magnetic/** : V2 Assemblage magnétique Tetris 3D avec physique 1/d²
+- **skill-planet/** : Prototype React/Vite expérimental
+
+### Documentation Infrastructure
+
+- `Architecture_Protolab_V2_3_COMPLETE.md` : Documentation complète de l'infrastructure Protolab V2.3
+
+### Fichiers créés V4.8
+
+- `src/content/projects/control-plane.yaml` : Projet Control-Plane IA
+- `src/content/projects/web-interface.yaml` : Projet Interface Web
+- `prototypes/` : Dossier complet avec 3 sous-projets
+- `Architecture_Protolab_V2_3_COMPLETE.md` : Documentation infrastructure
+
+### Fichiers modifiés V4.8
+
+- `src/components/sections/*.astro` : Améliorations diverses
+- `src/components/ui/*.astro` : Améliorations UI
+- `src/pages/api/lab-status.json.ts` : Améliorations API
+- `public/scripts/lab-status.js` : Améliorations polling
+- `src/styles/global.css` : Nouveaux styles
 
 ---
 
@@ -195,7 +231,11 @@ Tous les fichiers sont dans `Documentation Porte Folio/`. Utiliser ces préfixes
  Racine :
   - `package.json`, `astro.config.mjs`, `tsconfig.json`, `Dockerfile`, `docker-compose.yml`, `nginx.conf`, `README.md`
 - `public/` :
-  - `fonts/`, `images/`, `scripts/` : `terminal-boot.js`, `custom-cursor.js`, `three-background.js`, `scroll-animations.js`, `typing-effect.js`, `modal-system.js`, `doc-counter.js`
+  - `fonts/`, `images/`, `scripts/` : `terminal-boot.js`, `custom-cursor.js`, `three-background.js`, `scroll-animations.js`, `typing-effect.js`, `modal-system.js`, `doc-counter.js`, `lab-status.js`
+- `prototypes/` : (V4.8) Prototypes WebGL expérimentaux
+  - `tesseract-hero/` : V1 Animation Marvel Tesseract
+  - `tesseract-hero-magnetic/` : V2 Assemblage magnétique Tetris 3D
+  - `skill-planet/` : Prototype React/Vite expérimental
 - `src/` :
   - `components/` : composants Astro (layout, effects, sections, ui)
     - `effects/TerminalBoot.astro`
@@ -213,6 +253,13 @@ Tous les fichiers sont dans `Documentation Porte Folio/`. Utiliser ces préfixes
 - Collection `docs` (type: `content`) schema :
   - `title`, `description`, `category` (énuméré : `active-directory`, `paloalto`, `monitoring`, `proxmox`, `linux`, `windows`, `docker`, `backup`, `network`, `security`, `documentation`, `architecture`, `multimedia`, `llm`), `date` (date), `tags` (array), `author`, `readingTime`, `featured`, `difficulty` (beginner/intermediate/advanced)
 - Collection `projects` (type: `data`) schema : `title`, `description`, `stack` (array), `featured`, `status`, `icon`, `iconColor`, `glowColor`, `stats`, `link`, `github`
+
+**Projets YAML (V4.8)** : 5 projets dans `src/content/projects/`
+  - `protolab.yaml` : Infrastructure Protolab (featured)
+  - `llm-local.yaml` : LLM Local avec GPU (featured)
+  - `observability.yaml` : Stack Observabilité (featured)
+  - `control-plane.yaml` : Control-Plane IA (MCP Server)
+  - `web-interface.yaml` : Interface Web (Portfolio)
 
 Conseil : respecter les types `zod` lors de la création de nouveaux fichiers de collection pour éviter les erreurs au build.
 

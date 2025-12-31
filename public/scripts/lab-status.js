@@ -12,15 +12,22 @@
         retryDelay: 5000      // 5 seconds on error
     };
 
+    // Category configuration for counter updates
+    const CATEGORIES = {
+        management: { total: 2 },
+        infrastructure: { total: 5 },
+        services: { total: 2 }
+    };
+
     // DOM element references
     const elements = {
         statusIndicator: null,
         statusText: null,
         timestamp: null,
-        services: null,
         offline: null,
         meters: {},
-        network: {}
+        network: {},
+        categories: {}
     };
 
     let pollTimer = null;
@@ -33,8 +40,19 @@
         elements.statusIndicator = document.querySelector('[data-lab-status]');
         elements.statusText = document.querySelector('[data-lab-status] .status-text');
         elements.timestamp = document.querySelector('[data-lab-timestamp]');
-        elements.services = document.querySelector('[data-lab-services]');
         elements.offline = document.querySelector('[data-lab-offline]');
+
+        // Category sections
+        Object.keys(CATEGORIES).forEach(category => {
+            const section = document.querySelector(`[data-category="${category}"]`);
+            if (section) {
+                elements.categories[category] = {
+                    container: section,
+                    counter: section.querySelector('[data-category-counter]'),
+                    cards: section.querySelectorAll('.service-card')
+                };
+            }
+        });
 
         // Resource meters
         ['cpu', 'memory', 'disk'].forEach(resource => {
@@ -92,6 +110,7 @@
     function updateUI(data) {
         updateGlobalStatus(data.status);
         updateServices(data.services);
+        updateCategoryCounters(data.services);
         updateResources(data.resources);
         updateNetwork(data.network);
         updateTimestamp(data.timestamp);
@@ -120,10 +139,11 @@
      * Update service cards
      */
     function updateServices(services) {
-        if (!elements.services || !services) return;
+        if (!services) return;
 
         services.forEach(service => {
-            const card = elements.services.querySelector(`[data-service="${service.id}"]`);
+            // Find the card in any category
+            const card = document.querySelector(`[data-service="${service.id}"]`);
             if (!card) return;
 
             // Update active state
@@ -149,7 +169,7 @@
 
             // Update CPU metric
             const cpuEl = card.querySelector('[data-cpu]');
-            if (cpuEl && service.cpu !== undefined) {
+            if (cpuEl && service.cpu !== undefined && service.status === 'up') {
                 cpuEl.textContent = `${service.cpu}%`;
                 updateMetricColor(cpuEl, service.cpu);
             } else if (cpuEl) {
@@ -159,12 +179,42 @@
 
             // Update Memory metric
             const memEl = card.querySelector('[data-memory]');
-            if (memEl && service.memory !== undefined) {
+            if (memEl && service.memory !== undefined && service.status === 'up') {
                 memEl.textContent = `${service.memory}%`;
                 updateMetricColor(memEl, service.memory);
             } else if (memEl) {
                 memEl.textContent = '--%';
                 memEl.classList.remove('warning', 'critical');
+            }
+        });
+    }
+
+    /**
+     * Update category counters (X/Y online)
+     */
+    function updateCategoryCounters(services) {
+        if (!services) return;
+
+        // Count up services per category
+        const counts = {
+            management: 0,
+            infrastructure: 0,
+            services: 0
+        };
+
+        services.forEach(service => {
+            if (service.category && service.status === 'up') {
+                counts[service.category]++;
+            }
+        });
+
+        // Update counter display
+        Object.keys(CATEGORIES).forEach(category => {
+            const catEl = elements.categories[category];
+            if (catEl && catEl.counter) {
+                const up = counts[category] || 0;
+                const total = CATEGORIES[category].total;
+                catEl.counter.textContent = `${up}/${total}`;
             }
         });
     }

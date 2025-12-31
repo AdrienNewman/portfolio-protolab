@@ -40,6 +40,22 @@ body {
 }
 
 /* ========================================
+   TYPOGRAPHY - CODE EXCEPTIONS
+   ======================================== */
+code, pre, .code-block,
+.markdown-content pre,
+.markdown-content code {
+    text-transform: none !important;
+}
+
+/* ========================================
+   TYPOGRAPHY - FORM INPUTS UPPERCASE
+   ======================================== */
+input, textarea, select {
+    text-transform: uppercase;
+}
+
+/* ========================================
    CUSTOM CURSOR
    ======================================== */
 .custom-cursor {
@@ -228,6 +244,7 @@ body {
     font-size: 0.9rem;
     line-height: 1.6;
     margin-bottom: 1.25rem;
+    text-transform: uppercase;
 }
 
 .skill-preview-tags {
@@ -534,6 +551,7 @@ body {
     line-height: 1.8;
     color: var(--gray-lighter);
     margin-bottom: 1rem;
+    text-transform: uppercase;
 }
 
 .modal-list {
@@ -548,6 +566,7 @@ body {
     padding-left: 1.5rem;
     position: relative;
     line-height: 1.6;
+    text-transform: uppercase;
 }
 
 .modal-list li::before {

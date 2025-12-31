@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototypes - Portfolio Adrien Mercadier</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #000000;
+            --white: #ffffff;
+            --cyan: #00ffff;
+            --magenta: #ff0080;
+            --gray-light: #a0a0a0;
+        }
+
+        body {
+            background: var(--black);
+            color: var(--white);
+            font-family: 'Space Mono', monospace;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3rem;
+            color: var(--cyan);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.1em;
+        }
+
+        .subtitle {
+            color: var(--gray-light);
+            font-size: 0.875rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 3rem;
+        }
+
+        .prototype-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .prototype-card {
+            background: rgba(0, 255, 255, 0.05);
+            border: 2px solid var(--cyan);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .prototype-card:hover {
+            background: rgba(0, 255, 255, 0.1);
+            border-color: var(--magenta);
+            transform: translateY(-5px);
+        }
+
+        .prototype-card h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+
+        .prototype-card .version {
+            display: inline-block;
+            background: rgba(255, 0, 128, 0.2);
+            border: 1px solid var(--magenta);
+            padding: 0.25rem 0.5rem;
+            font-size: 0.625rem;
+            color: var(--magenta);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .prototype-card p {
+            color: var(--gray-light);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .prototype-card .features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .prototype-card .features li {
+            font-size: 0.75rem;
+            color: var(--cyan);
+            margin-bottom: 0.5rem;
+            padding-left: 1rem;
+            position: relative;
+        }
+
+        .prototype-card .features li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: var(--magenta);
+        }
+
+        .prototype-card .links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .prototype-card .links a {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--cyan);
+            color: var(--cyan);
+            text-decoration: none;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all 0.3s ease;
+        }
+
+        .prototype-card .links a:hover {
+            background: var(--cyan);
+            color: var(--black);
+        }
+
+        .back-link {
+            display: inline-block;
+            color: var(--gray-light);
+            text-decoration: none;
+            font-size: 0.875rem;
+            margin-top: 2rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--cyan);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .prototype-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>PROTOTYPES</h1>
+    <p class="subtitle">Portfolio Adrien Mercadier - TSSR</p>
+
+    <div class="prototype-grid">
+        <!-- Tesseract Hero V1 - Original -->
+        <div class="prototype-card">
+            <h2>Tesseract Hero</h2>
+            <span class="version">V1 - Original</span>
+            <p>Animation WebGL inspirée Marvel - Tesseract cosmique descendant avec halos énergétiques et arcs plasma.</p>
+            <ul class="features">
+                <li>4 phases : EMERGE → AWAKEN → STABILIZE → LEVITATION</li>
+                <li>Cubes wireframe cyan imbriqués</li>
+                <li>3 halos concentriques (cyan/magenta)</li>
+                <li>Arcs plasma récurrents (4-6s)</li>
+                <li>Instabilité multi-fréquence organique</li>
+                <li>500 particules background</li>
+            </ul>
+            <div class="links">
+                <a href="tesseract-hero/index.html" target="_blank">DEMO</a>
+                <a href="tesseract-hero/README.md">README</a>
+            </div>
+        </div>
+
+        <!-- Tesseract Hero V2 - Magnetic Assembly -->
+        <div class="prototype-card">
+            <h2>Tesseract Hero - Magnetic</h2>
+            <span class="version">V2 - Assembly</span>
+            <p>Assemblage magnétique de pièces Tetris 3D convergeant vers un cœur violet - Inspiré NetDefender packet.</p>
+            <ul class="features">
+                <li>4 phases : ASSEMBLY → FLASH → STABILIZE → LEVITATION</li>
+                <li>12 pièces Tetris 3D avec physique 1/d²</li>
+                <li>Enveloppe cyan semi-transparente</li>
+                <li>Cœur violet pulsant (toujours visible)</li>
+                <li>Flash radial violet unique (3.0s)</li>
+                <li>Trails particules cyan (max 150)</li>
+            </ul>
+            <div class="links">
+                <a href="tesseract-hero-magnetic/index.html" target="_blank">DEMO</a>
+                <a href="tesseract-hero-magnetic/README.md">README</a>
+            </div>
+        </div>
+    </div>
+
+    <a href="../index.html" class="back-link">← Retour au portfolio</a>
+
+    <script>
+        console.log('%c🚀 PROTOLAB Prototypes', 'font-size: 20px; font-weight: bold; color: #00ffff;');
+        console.log('%cDéveloppé par Adrien Mercadier - TSSR', 'color: #a0a0a0;');
+    </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+title: "Control-Plane IA"
+description: "Centre de commande IA. Serveur MCP, orchestration infrastructure, inventaire intelligent."
+stack:
+  - "MCP Server"
+  - "Claude Code"
+  - "Python"
+featured: false
+status: "Production"
+icon: "🧠"
+iconColor: "#a855f7"
+glowColor: "rgba(168, 85, 247, 0.3)"

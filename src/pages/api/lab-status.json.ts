@@ -13,10 +13,13 @@ let cache: { data: LabStatusResponse | null; timestamp: number } = {
 };
 const CACHE_TTL = 60000; // 60 seconds
 
+type ServiceCategory = 'management' | 'infrastructure' | 'services';
+
 interface ServiceMetrics {
   id: string;
   name: string;
   type: 'node' | 'qemu' | 'lxc';
+  category: ServiceCategory;
   status: 'up' | 'down' | 'unknown';
   uptime?: string;
   cpu?: number;      // percentage
@@ -39,28 +42,45 @@ interface LabStatusResponse {
   cached: boolean;
 }
 
-// Service configuration - Proxmox IDs mapping
+// Service configuration - Proxmox IDs mapping with categories
 const SERVICE_CONFIG = [
-  { id: 'proxmox', name: 'Proxmox VE', type: 'node' as const, pveId: 'node/proxmox' },
-  { id: 'paloalto', name: 'Palo Alto FW', type: 'qemu' as const, pveId: 'qemu/102' },
-  { id: 'dc01', name: 'Windows DC01', type: 'qemu' as const, pveId: 'qemu/103' },
-  { id: 'grafana', name: 'Grafana OSS', type: 'lxc' as const, pveId: 'lxc/203' },
+  // MANAGEMENT
+  { id: 'proxmox', name: 'Proxmox VE', type: 'node' as const, pveId: 'node/proxmox', category: 'management' as const },
+  { id: 'paloalto', name: 'Palo Alto FW', type: 'qemu' as const, pveId: 'qemu/102', category: 'management' as const },
+
+  // INFRASTRUCTURE
+  { id: 'grafana', name: 'Grafana', type: 'lxc' as const, pveId: 'lxc/203', category: 'infrastructure' as const },
+  { id: 'victorialogs', name: 'VictoriaLogs', type: 'lxc' as const, pveId: 'lxc/201', category: 'infrastructure' as const },
+  { id: 'otelcol', name: 'OTel Collector', type: 'lxc' as const, pveId: 'lxc/202', category: 'infrastructure' as const },
+  { id: 'controlplane', name: 'Control Plane', type: 'lxc' as const, pveId: 'lxc/220', category: 'infrastructure' as const },
+  { id: 'minio', name: 'MinIO', type: 'lxc' as const, pveId: 'lxc/200', category: 'infrastructure' as const },
+
+  // SERVICES
+  { id: 'dc01', name: 'Windows DC01', type: 'qemu' as const, pveId: 'qemu/103', category: 'services' as const },
+  { id: 'webgateway', name: 'Web Gateway', type: 'lxc' as const, pveId: 'lxc/210', category: 'services' as const },
 ];
 
-// Helper to query VictoriaMetrics
+// Helper to query VictoriaMetrics with retry
 async function queryPrometheus(query: string): Promise<any> {
   const url = `${VICTORIA_METRICS_URL}/api/v1/query?query=${encodeURIComponent(query)}`;
-  try {
-    const response = await fetch(url, {
-      signal: AbortSignal.timeout(5000)
-    });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const data = await response.json();
-    return data.data?.result || [];
-  } catch (error) {
-    console.error(`PromQL query failed: ${query}`, error);
-    return [];
+
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const response = await fetch(url, {
+        signal: AbortSignal.timeout(10000)
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      return data.data?.result || [];
+    } catch (error) {
+      if (attempt === 1) {
+        console.error(`PromQL query failed: ${query}`, error);
+        return [];
+      }
+      await new Promise(r => setTimeout(r, 500));
+    }
   }
+  return [];
 }
 
 // Extract first numeric value from Prometheus result
@@ -182,6 +202,7 @@ export const GET: APIRoute = async () => {
         id: config.id,
         name: config.name,
         type: config.type,
+        category: config.category,
         status: isUp === 1 ? 'up' as const : (isUp === 0 ? 'down' as const : 'unknown' as const),
         uptime: serviceUptime ? formatUptime(serviceUptime) : undefined,
         cpu: serviceCpu !== null ? Math.round(serviceCpu * 100) : undefined,

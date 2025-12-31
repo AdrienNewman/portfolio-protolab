@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tesseract Hero Prototype - Adrien Mercadier</title>
+
+    <!-- Fonts Google (correspondant au portfolio) -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ====================
+           RESET & VARIABLES
+           ==================== */
+        :root {
+            --black: #000000;
+            --white: #ffffff;
+            --cyan: #00ffff;
+            --magenta: #ff0080;
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: var(--black);
+            font-family: 'Space Mono', monospace;
+            cursor: none;
+        }
+
+        /* ====================
+           CANVAS WEBGL
+           ==================== */
+        #tesseract-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+        }
+
+        /* ====================
+           NOM OVERLAY
+           ==================== */
+        #name-container {
+            position: fixed;
+            bottom: 25vh;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        #name-container.visible {
+            opacity: 1 !important;
+        }
+
+        .hero-name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            letter-spacing: 0.35em;
+            color: var(--white);
+            text-align: center;
+            text-shadow:
+                0 0 8px rgba(0, 255, 255, 0.4),
+                0 0 20px rgba(0, 255, 255, 0.2),
+                0 0 40px rgba(255, 0, 128, 0.1);
+            animation: nameGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes nameGlow {
+            0%, 100% {
+                text-shadow:
+                    0 0 8px rgba(0, 255, 255, 0.4),
+                    0 0 20px rgba(0, 255, 255, 0.2),
+                    0 0 40px rgba(255, 0, 128, 0.1);
+            }
+            50% {
+                text-shadow:
+                    0 0 12px rgba(0, 255, 255, 0.6),
+                    0 0 30px rgba(0, 255, 255, 0.3),
+                    0 0 50px rgba(255, 0, 128, 0.15);
+            }
+        }
+
+        /* Animation électrocution */
+        .hero-name.electrified {
+            animation: electrify 0.35s ease-out;
+        }
+
+        @keyframes electrify {
+            0% {
+                transform: translate(0, 0) scale(1);
+                text-shadow: 0 0 20px rgba(0,255,255,1), 0 0 60px rgba(255,0,128,0.8);
+            }
+            10% { transform: translate(-3px, 2px) scale(1.02); }
+            20% { transform: translate(3px, -2px) scale(0.98); }
+            30% { transform: translate(-2px, -2px) scale(1.01); }
+            40% { transform: translate(2px, 2px) scale(0.99); }
+            100% {
+                transform: translate(0, 0) scale(1);
+                text-shadow:
+                    0 0 8px rgba(0, 255, 255, 0.4),
+                    0 0 20px rgba(0, 255, 255, 0.2);
+            }
+        }
+
+        /* ====================
+           SVG OVERLAY (ARCS)
+           ==================== */
+        #energy-link-svg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9;
+            pointer-events: none;
+        }
+
+        .energy-link-line {
+            stroke: rgba(0, 255, 255, 0.3);
+            stroke-width: 2;
+            stroke-dasharray: 5, 5;
+            fill: none;
+            filter: url(#glow-cyan);
+            animation: energyFlow 1s linear infinite;
+        }
+
+        @keyframes energyFlow {
+            to { stroke-dashoffset: -10; }
+        }
+
+        .plasma-arc-path {
+            stroke: rgba(0, 255, 255, 0.9);
+            stroke-width: 3;
+            fill: none;
+            filter: url(#glow-cyan);
+            opacity: 0;
+        }
+
+        /* ====================
+           PANNEAU DEBUG
+           ==================== */
+        #debug-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid var(--cyan);
+            padding: 15px 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: var(--cyan);
+            z-index: 999;
+            min-width: 200px;
+        }
+
+        #debug-panel.hidden {
+            display: none;
+        }
+
+        #debug-panel p {
+            margin: 5px 0;
+        }
+
+        #debug-panel span {
+            color: var(--white);
+            font-weight: 700;
+        }
+
+        /* ====================
+           INSTRUCTIONS
+           ==================== */
+        #instructions {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            z-index: 999;
+        }
+
+        #instructions kbd {
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid var(--cyan);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: inherit;
+            color: var(--cyan);
+        }
+
+        /* ====================
+           RESPONSIVE
+           ==================== */
+        @media (max-width: 768px) {
+            .hero-name {
+                font-size: clamp(1.5rem, 8vw, 2.5rem);
+                letter-spacing: 0.2em;
+            }
+
+            #name-container {
+                bottom: 20vh;
+            }
+
+            #debug-panel {
+                font-size: 11px;
+                padding: 10px 15px;
+                top: 10px;
+                right: 10px;
+            }
+
+            #instructions {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Canvas WebGL -->
+    <canvas id="tesseract-canvas"></canvas>
+
+    <!-- Nom Overlay -->
+    <div id="name-container">
+        <h1 id="hero-name" class="hero-name">ADRIEN MERCADIER</h1>
+    </div>
+
+    <!-- SVG Overlay pour arcs plasma et liens d'énergie -->
+    <svg id="energy-link-svg" width="100%" height="100%">
+        <defs>
+            <!-- Filtre glow cyan -->
+            <filter id="glow-cyan">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+            </filter>
+        </defs>
+
+        <!-- Ligne d'énergie constante -->
+        <line id="energy-link" class="energy-link-line" x1="0" y1="0" x2="0" y2="0"/>
+
+        <!-- Arc plasma (dynamique) -->
+        <path id="plasma-arc" class="plasma-arc-path" d="M 0 0"/>
+    </svg>
+
+    <!-- Panneau Debug -->
+    <div id="debug-panel" class="hidden">
+        <p>FPS: <span id="fps-counter">60</span></p>
+        <p>Phase: <span id="phase-display">EMERGE</span></p>
+        <p>Time: <span id="time-display">0.0s</span></p>
+        <p>Quality: <span id="quality-display">HIGH</span></p>
+    </div>
+
+    <!-- Instructions -->
+    <div id="instructions">
+        <p>Appuyez sur <kbd>D</kbd> pour toggle le debug</p>
+    </div>
+
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        // =========================
+        // TESSERACT HERO PROTOTYPE
+        // =========================
+
+        class TesseractHero {
+            constructor(canvasElement) {
+                this.canvas = canvasElement;
+                this.clock = new THREE.Clock();
+                this.globalTime = 0;
+                this.phase = 'EMERGE';
+
+                // Performance tracking
+                this.frameCount = 0;
+                this.lastFPSUpdate = 0;
+                this.currentFPS = 60;
+                this.lowQualityMode = false;
+
+                // Mobile detection
+                this.isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+                // Name visibility
+                this.nameVisible = false;
+
+                // Plasma arc timing
+                this.nextArcTime = 8.0; // Premier arc à 8s (après LEVITATION commence)
+
+                // Références DOM
+                this.nameElement = document.getElementById('hero-name');
+                this.nameContainer = document.getElementById('name-container');
+                this.energyLink = document.getElementById('energy-link');
+                this.plasmaArc = document.getElementById('plasma-arc');
+
+                // Easing functions
+                this.easing = {
+                    easeOutCubic: (t) => 1 - Math.pow(1 - t, 3),
+                    easeInOutQuad: (t) => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2,
+                    easeOutQuart: (t) => 1 - Math.pow(1 - t, 4)
+                };
+
+                // Timeline phases
+                this.TIMELINE = {
+                    EMERGE: { start: 0, end: 2.0 },
+                    AWAKEN: { start: 2.0, end: 3.5 },
+                    STABILIZE: { start: 3.5, end: 4.5 },
+                    LEVITATION: { start: 4.5, end: Infinity }
+                };
+
+                this.init();
+            }
+
+            init() {
+                // Scène
+                this.scene = new THREE.Scene();
+                this.scene.fog = new THREE.Fog(0x000000, 8, 15);
+
+                // Caméra
+                this.camera = new THREE.PerspectiveCamera(
+                    45,
+                    window.innerWidth / window.innerHeight,
+                    0.1,
+                    1000
+                );
+                this.camera.position.set(0, 0, 5);
+                this.camera.lookAt(0, 0, 0);
+
+                // Renderer
+                this.renderer = new THREE.WebGLRenderer({
+                    canvas: this.canvas,
+                    alpha: true,
+                    antialias: true
+                });
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                this.renderer.setClearColor(0x000000, 1);
+
+                // Éclairage
+                this.setupLighting();
+
+                // Construire tesseract
+                this.buildTesseract();
+
+                // Construire particules
+                this.buildParticles();
+
+                // Event listeners
+                this.setupEventListeners();
+
+                // Check reduced motion
+                this.checkReducedMotion();
+
+                // Start animation loop
+                this.animate();
+            }
+
+            setupLighting() {
+                // Lumière ambiante très faible
+                const ambient = new THREE.AmbientLight(0x111111);
+                this.scene.add(ambient);
+
+                // Lumière ponctuelle au core (pulsante)
+                this.coreLight = new THREE.PointLight(0x00ffff, 0, 10);
+                this.coreLight.position.set(0, 0, 0);
+                this.scene.add(this.coreLight);
+            }
+
+            buildTesseract() {
+                // Groupe principal tesseract (pour instabilité globale)
+                this.tesseractGroup = new THREE.Group();
+                this.scene.add(this.tesseractGroup);
+
+                // CUBE EXTERNE (wireframe cyan)
+                const outerSize = 0.55;
+                const outerGeo = new THREE.BoxGeometry(outerSize, outerSize, outerSize);
+                const outerMat = new THREE.LineBasicMaterial({
+                    color: 0x00ffff,
+                    transparent: true,
+                    opacity: 0
+                });
+                const outerEdges = new THREE.EdgesGeometry(outerGeo);
+                this.outerCube = new THREE.LineSegments(outerEdges, outerMat);
+                this.tesseractGroup.add(this.outerCube);
+
+                // CUBE INTERNE (wireframe cyan brillant)
+                const innerSize = 0.22;
+                const innerGeo = new THREE.BoxGeometry(innerSize, innerSize, innerSize);
+                const innerMat = new THREE.LineBasicMaterial({
+                    color: 0x00d4ff,
+                    transparent: true,
+                    opacity: 0
+                });
+                const innerEdges = new THREE.EdgesGeometry(innerGeo);
+                this.innerCube = new THREE.LineSegments(innerEdges, innerMat);
+                this.tesseractGroup.add(this.innerCube);
+
+                // CORE GROUP (pour heartbeat indépendant)
+                this.coreGroup = new THREE.Group();
+                this.tesseractGroup.add(this.coreGroup);
+
+                // CORE SPHERE (blanc brillant)
+                const coreGeo = new THREE.SphereGeometry(0.035, 16, 16);
+                const coreMat = new THREE.MeshBasicMaterial({
+                    color: 0xffffff,
+                    transparent: true,
+                    opacity: 0
+                });
+                this.coreSphere = new THREE.Mesh(coreGeo, coreMat);
+                this.coreGroup.add(this.coreSphere);
+
+                // HALOS (sphères concentriques)
+                this.halos = [];
+
+                // Halo 1: Cyan inner
+                const halo1Geo = new THREE.SphereGeometry(0.08, 16, 16);
+                const halo1Mat = new THREE.MeshBasicMaterial({
+                    color: 0x00ffff,
+                    transparent: true,
+                    opacity: 0,
+                    blending: THREE.AdditiveBlending,
+                    side: THREE.BackSide
+                });
+                const halo1 = new THREE.Mesh(halo1Geo, halo1Mat);
+                this.halos.push(halo1);
+                this.coreGroup.add(halo1);
+
+                // Halo 2: Magenta mid
+                const halo2Geo = new THREE.SphereGeometry(0.14, 16, 16);
+                const halo2Mat = new THREE.MeshBasicMaterial({
+                    color: 0xff0080,
+                    transparent: true,
+                    opacity: 0,
+                    blending: THREE.AdditiveBlending,
+                    side: THREE.BackSide
+                });
+                const halo2 = new THREE.Mesh(halo2Geo, halo2Mat);
+                this.halos.push(halo2);
+                this.coreGroup.add(halo2);
+
+                // Halo 3: Cyan outer diffuse
+                const halo3Geo = new THREE.SphereGeometry(0.25, 16, 16);
+                const halo3Mat = new THREE.MeshBasicMaterial({
+                    color: 0x00ffff,
+                    transparent: true,
+                    opacity: 0,
+                    blending: THREE.AdditiveBlending,
+                    side: THREE.BackSide
+                });
+                const halo3 = new THREE.Mesh(halo3Geo, halo3Mat);
+                this.halos.push(halo3);
+                this.coreGroup.add(halo3);
+
+                // État initial (pour animation EMERGE)
+                this.tesseractGroup.position.y = 1.8;
+                this.tesseractGroup.scale.set(0.1, 0.1, 0.1);
+            }
+
+            buildParticles() {
+                const particleCount = this.isMobile ? 250 : 500;
+                const positions = new Float32Array(particleCount * 3);
+                const colors = new Float32Array(particleCount * 3);
+
+                // Distribution en sphère (organique)
+                for (let i = 0; i < particleCount; i++) {
+                    const phi = Math.random() * Math.PI * 2;
+                    const theta = Math.random() * Math.PI;
+                    const radius = 3 + Math.random() * 4; // Rayon 3-7 unités
+
+                    positions[i * 3] = radius * Math.sin(theta) * Math.cos(phi);
+                    positions[i * 3 + 1] = radius * Math.sin(theta) * Math.sin(phi);
+                    positions[i * 3 + 2] = radius * Math.cos(theta);
+
+                    // 88% cyan, 12% magenta
+                    if (Math.random() < 0.88) {
+                        colors[i * 3] = 0;
+                        colors[i * 3 + 1] = 1;
+                        colors[i * 3 + 2] = 1;
+                    } else {
+                        colors[i * 3] = 1;
+                        colors[i * 3 + 1] = 0;
+                        colors[i * 3 + 2] = 0.5;
+                    }
+                }
+
+                const particleGeo = new THREE.BufferGeometry();
+                particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                particleGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+                const particleMat = new THREE.PointsMaterial({
+                    size: 0.015,
+                    vertexColors: true,
+                    transparent: true,
+                    opacity: 0.6,
+                    blending: THREE.AdditiveBlending,
+                    sizeAttenuation: true
+                });
+
+                this.particleSystem = new THREE.Points(particleGeo, particleMat);
+                this.scene.add(this.particleSystem);
+            }
+
+            setupEventListeners() {
+                // Resize
+                window.addEventListener('resize', () => this.onResize());
+
+                // Debug toggle (touche D)
+                window.addEventListener('keydown', (e) => {
+                    if (e.key === 'd' || e.key === 'D') {
+                        this.toggleDebugPanel();
+                    }
+                });
+
+                // Visibility API (pause si onglet caché)
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden) {
+                        this.clock.stop();
+                    } else {
+                        this.clock.start();
+                    }
+                });
+            }
+
+            checkReducedMotion() {
+                const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                if (prefersReducedMotion) {
+                    this.reducedMotionMode = true;
+                    console.log('Mode reduced motion activé');
+                }
+            }
+
+            toggleDebugPanel() {
+                const panel = document.getElementById('debug-panel');
+                panel.classList.toggle('hidden');
+            }
+
+            onResize() {
+                this.camera.aspect = window.innerWidth / window.innerHeight;
+                this.camera.updateProjectionMatrix();
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+
+            updatePhase(time) {
+                let newPhase = this.phase;
+
+                if (time < this.TIMELINE.EMERGE.end) {
+                    newPhase = 'EMERGE';
+                } else if (time < this.TIMELINE.AWAKEN.end) {
+                    newPhase = 'AWAKEN';
+                } else if (time < this.TIMELINE.STABILIZE.end) {
+                    newPhase = 'STABILIZE';
+                } else {
+                    newPhase = 'LEVITATION';
+                }
+
+                if (newPhase !== this.phase) {
+                    this.onPhaseChange(this.phase, newPhase);
+                    this.phase = newPhase;
+                }
+            }
+
+            onPhaseChange(oldPhase, newPhase) {
+                console.log(`Phase transition: ${oldPhase} → ${newPhase}`);
+
+                if (newPhase === 'STABILIZE') {
+                    this.showName();
+                }
+
+                if (newPhase === 'LEVITATION') {
+                    this.nextArcTime = this.globalTime + 4 + Math.random() * 2;
+                }
+            }
+
+            showName() {
+                setTimeout(() => {
+                    this.nameContainer.classList.add('visible');
+                    this.nameVisible = true;
+                }, 50);
+            }
+
+            animateEmerge(time) {
+                const phase = this.TIMELINE.EMERGE;
+                const t = (time - phase.start) / (phase.end - phase.start);
+                const eased = this.easing.easeOutCubic(t);
+
+                // Descente y: 1.8 → 0
+                this.tesseractGroup.position.y = 1.8 - (1.8 * eased);
+
+                // Scale: 0.1 → 1.0
+                const scale = 0.1 + (0.9 * eased);
+                this.tesseractGroup.scale.set(scale, scale, scale);
+
+                // Fade in cubes
+                this.outerCube.material.opacity = 0.7 * eased;
+                this.innerCube.material.opacity = 0.9 * eased;
+
+                // Rotation initiale pendant descente
+                this.outerCube.rotation.x = Math.PI * 0.5 * (1 - eased);
+                this.outerCube.rotation.y = Math.PI * 0.5 * (1 - eased);
+            }
+
+            animateAwaken(time) {
+                const phase = this.TIMELINE.AWAKEN;
+                const t = (time - phase.start) / (phase.end - phase.start);
+                const eased = this.easing.easeOutQuart(t);
+
+                // Core s'illumine
+                this.coreSphere.material.opacity = 0.5 + (0.4 * eased);
+
+                // Lumière s'intensifie
+                this.coreLight.intensity = 1.5 * eased;
+
+                // Halos fade in séquentiellement
+                this.halos[0].material.opacity = Math.min(0.6, eased * 1.2);
+                this.halos[1].material.opacity = Math.min(0.25, Math.max(0, (eased - 0.3) * 1.5));
+                this.halos[2].material.opacity = Math.min(0.12, Math.max(0, (eased - 0.5) * 1.2));
+
+                // Début wobble subtil
+                const wobble = Math.sin(time * 3) * 0.01 * eased;
+                this.tesseractGroup.rotation.x = wobble;
+            }
+
+            animateStabilize(time) {
+                // L'instabilité augmente progressivement
+                const phase = this.TIMELINE.STABILIZE;
+                const t = (time - phase.start) / (phase.end - phase.start);
+
+                // Légère instabilité croissante
+                const wobble = Math.sin(time * 2) * 0.02 * t;
+                this.tesseractGroup.rotation.z = wobble;
+            }
+
+            animateLevitation(time) {
+                // État permanent - instabilité multi-fréquence complète
+
+                if (this.reducedMotionMode) {
+                    // Mode reduced motion: rotation lente seulement
+                    this.tesseractGroup.rotation.y = time * 0.1;
+                    return;
+                }
+
+                // Multi-frequency position wobble
+                const wobbleX = Math.sin(time * 0.9) * 0.02 + Math.sin(time * 2.3) * 0.008;
+                const wobbleY = Math.cos(time * 0.7) * 0.015 + Math.cos(time * 1.9) * 0.006;
+                const wobbleZ = Math.sin(time * 1.1) * 0.01;
+
+                this.tesseractGroup.position.x = wobbleX;
+                this.tesseractGroup.position.y = wobbleY;
+                this.tesseractGroup.position.z = wobbleZ;
+
+                // Multi-frequency rotation wobble
+                this.tesseractGroup.rotation.x =
+                    Math.sin(time * 0.8) * 0.06 +
+                    Math.sin(time * 2.1) * 0.025 +
+                    Math.sin(time * 3.7) * 0.012;
+
+                this.tesseractGroup.rotation.z =
+                    Math.cos(time * 0.6) * 0.06 +
+                    Math.cos(time * 1.8) * 0.025 +
+                    Math.cos(time * 3.2) * 0.012;
+
+                // Slow Y rotation pour voir tous les côtés
+                this.tesseractGroup.rotation.y = time * 0.15;
+
+                // Inner cube rotation indépendante (plus rapide)
+                this.innerCube.rotation.x = time * 0.5;
+                this.innerCube.rotation.y = time * 0.7;
+
+                // Halos mouvement indépendant
+                this.halos[0].position.x = Math.sin(time * 3) * 0.01;
+                this.halos[0].position.y = Math.cos(time * 2.7) * 0.01;
+
+                this.halos[1].position.x = Math.cos(time * 2.3) * 0.015;
+                this.halos[1].position.y = Math.sin(time * 2.9) * 0.012;
+
+                if (!this.lowQualityMode && !this.isMobile) {
+                    this.halos[2].position.x = Math.sin(time * 1.8) * 0.02;
+                    this.halos[2].position.y = Math.cos(time * 2.1) * 0.018;
+                }
+
+                // Core heartbeat (irrégulier)
+                const heartbeat = 1 +
+                    Math.sin(time * 2.5) * 0.12 +
+                    Math.sin(time * 5.5) * 0.05 +
+                    Math.sin(time * 8) * 0.025;
+                this.coreGroup.scale.set(heartbeat, heartbeat, heartbeat);
+
+                // Particules rotation lente
+                this.particleSystem.rotation.y = time * 0.03;
+                this.particleSystem.rotation.x = Math.sin(time * 0.02) * 0.1;
+
+                // Arcs plasma timing
+                if (time >= this.nextArcTime && this.nameVisible) {
+                    this.firePlasmaArc();
+                    this.nextArcTime = time + (this.isMobile ? 7 : 4 + Math.random() * 2);
+                }
+            }
+
+            updateEnergyLink() {
+                if (!this.nameVisible) return;
+
+                // Position 3D tesseract → 2D écran
+                const tesseractPos = this.tesseractGroup.position.clone();
+                tesseractPos.project(this.camera);
+
+                const tesseractX = (tesseractPos.x * 0.5 + 0.5) * window.innerWidth;
+                const tesseractY = (-tesseractPos.y * 0.5 + 0.5) * window.innerHeight;
+
+                // Position nom (HTML)
+                const nameRect = this.nameElement.getBoundingClientRect();
+                const nameX = nameRect.left + nameRect.width / 2;
+                const nameY = nameRect.top;
+
+                // Update ligne SVG
+                this.energyLink.setAttribute('x1', tesseractX);
+                this.energyLink.setAttribute('y1', tesseractY);
+                this.energyLink.setAttribute('x2', nameX);
+                this.energyLink.setAttribute('y2', nameY);
+            }
+
+            firePlasmaArc() {
+                // Position tesseract
+                const tesseractPos = this.tesseractGroup.position.clone();
+                tesseractPos.project(this.camera);
+                const tx = (tesseractPos.x * 0.5 + 0.5) * window.innerWidth;
+                const ty = (-tesseractPos.y * 0.5 + 0.5) * window.innerHeight;
+
+                // Position nom
+                const nameRect = this.nameElement.getBoundingClientRect();
+                const nx = nameRect.left + nameRect.width / 2;
+                const ny = nameRect.top;
+
+                // Points de contrôle bezier (arc vers le haut)
+                const midX = (tx + nx) / 2;
+                const midY = Math.min(ty, ny) - 100;
+                const ctrlX1 = tx + (midX - tx) * 0.3;
+                const ctrlY1 = ty - 80;
+                const ctrlX2 = nx - (nx - midX) * 0.3;
+                const ctrlY2 = ny - 80;
+
+                const pathData = `M ${tx} ${ty} C ${ctrlX1} ${ctrlY1}, ${ctrlX2} ${ctrlY2}, ${nx} ${ny}`;
+                this.plasmaArc.setAttribute('d', pathData);
+
+                // Animation arc
+                this.plasmaArc.animate([
+                    { opacity: 0, strokeDashoffset: 1000 },
+                    { opacity: 0.9, strokeDashoffset: 0, offset: 0.5 },
+                    { opacity: 0, strokeDashoffset: -1000 }
+                ], {
+                    duration: 800,
+                    easing: 'ease-in-out'
+                });
+
+                // Effet électrocution à l'impact (400ms pour sync avec arc)
+                setTimeout(() => {
+                    this.electrocuteEffect();
+                }, 400);
+            }
+
+            electrocuteEffect() {
+                // Ajouter classe électrocution
+                this.nameElement.classList.add('electrified');
+
+                // Flash lumière core
+                const originalIntensity = this.coreLight.intensity;
+                this.coreLight.intensity = 3;
+
+                // Retirer après animation
+                setTimeout(() => {
+                    this.nameElement.classList.remove('electrified');
+                    this.coreLight.intensity = originalIntensity;
+                }, 350);
+            }
+
+            updateDebugPanel() {
+                document.getElementById('fps-counter').textContent = this.currentFPS;
+                document.getElementById('phase-display').textContent = this.phase;
+                document.getElementById('time-display').textContent = this.globalTime.toFixed(1) + 's';
+                document.getElementById('quality-display').textContent = this.lowQualityMode ? 'LOW' : 'HIGH';
+            }
+
+            checkPerformance() {
+                // Si FPS < 30, activer mode basse qualité
+                if (this.currentFPS < 30 && !this.lowQualityMode) {
+                    console.warn('FPS bas détecté, activation mode basse qualité');
+                    this.lowQualityMode = true;
+
+                    // Réduire opacité particules
+                    this.particleSystem.material.opacity = 0.4;
+
+                    // Désactiver halo externe
+                    this.halos[2].visible = false;
+                }
+            }
+
+            animate() {
+                requestAnimationFrame(() => this.animate());
+
+                // Delta time
+                const delta = this.clock.getDelta();
+                this.globalTime += delta;
+
+                // FPS calculation
+                this.frameCount++;
+                if (this.globalTime - this.lastFPSUpdate > 1.0) {
+                    this.currentFPS = this.frameCount;
+                    this.frameCount = 0;
+                    this.lastFPSUpdate = this.globalTime;
+                    this.updateDebugPanel();
+                    this.checkPerformance();
+                }
+
+                // Update phase
+                this.updatePhase(this.globalTime);
+
+                // Animations par phase
+                switch(this.phase) {
+                    case 'EMERGE':
+                        this.animateEmerge(this.globalTime);
+                        break;
+                    case 'AWAKEN':
+                        this.animateAwaken(this.globalTime);
+                        break;
+                    case 'STABILIZE':
+                        this.animateStabilize(this.globalTime);
+                        break;
+                    case 'LEVITATION':
+                        this.animateLevitation(this.globalTime);
+                        break;
+                }
+
+                // Update lien énergie
+                if (this.nameVisible) {
+                    this.updateEnergyLink();
+                }
+
+                // Render
+                this.renderer.render(this.scene, this.camera);
+            }
+        }
+
+        // =========================
+        // INITIALISATION
+        // =========================
+
+        function init() {
+            const canvas = document.getElementById('tesseract-canvas');
+            if (!canvas) {
+                console.error('Canvas non trouvé');
+                return;
+            }
+
+            // Vérifier support WebGL
+            if (!window.THREE) {
+                console.error('Three.js non chargé');
+                return;
+            }
+
+            const tesseract = new TesseractHero(canvas);
+
+            // Exposer globalement pour debug
+            window.tesseract = tesseract;
+
+            console.log('✨ Tesseract Hero initialisé');
+            console.log('Appuyez sur D pour toggle le panneau debug');
+        }
+
+        // Auto-init
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>

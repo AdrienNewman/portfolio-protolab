@@ -6,7 +6,7 @@ stack:
   - "Windows Server"
   - "Linux"
   - "Docker"
-featured: true
+featured: false
 status: "Production"
 icon: "🏗️"
 iconColor: "#00ffff"
