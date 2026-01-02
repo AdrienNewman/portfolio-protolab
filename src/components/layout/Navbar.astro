@@ -193,4 +193,36 @@ import { navigationItems, ctaItem } from '../../config/navigation';
         .nav-menu { display: none; }
         .nav-toggle { display: flex; }
     }
+
+    /* NAVBAR COMPACTE MOBILE */
+    @media (max-width: 768px) {
+        .nav-inner {
+            padding: 0.5rem 1rem;
+        }
+
+        .nav.scrolled .nav-inner {
+            padding: 0.4rem 1rem;
+        }
+
+        .nav-logo {
+            font-size: 1.25rem;
+        }
+
+        .nav-toggle {
+            width: 36px;
+            height: 36px;
+            border-width: 1px;
+        }
+
+        .nav-toggle-line {
+            width: 18px;
+            height: 2px;
+        }
+
+        .nav-toggle-line:nth-child(1) { transform: translateY(-5px); }
+        .nav-toggle-line:nth-child(3) { transform: translateY(5px); }
+
+        .nav-toggle.active .nav-toggle-line:nth-child(1) { transform: rotate(45deg); }
+        .nav-toggle.active .nav-toggle-line:nth-child(3) { transform: rotate(-45deg); }
+    }
 </style>

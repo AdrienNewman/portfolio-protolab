@@ -146,29 +146,33 @@ import { navigationItems } from '../../config/navigation';
         50% { opacity: 0.6; transform: scale(0.9); }
     }
 
-    /* Mobile optimization - réduire espacement pour tout afficher */
+    /* Mobile optimization - ajuster pour navbar compacte */
     @media (max-width: 768px) {
         .nav-mobile {
-            padding-top: 80px;
+            padding-top: 55px; /* Ajusté pour navbar compacte */
+        }
+
+        .nav-mobile::before {
+            height: 70px; /* Zone de fondu réduite */
         }
 
         .nav-mobile-item {
-            margin: 0.75rem 0;
+            margin: 0.6rem 0;
         }
 
         .nav-mobile-link {
-            font-size: clamp(1.8rem, 8vw, 3rem);
+            font-size: clamp(1.6rem, 7vw, 2.5rem);
         }
 
         .nav-mobile-deco {
-            bottom: 2rem;
-            font-size: 0.6rem;
+            bottom: 1.5rem;
+            font-size: 0.55rem;
         }
 
         .mobile-lab-dot {
-            width: 8px;
-            height: 8px;
-            margin-right: 0.5rem;
+            width: 7px;
+            height: 7px;
+            margin-right: 0.4rem;
         }
     }
 </style>
