@@ -145,4 +145,30 @@ import { navigationItems } from '../../config/navigation';
         0%, 100% { opacity: 1; transform: scale(1); }
         50% { opacity: 0.6; transform: scale(0.9); }
     }
+
+    /* Mobile optimization - réduire espacement pour tout afficher */
+    @media (max-width: 768px) {
+        .nav-mobile {
+            padding-top: 80px;
+        }
+
+        .nav-mobile-item {
+            margin: 0.75rem 0;
+        }
+
+        .nav-mobile-link {
+            font-size: clamp(1.8rem, 8vw, 3rem);
+        }
+
+        .nav-mobile-deco {
+            bottom: 2rem;
+            font-size: 0.6rem;
+        }
+
+        .mobile-lab-dot {
+            width: 8px;
+            height: 8px;
+            margin-right: 0.5rem;
+        }
+    }
 </style>

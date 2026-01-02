@@ -334,29 +334,87 @@ import { projectModals } from '../data/projectModals';
     }
 
     @media (max-width: 768px) {
+        /* Réduire padding section Profile */
+        #profil {
+            padding: 60px 15px;
+        }
+
         .profile-terminal-body {
-            padding: 1.5rem;
+            padding: 1rem;
+            font-size: 0.7rem;
         }
 
         .term-line {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
+            margin: 4px 0;
+        }
+
+        .term-text-block {
+            margin: 8px 0;
+            padding-left: 8px;
+        }
+
+        .term-text-block p {
+            font-size: 0.6rem;
+            margin: 3px 0;
         }
 
         .soft-title {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
         }
 
-        .soft-item-label {
-            font-size: 0.75rem;
+        .soft-skill-item {
+            margin-bottom: 12px;
         }
 
-        .soft-item-value {
-            font-size: 0.75rem;
+        .soft-info {
+            font-size: 0.6rem;
+            margin-bottom: 4px;
+        }
+
+        .soft-bar-bg {
+            height: 6px;
         }
 
         .mini-stats-grid {
-            flex-direction: column;
-            gap: 10px;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .mini-stat {
+            flex: 1 1 calc(50% - 4px);
+            min-width: calc(50% - 4px);
+            padding: 10px;
+        }
+
+        .ms-icon {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .ms-label {
+            font-size: 0.55rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        #profil {
+            padding: 40px 10px;
+        }
+
+        .profile-terminal-body {
+            padding: 0.75rem;
+        }
+
+        .term-line {
+            font-size: 0.6rem;
+        }
+
+        .soft-info {
+            font-size: 0.55rem;
         }
     }
 

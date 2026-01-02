@@ -125,16 +125,57 @@
 
     @media (max-width: 768px) {
         .contact-section {
-            padding: 80px 20px;
+            padding: 60px 15px;
+        }
+
+        .section-header {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 6vw, 3rem);
+        }
+
+        .section-desc {
+            font-size: 0.9rem;
+        }
+
+        .section-label {
+            font-size: 0.65rem;
+            padding: 0.35rem 0.75rem;
         }
 
         .contact-link {
             flex-direction: column;
             text-align: center;
+            padding: 15px;
+            gap: 10px;
         }
 
         .contact-text {
             text-align: center;
+        }
+
+        .contact-label {
+            font-size: 0.65rem;
+        }
+
+        .contact-value {
+            font-size: 0.85rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .contact-section {
+            padding: 40px 10px;
+        }
+
+        .contact-link {
+            padding: 12px;
+        }
+
+        .contact-value {
+            font-size: 0.75rem;
         }
     }
 </style>

@@ -308,7 +308,33 @@
         .hero { padding: 5rem 1rem 1rem; }
         .hero-title { font-size: clamp(2rem, 8vw, 4rem); }
         .hero-subtitle { font-size: 0.75rem; }
-        .cta-button { padding: 1rem 2rem; font-size: 0.875rem; }
+
+        /* Badge "Disponible pour opportunités" plus compact */
+        .status-badge {
+            padding: 0.35rem 0.8rem;
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            margin-bottom: 1.5rem;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+        }
+
+        /* Bouton CTA plus petit */
+        .cta-button {
+            padding: 0.8rem 1.5rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            gap: 0.5rem;
+        }
+
+        .cta-button svg {
+            width: 16px;
+            height: 16px;
+        }
+
         .stats-sidebar { display: none; }
     }
 </style>

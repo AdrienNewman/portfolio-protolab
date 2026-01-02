@@ -171,21 +171,45 @@ const iconColor = getIconColor(iconName);
 
     @media (max-width: 768px) {
         .skill-card {
-            padding: 1.2rem;
+            padding: 1rem;
         }
         .skill-icon {
-            width: 40px;
-            height: 40px;
+            width: 38px;
+            height: 38px;
+            margin-bottom: 0.75rem;
         }
         .skill-icon :global(svg) {
             width: 22px;
             height: 22px;
         }
         .skill-title {
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
         .skill-number {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
+            top: 0.5rem;
+            right: 0.5rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .skill-card {
+            padding: 0.75rem;
+        }
+        .skill-icon {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 0.5rem;
+        }
+        .skill-icon :global(svg) {
+            width: 18px;
+            height: 18px;
+        }
+        .skill-title {
+            font-size: 0.75rem;
+        }
+        .skill-number {
+            font-size: 0.9rem;
         }
     }
 </style>

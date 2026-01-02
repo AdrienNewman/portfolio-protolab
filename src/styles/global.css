@@ -970,6 +970,15 @@ input, textarea, select {
         font-size: 14px;
     }
 
+    /* Masquer curseur custom sur mobile (inutile sur tactile) */
+    .custom-cursor {
+        display: none !important;
+    }
+
+    body {
+        cursor: auto;
+    }
+
     .section-padding {
         padding: 60px 15px;
     }
@@ -979,12 +988,15 @@ input, textarea, select {
         padding: 1.5rem;
     }
 
+    /* Modals plus larges et lisibles sur mobile */
     .modal-overlay {
-        padding: 1rem;
+        padding: 0.5rem;
     }
 
     .modal-content {
-        padding: 1.5rem;
+        width: 95vw;
+        max-width: 95vw;
+        padding: 1rem;
         max-height: 90vh;
     }
 
@@ -1002,6 +1014,13 @@ input, textarea, select {
 
     .modal-section-title {
         font-size: 1.25rem;
+    }
+
+    /* Texte modal plus lisible */
+    .modal-text,
+    .modal-list li {
+        font-size: 0.85rem;
+        line-height: 1.6;
     }
 
     /* Certification preview modal - mobile */
