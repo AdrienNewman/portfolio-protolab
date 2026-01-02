@@ -29,6 +29,8 @@
 html {
     font-size: 16px;
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    max-width: 100vw;
 }
 
 body {
@@ -36,6 +38,7 @@ body {
     background: var(--black);
     color: var(--white);
     overflow-x: hidden;
+    max-width: 100vw;
     cursor: none;
 }
 
@@ -979,6 +982,17 @@ input, textarea, select {
         cursor: auto;
     }
 
+    /* Anti-overflow containers */
+    .section,
+    .live-lab-container,
+    .skills-container,
+    .doc-container,
+    .profile-grid,
+    .contact-content {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
     .section-padding {
         padding: 60px 15px;
     }
@@ -1035,6 +1049,27 @@ input, textarea, select {
 
     .cert-preview-skills li {
         font-size: 0.75rem;
+    }
+}
+
+/* Breakpoint très petits écrans (iPhone SE, petits Android) */
+@media (max-width: 360px) {
+    html {
+        font-size: 12px;
+    }
+
+    .section-padding {
+        padding: 40px 8px;
+    }
+
+    /* Forcer tout à rester dans le viewport */
+    .section,
+    .hero,
+    .skills-container,
+    .live-lab-container,
+    .doc-container {
+        padding-left: 8px;
+        padding-right: 8px;
     }
 }
 

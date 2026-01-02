@@ -746,7 +746,7 @@ const sortedMonths = Object.entries(docsByMonth).sort((a, b) => {
     }
 
     @media (max-width: 768px) {
-        .section { padding: 5rem 1.5rem; }
+        .section { padding: 5rem 1rem; }
         .section-header { margin-bottom: 3rem; }
 
         .doc-stats-hero {
@@ -764,6 +764,44 @@ const sortedMonths = Object.entries(docsByMonth).sort((a, b) => {
         }
         .doc-timeline-month::before {
             left: -2rem;
+        }
+
+        /* Fix overflow doc cards */
+        .doc-list-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .doc-list-card {
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        .doc-card-title {
+            font-size: 1rem;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .doc-card-desc {
+            font-size: 0.8rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .section { padding: 4rem 0.75rem; }
+
+        .doc-categories-grid {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+
+        .doc-list-card {
+            padding: 1rem;
+        }
+
+        .doc-card-title {
+            font-size: 0.9rem;
         }
     }
 </style>
