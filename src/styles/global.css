@@ -1099,6 +1099,36 @@ input, textarea, select {
     .cert-preview-skills li {
         font-size: 0.75rem;
     }
+
+    /* FORCER suppression des bordures pour TOUS les modals projets (spécificité ID) */
+    #project-protolab .modal-content,
+    #project-llm .modal-content,
+    #project-observability .modal-content,
+    #project-control-plane .modal-content,
+    #project-web-interface .modal-content {
+        border: none;
+    }
+
+    /* Supprimer les effets de grille et glow sur mobile pour lisibilité */
+    .modal-content::before,
+    .modal-content::after,
+    #project-protolab .modal-content::before,
+    #project-protolab .modal-content::after,
+    #project-llm .modal-content::before,
+    #project-llm .modal-content::after,
+    #project-observability .modal-content::before,
+    #project-observability .modal-content::after,
+    #project-control-plane .modal-content::before,
+    #project-control-plane .modal-content::after,
+    #project-web-interface .modal-content::before,
+    #project-web-interface .modal-content::after {
+        display: none;
+    }
+
+    /* Ajuster également modal-large qui manquait border: none */
+    .modal-content.modal-large {
+        border: none;
+    }
 }
 
 /* Breakpoint très petits écrans (iPhone SE, petits Android) */
