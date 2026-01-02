@@ -13,8 +13,13 @@ import { navigationItems, ctaItem } from '../../config/navigation';
         <ul class="nav-menu" role="list">
             {navigationItems.map((item, index) => (
                 <li>
-                    <a href={item.href} class={`nav-link ${index === 0 ? 'active' : ''}`}>
-                        {item.label}
+                    <a href={item.href} class={`nav-link ${index === 0 ? 'active' : ''} ${item.isLab ? 'nav-lab' : ''}`}>
+                        {item.isLab ? (
+                            <>
+                                <span class="lab-dot"></span>
+                                Live<span class="lab-green">_Lab</span>
+                            </>
+                        ) : item.label}
                     </a>
                 </li>
             ))}
@@ -103,6 +108,38 @@ import { navigationItems, ctaItem } from '../../config/navigation';
     .nav-link:hover::before { width: calc(100% - 3rem); }
     .nav-link.active { color: var(--neon-cyan); }
     .nav-link.active::before { width: calc(100% - 3rem); }
+
+    .nav-lab {
+        display: flex;
+        align-items: center;
+    }
+
+    .nav-lab::before {
+        background: var(--neon-green);
+    }
+
+    .lab-green {
+        color: var(--neon-green);
+        transition: color 0.3s ease;
+    }
+
+    .nav-lab:hover .lab-green {
+        color: var(--white);
+    }
+
+    .nav-lab.active .lab-green {
+        color: var(--neon-green);
+    }
+
+    .lab-dot {
+        width: 6px;
+        height: 6px;
+        background: var(--neon-green);
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+        box-shadow: 0 0 8px var(--neon-green);
+        margin-right: 0.5rem;
+    }
 
     .nav-cta {
         margin-left: 1rem;

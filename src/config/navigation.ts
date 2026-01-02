@@ -2,6 +2,7 @@ export interface NavItem {
   label: string;
   href: string;
   isCta?: boolean;
+  isLab?: boolean;
 }
 
 export const navigationItems: NavItem[] = [
@@ -9,6 +10,7 @@ export const navigationItems: NavItem[] = [
   { label: 'Compétences', href: '#competences' },
   { label: 'Profil', href: '#profil' },
   { label: 'Projets', href: '#projets' },
+  { label: 'Live_Lab', href: '#live-lab', isLab: true },
   { label: 'Documentation', href: '#documentation' },
   { label: 'Contact', href: '#contact' },
 ];

@@ -8,7 +8,14 @@ import { navigationItems } from '../../config/navigation';
         <ul class="nav-mobile-menu" role="list">
             {navigationItems.map((item, index) => (
                 <li class="nav-mobile-item" style={`--item-index: ${index}`}>
-                    <a href={item.href} class="nav-mobile-link">{item.label}</a>
+                    <a href={item.href} class={`nav-mobile-link ${item.isLab ? 'nav-mobile-lab' : ''}`}>
+                        {item.isLab ? (
+                            <>
+                                <span class="mobile-lab-dot"></span>
+                                Live<span class="mobile-lab-green">_Lab</span>
+                            </>
+                        ) : item.label}
+                    </a>
                 </li>
             ))}
         </ul>
@@ -109,4 +116,33 @@ import { navigationItems } from '../../config/navigation';
     }
 
     .nav-mobile.active .nav-mobile-deco { opacity: 1; }
+
+    /* Live_Lab styles */
+    .nav-mobile-lab {
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .mobile-lab-green {
+        color: var(--neon-green);
+    }
+
+    .nav-mobile-lab:hover .mobile-lab-green {
+        color: var(--neon-cyan);
+    }
+
+    .mobile-lab-dot {
+        width: 10px;
+        height: 10px;
+        background: var(--neon-green);
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+        box-shadow: 0 0 12px var(--neon-green);
+        margin-right: 0.75rem;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.6; transform: scale(0.9); }
+    }
 </style>
