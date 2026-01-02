@@ -25,7 +25,30 @@ const {
     <!-- Fonts: Brutalist choices -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Preload critical fonts to prevent FOUT -->
+    <link rel="preload" href="https://fonts.gstatic.com/s/bebasneue/v14/JTUSjIg69CK48gW7PXoo9Wlhyw.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="https://fonts.gstatic.com/s/spacemono/v13/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" as="font" type="font/woff2" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=JetBrains+Mono:wght@400;700&display=block" rel="stylesheet">
+
+    <!-- Font loading detection script -->
+    <script>
+        document.documentElement.classList.add('fonts-loading');
+        if ('fonts' in document) {
+            Promise.all([
+                document.fonts.load('1em "Bebas Neue"'),
+                document.fonts.load('1em "Space Mono"')
+            ]).then(function() {
+                document.documentElement.classList.remove('fonts-loading');
+                document.documentElement.classList.add('fonts-loaded');
+            }).catch(function() {
+                document.documentElement.classList.remove('fonts-loading');
+            });
+        } else {
+            document.documentElement.classList.remove('fonts-loading');
+        }
+    </script>
 </head>
 <body>
     <!-- Skip to content for accessibility -->

@@ -18,6 +18,18 @@
 }
 
 /* ========================================
+   FONT LOADING - PREVENT FOUT
+   ======================================== */
+html.fonts-loading {
+    visibility: hidden;
+}
+
+html.fonts-loaded,
+html:not(.fonts-loading) {
+    visibility: visible;
+}
+
+/* ========================================
    RESET & BASE
    ======================================== */
 *, *::before, *::after {
