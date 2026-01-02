@@ -13,19 +13,18 @@ export const onRequest = defineMiddleware(async (context, next) => {
   newResponse.headers.set('X-XSS-Protection', '1; mode=block');
   newResponse.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
 
-  // HSTS - Enable only if served over HTTPS
-  // Uncomment in production with valid SSL
-  // newResponse.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  // HSTS - Enabled for production with HTTPS
+  newResponse.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
 
   // Content Security Policy
   // Allows inline styles (needed for Astro scoped styles) and specific CDNs
   const csp = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
+    "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: https:",
-    "connect-src 'self' http://localhost:* https://*",
+    "connect-src 'self' https://protolab.ovh",
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",

@@ -73,6 +73,27 @@
     }
 
     /**
+     * Validate API response data
+     */
+    function validateLabStatus(data) {
+        if (!data || typeof data !== 'object') {
+            throw new Error('Invalid data format');
+        }
+        if (!data.status || !['online', 'degraded', 'offline'].includes(data.status)) {
+            throw new Error('Invalid status');
+        }
+        if (!Array.isArray(data.services)) {
+            throw new Error('Invalid services array');
+        }
+        data.services.forEach(s => {
+            if (!/^[a-zA-Z0-9_-]+$/.test(s.id)) {
+                throw new Error('Invalid service ID: ' + s.id);
+            }
+        });
+        return data;
+    }
+
+    /**
      * Fetch status with timeout
      */
     async function fetchStatus() {
@@ -91,7 +112,7 @@
                 throw new Error(`HTTP ${response.status}`);
             }
 
-            const data = await response.json();
+            const data = validateLabStatus(await response.json());
             updateUI(data);
             hideOffline();
             return true;

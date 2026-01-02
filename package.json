@@ -10,8 +10,8 @@
     "update-docs": "node src/utils/updateDocMetadata.js"
   },
   "dependencies": {
-    "@astrojs/node": "^9.5.1",
-    "astro": "^5.16.6",
-    "simple-icons": "^16.2.0"
+    "@astrojs/node": "9.5.1",
+    "astro": "5.16.6",
+    "simple-icons": "16.2.0"
   }
 }
