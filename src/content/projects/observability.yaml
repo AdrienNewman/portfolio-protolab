@@ -1,5 +1,6 @@
 title: "Stack Observabilité"
 description: "Wazuh SIEM, Grafana, Prometheus, Loki. Monitoring centralisé + alerting automatisé."
+projectId: "project-observability"
 stack:
   - "Wazuh"
   - "Grafana"

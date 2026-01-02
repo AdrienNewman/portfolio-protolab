@@ -9,46 +9,16 @@ import ProjectGallery from '../components/ui/ProjectGallery.astro';
 import Documentation from '../components/sections/Documentation.astro';
 import Contact from '../components/sections/Contact.astro';
 import Footer from '../components/layout/Footer.astro';
-import PreviewWindows from '../components/modals/PreviewWindows.astro';
-import PreviewLinux from '../components/modals/PreviewLinux.astro';
-import PreviewPaloalto from '../components/modals/PreviewPaloalto.astro';
-import PreviewProxmox from '../components/modals/PreviewProxmox.astro';
-import PreviewObservability from '../components/modals/PreviewObservability.astro';
-import PreviewLLM from '../components/modals/PreviewLLM.astro';
-import PreviewBackup from '../components/modals/PreviewBackup.astro';
-import PreviewCloud from '../components/modals/PreviewCloud.astro';
-import ModalWindows from '../components/modals/ModalWindows.astro';
-import ModalLinux from '../components/modals/ModalLinux.astro';
-import ModalPaloalto from '../components/modals/ModalPaloalto.astro';
-import ModalProxmox from '../components/modals/ModalProxmox.astro';
-import ModalObservability from '../components/modals/ModalObservability.astro';
-import ModalLLM from '../components/modals/ModalLLM.astro';
-import ModalBackup from '../components/modals/ModalBackup.astro';
-import ModalCloud from '../components/modals/ModalCloud.astro';
-import ProjectProtolab from '../components/modals/ProjectProtolab.astro';
-import ProjectLLM from '../components/modals/ProjectLLM.astro';
-import ProjectObservability from '../components/modals/ProjectObservability.astro';
 import LiveLab from '../components/sections/LiveLab.astro';
-import { getIconPath, getIconColor } from '../utils/icons';
 
-// Préparer les icônes pour les modals
-const iconWindows = getIconPath('windows');
-const iconLinux = getIconPath('linux');
-const iconPaloAlto = getIconPath('paloaltonetworks');
-const iconProxmox = getIconPath('proxmox');
-const iconGrafana = getIconPath('grafana');
-const iconNvidia = getIconPath('nvidia');
-const iconGit = getIconPath('git');
-const iconDocker = getIconPath('docker');
+// Generic components (replaces 21 individual modal files)
+import SkillPreview from '../components/ui/SkillPreview.astro';
+import SkillModal from '../components/ui/SkillModal.astro';
+import ProjectModal from '../components/ui/ProjectModal.astro';
 
-const colorWindows = getIconColor('windows');
-const colorLinux = getIconColor('linux');
-const colorPaloAlto = getIconColor('paloaltonetworks');
-const colorProxmox = getIconColor('proxmox');
-const colorGrafana = getIconColor('grafana');
-const colorNvidia = getIconColor('nvidia');
-const colorGit = getIconColor('git');
-const colorDocker = getIconColor('docker');
+// Centralized data
+import { skills } from '../data/skills';
+import { projectModals } from '../data/projectModals';
 ---
 
 <BaseLayout
@@ -70,201 +40,43 @@ const colorDocker = getIconColor('docker');
         <Documentation />
         <Contact />
 
-        <!-- Project modals extracted to components -->
-        <ProjectProtolab />
-        <ProjectLLM />
-        <ProjectObservability />
+        <!-- ============================================
+             SKILL MODALS (Generated from centralized data)
+             ============================================ -->
+        <!-- Preview modals (hover) - Generated dynamically -->
+        {skills.map(skill => (
+            <SkillPreview
+                id={skill.id}
+                title={skill.previewTitle}
+                description={skill.previewDescription}
+                tags={skill.previewTags}
+                iconName={skill.icon}
+                modalId={`modal-${skill.id}`}
+            />
+        ))}
 
-        <!-- Preview modals (hover) -->
-        <PreviewWindows />
-        <PreviewLinux />
-        <PreviewPaloalto />
-        <PreviewProxmox />
-        <PreviewObservability />
-        <PreviewLLM />
-        <PreviewBackup />
-        <PreviewCloud />
-
-        <!-- Detail modals -->
-        <ModalWindows />
-        <ModalLinux />
-        <ModalPaloalto />
-        <ModalProxmox />
-        <ModalObservability />
-        <ModalLLM />
-        <ModalBackup />
-        <ModalCloud />
+        <!-- Detail modals - Generated dynamically -->
+        {skills.map(skill => (
+            <SkillModal
+                id={skill.id}
+                title={skill.modalTitle}
+                iconName={skill.icon}
+                sections={skill.sections}
+            />
+        ))}
 
         <!-- ============================================
-             PROJECT MODALS
+             PROJECT MODALS (Generated from centralized data)
              ============================================ -->
-        <!-- Protolab Modal -->
-        <div id="project-protolab" class="modal-overlay">
-            <div class="modal-content modal-large">
-                <div class="modal-header">
-                    <h2 class="modal-title">
-                        <div class="modal-title-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
-                        Infrastructure Protolab
-                    </h2>
-                    <button class="modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
-                </div>
-                <div class="modal-body">
-                    <div class="modal-section">
-                        <h4 class="modal-section-title">Présentation</h4>
-                        <p class="modal-text">Protolab est mon laboratoire personnel, une infrastructure complète simulant un environnement d'entreprise. Ce projet m'a permis de mettre en pratique l'ensemble de mes compétences TSSR dans un contexte réaliste.</p>
-                    </div>
-                    <div class="modal-section">
-                        <h4 class="modal-section-title">Architecture Technique</h4>
-                        <ul class="modal-list">
-                            <li><strong>Hyperviseur :</strong> Proxmox VE 8.x sur serveur physique dédié (AMD Ryzen 7 5800X, 32GB RAM, RTX 3060)</li>
-                            <li><strong>Firewall :</strong> Palo Alto PA-VM-50 avec 4 interfaces (WAN, LAN, DMZ, VPN)</li>
-                            <li><strong>Active Directory :</strong> Windows Server 2022 (DC01) — Protolab.local</li>
-                            <li><strong>Réseau :</strong> 3 VLANs segmentés (Production, Admin, DMZ) avec routing inter-VLAN</li>
-                            <li><strong>Monitoring :</strong> Stack OpenTelemetry + Victoria Logs + Grafana</li>
-                        </ul>
-                    </div>
-                    <div class="modal-section">
-                        <h4 class="modal-section-title">Fonctionnalités Clés</h4>
-                        <ul class="modal-list">
-                            <li><strong>VPN GlobalProtect :</strong> Accès distant sécurisé avec authentification LDAP</li>
-                            <li><strong>GPU Passthrough :</strong> RTX 3060 dédiée aux workloads IA (Ollama)</li>
-                            <li><strong>Backup automatisé :</strong> Snapshots Proxmox + exports AD + config Palo Alto</li>
-                            <li><strong>Zero Trust :</strong> Politiques de sécurité deny-by-default</li>
-                        </ul>
-                    </div>
-                    <div class="modal-section">
-                        <h4 class="modal-section-title">Stack Technique</h4>
-                        <div class="modal-tags">
-                            <span class="modal-tag">Proxmox VE</span>
-                            <span class="modal-tag">Palo Alto PAN-OS</span>
-                            <span class="modal-tag">Windows Server 2022</span>
-                            <span class="modal-tag">Active Directory</span>
-                            <span class="modal-tag">Docker</span>
-                            <span class="modal-tag">Grafana</span>
-                            <span class="modal-tag">OpenTelemetry</span>
-                            <span class="modal-tag">Bash</span>
-                            <span class="modal-tag">PowerShell</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- LLM Modal -->
-        <div id="project-llm" class="modal-overlay">
-            <div class="modal-content modal-large">
-                <div class="modal-header">
-                    <h2 class="modal-title">
-                        <div class="modal-title-icon modal-title-icon-magenta"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6"/></svg></div>
-                        LLM Local + GPU
-                    </h2>
-                    <button class="modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
-                </div>
-                <div class="modal-body">
-                    <div class="modal-section">
-                        <h4 class="modal-section-title">Présentation</h4>
-                        <p class="modal-text">Déploiement d'une infrastructure IA locale permettant d'exécuter des modèles de langage (LLM) avec accélération GPU. Ce projet combine virtualisation avancée et technologies d'intelligence artificielle.</p>
-                    </div>
-                    <div class="modal-section">
-                        <h4 class="modal-section-title">Architecture Technique</h4>
-                        <ul class="modal-list">
-                            <li><strong>GPU Passthrough :</strong> NVIDIA RTX 3060 12GB dédiée via IOMMU/VFIO</li>
-                            <li><strong>Runtime :</strong> Ollama pour l'exécution des modèles LLM</li>
-                            <li><strong>Interface :</strong> Open WebUI pour l'interaction utilisateur</li>
-                            <li><strong>Routing :</strong> LiteLLM pour le load-balancing multi-modèles</li>
-                            <li><strong>Conteneurisation :</strong> Docker avec nvidia-container-toolkit</li>
-                        </ul>
-                    </div>
-                    <div class="modal-section">
-                        <h4 class="modal-section-title">Modèles Déployés</h4>
-                        <ul class="modal-list">
-                            <li><strong>Llama 3.1 8B :</strong> Modèle généraliste pour conversations</li>
-                            <li><strong>CodeLlama 7B :</strong> Assistance au développement</li>
-                            <li><strong>Mistral 7B :</strong> Alternative performante</li>
-                            <li><strong>Phi-3 :</strong> Modèle compact pour inférence rapide</li>
-                        </ul>
-                    </div>
-                    <div class="modal-section">
-                        <h4 class="modal-section-title">Défis Techniques Résolus</h4>
-                        <ul class="modal-list">
-                            <li>Configuration IOMMU et groupes de GPU dans Proxmox</li>
-                            <li>Installation drivers NVIDIA dans environnement virtualisé</li>
-                            <li>Optimisation mémoire VRAM pour modèles volumineux</li>
-                            <li>Sécurisation de l'accès via reverse-proxy authentifié</li>
-                        </ul>
-                    </div>
-                    <div class="modal-section">
-                        <h4 class="modal-section-title">Stack Technique</h4>
-                        <div class="modal-tags">
-                            <span class="modal-tag">Ollama</span>
-                            <span class="modal-tag">Open WebUI</span>
-                            <span class="modal-tag">LiteLLM</span>
-                            <span class="modal-tag">CUDA 12</span>
-                            <span class="modal-tag">Docker</span>
-                            <span class="modal-tag">NVIDIA Container Toolkit</span>
-                            <span class="modal-tag">Proxmox GPU Passthrough</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Observability Modal -->
-        <div id="project-observability" class="modal-overlay">
-            <div class="modal-content modal-large">
-                <div class="modal-header">
-                    <h2 class="modal-title">
-                        <div class="modal-title-icon modal-title-icon-green"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
-                        Stack Observabilité
-                    </h2>
-                    <button class="modal-close" aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
-                </div>
-                <div class="modal-body">
-                    <div class="modal-section">
-                        <h4 class="modal-section-title">Présentation</h4>
-                        <p class="modal-text">Pipeline de collecte et visualisation de logs centralisé, permettant une observabilité complète de l'infrastructure Protolab. Basé sur les standards CNCF avec OpenTelemetry.</p>
-                    </div>
-                    <div class="modal-section">
-                        <h4 class="modal-section-title">Architecture du Pipeline</h4>
-                        <ul class="modal-list">
-                            <li><strong>Collecteur :</strong> OpenTelemetry Collector — point d'entrée unique</li>
-                            <li><strong>Stockage :</strong> Victoria Logs — haute performance, faible empreinte</li>
-                            <li><strong>Visualisation :</strong> Grafana — dashboards temps réel</li>
-                            <li><strong>Alerting :</strong> Grafana Alerting avec notifications</li>
-                        </ul>
-                    </div>
-                    <div class="modal-section">
-                        <h4 class="modal-section-title">Sources de Données</h4>
-                        <ul class="modal-list">
-                            <li><strong>Palo Alto :</strong> Logs firewall via Syslog (traffic, threat, system)</li>
-                            <li><strong>Windows Server :</strong> Event Logs (Security, Application, System)</li>
-                            <li><strong>Linux :</strong> Journald + fichiers logs applicatifs</li>
-                            <li><strong>Docker :</strong> Logs conteneurs via driver OTLP</li>
-                        </ul>
-                    </div>
-                    <div class="modal-section">
-                        <h4 class="modal-section-title">Dashboards Créés</h4>
-                        <ul class="modal-list">
-                            <li><strong>Security Overview :</strong> Tentatives d'intrusion, authentifications échouées</li>
-                            <li><strong>Firewall Traffic :</strong> Flux réseau, top applications, menaces bloquées</li>
-                            <li><strong>Infrastructure Health :</strong> État des VMs, ressources, uptime</li>
-                            <li><strong>AD Audit :</strong> Connexions utilisateurs, modifications GPO</li>
-                        </ul>
-                    </div>
-                    <div class="modal-section">
-                        <h4 class="modal-section-title">Stack Technique</h4>
-                        <div class="modal-tags">
-                            <span class="modal-tag">OpenTelemetry</span>
-                            <span class="modal-tag">Victoria Logs</span>
-                            <span class="modal-tag">Grafana</span>
-                            <span class="modal-tag">Syslog</span>
-                            <span class="modal-tag">Docker Compose</span>
-                            <span class="modal-tag">OTLP</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {projectModals.map(project => (
+            <ProjectModal
+                id={project.id}
+                title={project.title}
+                iconSvg={project.iconSvg}
+                iconColorClass={project.iconColorClass}
+                sections={project.sections}
+            />
+        ))}
     </div>
 
     <!-- Footer -->

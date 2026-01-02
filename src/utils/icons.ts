@@ -37,6 +37,7 @@ export function getIcon(name: string): IconData | null {
     'paloalto': 'paloaltonetworks',
     'paloaltonetworks': 'paloaltonetworks',
     'proxmox': 'proxmox',
+    'proxmoxve': 'proxmox',
     'vmware': 'vmware',
     'docker': 'docker',
     'bash': 'gnubash',
@@ -44,6 +45,7 @@ export function getIcon(name: string): IconData | null {
     'grafana': 'grafana',
     'kubernetes': 'kubernetes',
     'nvidia': 'nvidia',
+    'nvidiartx3060': 'nvidia',
     'git': 'git',
     'markdown': 'markdown',
     'security': 'shieldcheck',
@@ -54,6 +56,18 @@ export function getIcon(name: string): IconData | null {
     'chart': 'chartdotjs',
     'clock': 'clockify',
     'code': 'visualstudiocode',
+    // Nouvelles technos V4.8
+    'astro': 'astro',
+    'typescript': 'typescript',
+    'python': 'python',
+    'ollama': 'ollama',
+    'fastapi': 'fastapi',
+    'prometheus': 'prometheus',
+    'loki': 'grafana',
+    'wazuh': 'wazuh',
+    'mcpserver': 'anthropic',
+    'claudecode': 'anthropic',
+    'anthropic': 'anthropic',
   };
 
   const iconName = nameMapping[normalizedName] || normalizedName;

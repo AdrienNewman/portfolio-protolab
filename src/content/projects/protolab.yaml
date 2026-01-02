@@ -1,5 +1,6 @@
 title: "Infrastructure Protolab"
 description: "Homelab entreprise-grade : 3 nœuds Proxmox, virtualisation complète, firewall PaloAlto, stack observabilité (Wazuh, Grafana, Loki)."
+projectId: "project-protolab"
 stack:
   - "Proxmox VE"
   - "Palo Alto"

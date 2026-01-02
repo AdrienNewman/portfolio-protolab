@@ -422,6 +422,36 @@ input, textarea, select {
         linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
 }
 
+/* Control-Plane IA - Purple theme */
+#project-control-plane .modal-content::after {
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, transparent 70%);
+}
+
+#project-control-plane .modal-content {
+    border-color: #a855f7;
+}
+
+#project-control-plane .modal-content::before {
+    background-image:
+        linear-gradient(rgba(168, 85, 247, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
+}
+
+/* Interface Web - Blue theme */
+#project-web-interface .modal-content::after {
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, transparent 70%);
+}
+
+#project-web-interface .modal-content {
+    border-color: #3b82f6;
+}
+
+#project-web-interface .modal-content::before {
+    background-image:
+        linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+}
+
 .modal-overlay.active .modal-content {
     transform: translateY(0) scale(1);
 }
@@ -482,6 +512,24 @@ input, textarea, select {
 
 .modal-title-icon.modal-title-icon-green {
     border-color: var(--neon-green);
+}
+
+.modal-title-icon.modal-title-icon-purple {
+    border-color: #a855f7;
+    background: rgba(168, 85, 247, 0.1);
+}
+
+.modal-title-icon.modal-title-icon-purple svg {
+    stroke: #a855f7;
+}
+
+.modal-title-icon.modal-title-icon-blue {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.modal-title-icon.modal-title-icon-blue svg {
+    stroke: #3b82f6;
 }
 
 .modal-title-icon svg {

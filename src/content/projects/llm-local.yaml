@@ -1,5 +1,6 @@
 title: "LLM Local + GPU"
 description: "Ollama avec modèles Llama 3.1, Mistral NeMo, GPU NVIDIA RTX 3060. API FastAPI pour intégration portfolio."
+projectId: "project-llm"
 stack:
   - "Ollama"
   - "NVIDIA RTX 3060"

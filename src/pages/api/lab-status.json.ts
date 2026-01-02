@@ -3,8 +3,42 @@ import type { APIRoute } from 'astro';
 // Enable server-side rendering for this route
 export const prerender = false;
 
-// VictoriaMetrics URL from environment
-const VICTORIA_METRICS_URL = import.meta.env.VICTORIA_METRICS_URL || 'http://10.1.40.25:8428';
+// Allowed URLs whitelist for SSRF protection
+const ALLOWED_METRICS_HOSTS = [
+  'localhost',
+  '127.0.0.1',
+  '10.1.40.25',  // VictoriaMetrics internal
+];
+
+// Validate and sanitize the metrics URL
+function validateMetricsUrl(url: string): string {
+  try {
+    const parsed = new URL(url);
+    // Only allow http/https protocols
+    if (!['http:', 'https:'].includes(parsed.protocol)) {
+      throw new Error('Invalid protocol');
+    }
+    // Check hostname against whitelist
+    if (!ALLOWED_METRICS_HOSTS.includes(parsed.hostname)) {
+      console.warn(`Blocked metrics URL with unauthorized host: ${parsed.hostname}`);
+      throw new Error('Unauthorized host');
+    }
+    // Only allow specific ports
+    const allowedPorts = ['8428', '9428', '9090', ''];
+    if (!allowedPorts.includes(parsed.port)) {
+      throw new Error('Unauthorized port');
+    }
+    return url;
+  } catch (error) {
+    console.error('Invalid VICTORIA_METRICS_URL, using fallback');
+    return 'http://localhost:8428';
+  }
+}
+
+// VictoriaMetrics URL from environment (validated)
+const VICTORIA_METRICS_URL = validateMetricsUrl(
+  import.meta.env.VICTORIA_METRICS_URL || 'http://localhost:8428'
+);
 
 // Cache for rate limiting (60s)
 let cache: { data: LabStatusResponse | null; timestamp: number } = {
@@ -74,7 +108,8 @@ async function queryPrometheus(query: string): Promise<any> {
       return data.data?.result || [];
     } catch (error) {
       if (attempt === 1) {
-        console.error(`PromQL query failed: ${query}`, error);
+        // Log error without exposing query details in production
+        console.error('PromQL query failed', error instanceof Error ? error.message : 'Unknown error');
         return [];
       }
       await new Promise(r => setTimeout(r, 500));
@@ -257,11 +292,14 @@ export const GET: APIRoute = async () => {
   } catch (error) {
     console.error('Lab status API error:', error);
 
-    // Return cached data if available, otherwise error
+    // Return cached data if available with 503 status to indicate stale data
     if (cache.data) {
       return new Response(JSON.stringify({ ...cache.data, cached: true, stale: true }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' }
+        status: 503,
+        headers: {
+          'Content-Type': 'application/json',
+          'Retry-After': '30'
+        }
       });
     }
 

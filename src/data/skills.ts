@@ -1,0 +1,325 @@
+// Skills data - Extracted from individual modal files for centralization
+// This file contains all skill preview and modal data
+
+export interface SkillSection {
+  title: string;
+  items: string[];
+}
+
+export interface SkillData {
+  id: string;
+  icon: string;
+  previewTitle: string;
+  previewDescription: string;
+  previewTags: string[];
+  modalTitle: string;
+  sections: SkillSection[];
+}
+
+export const skills: SkillData[] = [
+  {
+    id: 'windows',
+    icon: 'windows',
+    previewTitle: 'Windows Server',
+    previewDescription: 'Administration Active Directory, GPO, DNS, DHCP. Deploiement et gestion d\'infrastructures Windows.',
+    previewTags: ['AD DS', 'GPO', 'DNS', 'PowerShell'],
+    modalTitle: 'Active Directory & GPO',
+    sections: [
+      {
+        title: 'Architecture Technique',
+        items: [
+          'Domain Controller (DC01) sur Windows Server 2022 - <strong>Protolab.local</strong>',
+          'Structure OUs organisee (Utilisateurs, Groupes, Ordinateurs, Services)',
+          'DNS integre avec zones de recherche inverse',
+          'DHCP haute dispo (scope 192.168.100.0/24)',
+          'Integration <strong>LDAP avec Palo Alto</strong> pour authentification centralisee',
+          'Hardening securite : politiques mots de passe complexes, audit avance',
+        ],
+      },
+      {
+        title: 'Realisations Marquantes',
+        items: [
+          '<strong>Deploiement complet :</strong> Configuration DC01 de zero sur Proxmox',
+          '<strong>GPO avancees :</strong> Politiques de securite, deploiement d\'applications',
+          '<strong>Script PowerShell :</strong> Backup automatise AD avec restauration validee',
+          '<strong>Documentation :</strong> Schema complet de l\'infra, playbooks de restauration',
+        ],
+      },
+      {
+        title: 'Competences Demontrees',
+        items: [
+          'Gestion complete de domaine Active Directory',
+          'Conception et implementation de GPO complexes',
+          'Scripting PowerShell pour automatisation',
+          'Integration avec tiers (firewall, services)',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'linux',
+    icon: 'linux',
+    previewTitle: 'Linux',
+    previewDescription: 'Administration systeme Debian/Ubuntu, scripting Bash, gestion des services, conteneurisation Docker.',
+    previewTags: ['Debian', 'Bash', 'Docker', 'LXC'],
+    modalTitle: 'Linux & Scripting Bash',
+    sections: [
+      {
+        title: 'Environnement & Outils',
+        items: [
+          'Administration <strong>Debian 12 / Ubuntu Server</strong>',
+          'Scripting Bash avance : conditions, boucles, fonctions, gestion d\'erreurs',
+          'Gestion des services avec <strong>systemd</strong>, cron pour taches recurrentes',
+          'Conteneurisation <strong>Docker</strong> (Dockerfile, docker-compose)',
+          'Securite : iptables, fail2ban, SSH hardening, cles RSA',
+        ],
+      },
+      {
+        title: 'Realisations Marquantes',
+        items: [
+          '<strong>Script backup multi-sources :</strong> Collecte Palo Alto, AD, Proxmox avec push Git',
+          '<strong>Stack observabilite conteneurisee :</strong> OpenTelemetry, Victoria Logs en Docker',
+          '<strong>Automatisation cron :</strong> Rotation logs, nettoyage, alertes e-mail',
+          '<strong>Conteneurs LXC optimises :</strong> VMs legeres pour services',
+        ],
+      },
+      {
+        title: 'Competences Demontrees',
+        items: [
+          'Autonomie sur systeme GNU/Linux (CLI uniquement)',
+          'Scripting production : gestion erreurs, logging, idempotence',
+          'Containerisation et orchestration legere',
+          'Troubleshooting logs et debugging de services',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'proxmox',
+    icon: 'proxmox',
+    previewTitle: 'Virtualisation',
+    previewDescription: 'Hyperviseur Proxmox VE, creation et gestion de VMs et conteneurs LXC, passthrough GPU.',
+    previewTags: ['Proxmox', 'VMware', 'KVM', 'GPU Passthrough'],
+    modalTitle: 'Proxmox VE Hyperviseur',
+    sections: [
+      {
+        title: 'Infrastructure & Capacites',
+        items: [
+          '<strong>Proxmox VE 8.x</strong> sur serveur physique dedie',
+          'VMs : Windows Server 2022, Debian, Ubuntu, Palo Alto PA-VM',
+          'Conteneurs <strong>LXC</strong> optimises pour services legers',
+          'Reseau avance : bridges, VLANs, interfaces virtuelles',
+          '<strong>GPU Passthrough</strong> RTX 3060 pour workloads IA',
+          'Stockage local SSD/NVMe + backup externe',
+        ],
+      },
+      {
+        title: 'Realisations Marquantes',
+        items: [
+          '<strong>Infrastructure Protolab :</strong> DC01, PA-VM, Debian, Ubuntu',
+          '<strong>GPU Passthrough fonctionnel :</strong> IOMMU, drivers CUDA',
+          '<strong>Templates optimises :</strong> Images preconfigurees',
+          '<strong>Reseau segmente :</strong> VLANs avec routing inter-VLAN',
+        ],
+      },
+      {
+        title: 'Competences Demontrees',
+        items: [
+          'Administration hyperviseur de production',
+          'Virtualisation avancee (passthrough GPU)',
+          'Architecture reseau virtuelle complexe',
+          'Planification et automatisation backups',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'paloalto',
+    icon: 'paloaltonetworks',
+    previewTitle: 'Palo Alto',
+    previewDescription: 'Configuration de firewalls Next-Gen. Politiques de securite, NAT, VPN GlobalProtect.',
+    previewTags: ['PAN-OS', 'GlobalProtect', 'Threat Prevention'],
+    modalTitle: 'Palo Alto Firewall NextGen',
+    sections: [
+      {
+        title: 'Environnement Technique',
+        items: [
+          '<strong>PA-VM-50</strong> virtualisee sur Proxmox (4 vCPU, 6GB RAM)',
+          '4 interfaces reseau : Management, WAN, LAN, VPN',
+          'Regles de securite granulaires avec <strong>App-ID</strong>',
+          'NAT complexe : PAT, Static NAT',
+          '<strong>VPN GlobalProtect</strong> avec split-tunnel et auth LDAP',
+          'Logs exportes vers stack centralisee',
+        ],
+      },
+      {
+        title: 'Realisations Marquantes',
+        items: [
+          '<strong>Config from scratch :</strong> Deploiement complet jusqu\'a production',
+          '<strong>VPN valide :</strong> Tests reels d\'acces distant securise',
+          '<strong>Regles avancees :</strong> Segmentation zones (DMZ, prod, admin)',
+          '<strong>Backup automatise :</strong> Export XML config via API REST',
+        ],
+      },
+      {
+        title: 'Competences Demontrees',
+        items: [
+          'Configuration complete firewall Next-Gen',
+          'Architecture VPN securisee',
+          'Politiques Zero Trust',
+          'Integration syslog centralisee',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'observability',
+    icon: 'grafana',
+    previewTitle: 'Monitoring',
+    previewDescription: 'Stack observabilite complete : collecte de logs, metriques, dashboards.',
+    previewTags: ['Grafana', 'VictoriaLogs', 'OpenTelemetry'],
+    modalTitle: 'Stack Observabilite',
+    sections: [
+      {
+        title: 'Architecture Technique',
+        items: [
+          '<strong>OpenTelemetry Collector</strong> : point d\'entree centralise',
+          '<strong>Victoria Logs</strong> : stockage haute performance',
+          '<strong>Grafana</strong> : dashboards temps reel et alerting',
+          'Sources : Palo Alto (syslog), Windows (Event Log), Linux (journald)',
+          'Deploiement contenerise via <strong>Docker Compose</strong>',
+        ],
+      },
+      {
+        title: 'Realisations Marquantes',
+        items: [
+          '<strong>Pipeline complet :</strong> Collecte - Transformation - Stockage - Visualisation',
+          '<strong>Dashboards metier :</strong> Vue firewall, authentifications AD',
+          '<strong>Alertes proactives :</strong> Detection anomalies, echecs auth',
+          '<strong>Collecte multi-sources :</strong> Syslog, OTLP, fichiers logs',
+        ],
+      },
+      {
+        title: 'Competences Demontrees',
+        items: [
+          'Conception architecture observabilite moderne',
+          'Maitrise OpenTelemetry (standard CNCF)',
+          'Creation dashboards Grafana avances',
+          'Troubleshooting base sur les donnees',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'llm',
+    icon: 'nvidia',
+    previewTitle: 'Local LLM',
+    previewDescription: 'Deploiement d\'environnements IA locaux avec acceleration GPU.',
+    previewTags: ['Ollama', 'CUDA', 'Open WebUI'],
+    modalTitle: 'Local LLM & Deploiement IA',
+    sections: [
+      {
+        title: 'Contexte',
+        items: [
+          'Deploiement local de modeles LLM avec acceleration GPU',
+          'Orchestration simple pour servir plusieurs modeles',
+          'Interfaces web legeres pour tests et integrations',
+        ],
+      },
+      {
+        title: 'Taches Typiques',
+        items: [
+          'Installation et configuration d\'Ollama / runtime LLM',
+          'Gestion des ressources GPU (CUDA, drivers, passthrough)',
+          'Exposition securisee via reverse-proxy',
+        ],
+      },
+      {
+        title: 'Competences Generiques',
+        items: [
+          'Deploiement local de modeles IA',
+          'Optimisation GPU et monitoring',
+          'Orchestration et autoscaling leger',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'backup',
+    icon: 'git',
+    previewTitle: 'Backup',
+    previewDescription: 'Strategies de sauvegarde 3-2-1, automatisation, restauration.',
+    previewTags: ['3-2-1', 'Snapshots', 'Automation'],
+    modalTitle: 'Gestion de Backup',
+    sections: [
+      {
+        title: 'Principes',
+        items: [
+          'Strategie 3-2-1 : plusieurs copies, stockage hors site',
+          'Combinaison snapshots, exports et copies deportees',
+          'Tests reguliers de restauration et documentation',
+        ],
+      },
+      {
+        title: 'Bonnes Pratiques',
+        items: [
+          'Automatisation (scripts, cron, runners)',
+          'Chiffrement en transit et au repos',
+          'Monitoring des jobs et alerting',
+        ],
+      },
+      {
+        title: 'Competences Generiques',
+        items: [
+          'Planification et automatisation de sauvegardes',
+          'Gestion des snapshots et retention',
+          'Procedures de restauration testees',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'cloud',
+    icon: 'docker',
+    previewTitle: 'Cloud Local',
+    previewDescription: 'Conception de cloud prive : services contenerises, orchestration.',
+    previewTags: ['Private Cloud', 'Containers', 'IAM'],
+    modalTitle: 'Cloud Local',
+    sections: [
+      {
+        title: 'Description',
+        items: [
+          'Cloud prive local base sur Proxmox / containers',
+          'Gestion des identites, orchestration legere',
+          'Sauvegarde, monitoring et gestion des quotas',
+        ],
+      },
+      {
+        title: 'Benefices',
+        items: [
+          'Controle complet des donnees et couts',
+          'Latence reduite pour services internes',
+          'Personnalisation des stacks et securite renforcee',
+        ],
+      },
+      {
+        title: 'Competences Generiques',
+        items: [
+          'Architecture de cloud prive',
+          'Gestion containers et images',
+          'Securite et IAM',
+        ],
+      },
+    ],
+  },
+];
+
+// Helper to get a skill by ID
+export function getSkillById(id: string): SkillData | undefined {
+  return skills.find(skill => skill.id === id);
+}
+
+// Get all skill IDs
+export function getSkillIds(): string[] {
+  return skills.map(skill => skill.id);
+}

@@ -1,5 +1,6 @@
 title: "Interface Web"
 description: "Portfolio Astro. Dashboard temps réel, design cyberpunk, évolutions IA à venir."
+projectId: "project-web-interface"
 stack:
   - "Astro"
   - "TypeScript"
@@ -9,3 +10,8 @@ status: "En évolution"
 icon: "🌐"
 iconColor: "#3b82f6"
 glowColor: "rgba(59, 130, 246, 0.3)"
+stats:
+  - label: "Composants"
+    value: "35+"
+  - label: "Version"
+    value: "V4.8"

@@ -1,0 +1,41 @@
+---
+/**
+ * SkillPreview - Generic skill preview card component
+ * Replaces: PreviewWindows, PreviewLinux, PreviewProxmox, PreviewPaloalto,
+ *           PreviewObservability, PreviewLLM, PreviewBackup, PreviewCloud
+ */
+import { getIconPath, getIconColor } from '../../utils/icons';
+
+interface Props {
+  id: string;
+  title: string;
+  description: string;
+  tags: string[];
+  iconName: string;
+  modalId: string;
+}
+
+const { id, title, description, tags, iconName, modalId } = Astro.props;
+
+const icon = getIconPath(iconName);
+const color = getIconColor(iconName);
+---
+
+<div id={`preview-${id}`} class="skill-preview-modal" data-detail-modal={modalId}>
+  <div class="skill-preview-header">
+    <div class="skill-preview-icon">
+      <svg viewBox="0 0 24 24" fill={color}><path d={icon} /></svg>
+    </div>
+    <h3 class="skill-preview-title">{title}</h3>
+  </div>
+  <p class="skill-preview-desc">{description}</p>
+  <div class="skill-preview-tags">
+    {tags.map(tag => (
+      <span class="skill-preview-tag">{tag}</span>
+    ))}
+  </div>
+  <button class="skill-preview-cta">
+    En savoir plus
+    <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </button>
+</div>

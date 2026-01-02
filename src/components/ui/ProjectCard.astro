@@ -1,5 +1,7 @@
 ---
 // Project Card Component
+import { getIconPath, getIconColor } from '../../utils/icons';
+
 interface Props {
     title: string;
     description: string;
@@ -15,6 +17,13 @@ interface Props {
 }
 
 const { title, description, stack, featured = false, status = "Production", statusDot, icon, iconColor, glowColor, stats, projectId } = Astro.props;
+
+// Préparer les icônes pour chaque technologie du stack
+const stackWithIcons = stack.map(tech => ({
+    name: tech,
+    iconPath: getIconPath(tech),
+    iconColor: getIconColor(tech)
+}));
 ---
 
 <div
@@ -35,7 +44,16 @@ const { title, description, stack, featured = false, status = "Production", stat
         <h3 class="project-title">{title}</h3>
         <p class="project-desc">{description}</p>
         <div class="project-stack">
-            {stack.map(tech => <span>{tech}</span>)}
+            {stackWithIcons.map(tech => (
+                <span class="stack-item">
+                    {tech.iconPath && (
+                        <svg viewBox="0 0 24 24" fill={tech.iconColor} class="stack-icon">
+                            <path d={tech.iconPath} />
+                        </svg>
+                    )}
+                    <span class="stack-label">{tech.name}</span>
+                </span>
+            ))}
         </div>
         <div class="project-cta">
             <span>Voir le projet</span>
@@ -199,7 +217,10 @@ const { title, description, stack, featured = false, status = "Production", stat
         margin-bottom: 0.75rem;
     }
 
-    .project-stack span {
+    .stack-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
         padding: 0.25rem 0.5rem;
         font-size: 0.6rem;
         font-weight: 700;
@@ -211,7 +232,17 @@ const { title, description, stack, featured = false, status = "Production", stat
         transition: all 0.3s ease;
     }
 
-    .project-card:hover .project-stack span {
+    .stack-icon {
+        width: 12px;
+        height: 12px;
+        flex-shrink: 0;
+    }
+
+    .stack-label {
+        line-height: 1;
+    }
+
+    .project-card:hover .stack-item {
         border-color: var(--neon-cyan);
         background: rgba(0, 255, 255, 0.1);
     }

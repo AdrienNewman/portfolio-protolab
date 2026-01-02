@@ -1,0 +1,65 @@
+---
+/**
+ * ProjectModal - Generic project detail modal component
+ * Replaces: ProjectProtolab, ProjectLLM, ProjectObservability,
+ *           ProjectControlPlane, ProjectWebInterface
+ */
+
+interface ProjectSection {
+  title: string;
+  type: 'text' | 'list' | 'tags';
+  content?: string;
+  items?: string[];
+  tags?: string[];
+}
+
+interface Props {
+  id: string;
+  title: string;
+  iconSvg: string;
+  iconColorClass?: string;
+  sections: ProjectSection[];
+}
+
+const { id, title, iconSvg, iconColorClass, sections } = Astro.props;
+---
+
+<div id={`project-${id}`} class="modal-overlay">
+  <div class="modal-content modal-large">
+    <div class="modal-header">
+      <h2 class="modal-title">
+        <div class:list={['modal-title-icon', iconColorClass]}>
+          <svg viewBox="0 0 24 24"><path d={iconSvg} /></svg>
+        </div>
+        {title}
+      </h2>
+      <button class="modal-close" aria-label="Fermer">
+        <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      {sections.map(section => (
+        <div class="modal-section">
+          <h4 class="modal-section-title">{section.title}</h4>
+          {section.type === 'text' && section.content && (
+            <p class="modal-text">{section.content}</p>
+          )}
+          {section.type === 'list' && section.items && (
+            <ul class="modal-list">
+              {section.items.map(item => (
+                <li set:html={item} />
+              ))}
+            </ul>
+          )}
+          {section.type === 'tags' && section.tags && (
+            <div class="modal-tags">
+              {section.tags.map(tag => (
+                <span class="modal-tag">{tag}</span>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
