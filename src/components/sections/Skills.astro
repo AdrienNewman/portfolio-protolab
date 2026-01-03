@@ -1,7 +1,10 @@
 ---
-// Skills Section Component
+// Skills Section Component - Utilise skills.json
 import SkillCard from '../ui/SkillCard.astro';
-import { getIconPath } from '../../utils/icons';
+import skillsData from '../../data/skills.json';
+import type { SkillData } from '../../types/content';
+
+const skills = skillsData as SkillData[];
 ---
 
 <section class="section section-dark" id="competences">
@@ -13,93 +16,17 @@ import { getIconPath } from '../../utils/icons';
         </div>
 
         <div class="skills-grid">
-            <!-- Windows Server -->
-            <SkillCard
-                number="01"
-                title="Windows Server"
-                description="Administration Active Directory, GPO, DNS, DHCP. Déploiement et gestion d'infrastructures Windows."
-                tags={['AD DS', 'GPO', 'DNS', 'PowerShell']}
-                iconName="windows"
-                preview="preview-windows"
-                modal="modal-windows"
-            />
-
-            <!-- Linux -->
-            <SkillCard
-                number="02"
-                title="Linux"
-                description="Administration système Debian/Ubuntu, scripting Bash, gestion des services, conteneurisation Docker."
-                tags={['Debian', 'Bash', 'Docker', 'LXC']}
-                iconName="linux"
-                preview="preview-linux"
-                modal="modal-linux"
-            />
-
-            <!-- Palo Alto -->
-            <SkillCard
-                number="03"
-                title="Palo Alto"
-                description="Configuration de firewalls Next-Gen. Politiques de sécurité, NAT, VPN GlobalProtect."
-                tags={['PAN-OS', 'GlobalProtect', 'Threat Prevention']}
-                iconName="paloaltonetworks"
-                preview="preview-paloalto"
-                modal="modal-paloalto"
-            />
-
-            <!-- Virtualisation -->
-            <SkillCard
-                number="04"
-                title="Virtualisation"
-                description="Hyperviseur Proxmox VE, création et gestion de VMs et conteneurs LXC, passthrough GPU."
-                tags={['Proxmox', 'VMware', 'KVM', 'GPU Passthrough']}
-                iconName="proxmox"
-                preview="preview-proxmox"
-                modal="modal-proxmox"
-            />
-
-            <!-- Monitoring -->
-            <SkillCard
-                number="05"
-                title="Monitoring"
-                description="Stack observabilité complète : collecte de logs, métriques, dashboards."
-                tags={['Grafana', 'VictoriaLogs', 'OpenTelemetry']}
-                iconName="grafana"
-                preview="preview-observability"
-                modal="modal-observability"
-            />
-
-            <!-- LLM -->
-            <SkillCard
-                number="06"
-                title="Local LLM"
-                description="Déploiement d'environnements IA locaux avec accélération GPU."
-                tags={['Ollama', 'CUDA', 'Open WebUI']}
-                iconName="nvidia"
-                preview="preview-llm"
-                modal="modal-llm"
-            />
-
-            <!-- Backup -->
-            <SkillCard
-                number="07"
-                title="Backup"
-                description="Stratégies de sauvegarde 3-2-1, automatisation, restauration."
-                tags={['3-2-1', 'Snapshots', 'Automation']}
-                iconName="git"
-                preview="preview-backup"
-                modal="modal-backup"
-            />
-
-            <!-- Cloud Local -->
-            <SkillCard
-                number="08"
-                title="Cloud Local"
-                description="Conception de cloud privé : services conteneurisés, orchestration."
-                tags={['Private Cloud', 'Containers', 'IAM']}
-                iconName="docker"
-                preview="preview-cloud"
-                modal="modal-cloud"
-            />
+            {skills.map((skill, index) => (
+                <SkillCard
+                    number={String(index + 1).padStart(2, '0')}
+                    title={skill.previewTitle}
+                    description={skill.previewDescription}
+                    tags={skill.previewTags}
+                    iconName={skill.icon}
+                    preview={`preview-${skill.id}`}
+                    modal={`modal-${skill.id}`}
+                />
+            ))}
         </div>
     </div>
 </section>
