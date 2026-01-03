@@ -1,36 +1,47 @@
 ---
-// Hero Section Component
+// Hero Section Component - Utilise sections.json
+import sectionsData from '../../data/sections.json';
+import type { HeroContent } from '../../types/content';
+
+const hero = sectionsData.hero as HeroContent;
 ---
 
 <section class="hero" id="accueil">
     <div class="stats-sidebar">
-        <div class="stat-item"><div class="stat-value">5+</div><div class="stat-label">Projets infra</div></div>
-        <div class="stat-item"><div class="stat-value">15+</div><div class="stat-label">Technologies</div></div>
-        <div class="stat-item"><div class="stat-value">98</div><div class="stat-label">Docs produits</div></div>
-        <div class="stat-item"><div class="stat-value">24/7</div><div class="stat-label">Homelab</div></div>
+        {hero.stats.map(stat => (
+            <div class="stat-item">
+                <div class="stat-value">{stat.value}</div>
+                <div class="stat-label">{stat.label}</div>
+            </div>
+        ))}
     </div>
 
     <div class="hero-content">
-        <div class="status-badge"><div class="status-dot"></div><span>Disponible pour opportunités</span></div>
+        <div class="status-badge"><div class="status-dot"></div><span>{hero.badge.text}</span></div>
         <h1 class="hero-title">
             <div class="line line-1">
-                <span class="glitch" data-text="Adrien">Adrien</span>
+                <span class="glitch" data-text={hero.name.firstName}>{hero.name.firstName}</span>
             </div>
             <div class="line line-2">
-                <span class="glitch" data-text="Mercadier">Mercadier</span>
+                <span class="glitch" data-text={hero.name.lastName}>{hero.name.lastName}</span>
             </div>
         </h1>
-        <p class="hero-subtitle">Technicien Supérieur <span>Systèmes & Réseaux</span></p>
+        <p class="hero-subtitle" set:html={hero.subtitle}></p>
         <div class="typing-wrapper"><span class="typing-text"></span><span class="typing-cursor">|</span></div>
         <div class="cta-wrapper">
-            <a href="#contact" class="cta-button magnetic">
-                <span>Me Contacter</span>
+            <a href={hero.cta.href} class="cta-button magnetic">
+                <span>{hero.cta.text}</span>
                 <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
         </div>
     </div>
     <div class="scroll-indicator"><span class="scroll-text">Scroll</span><div class="scroll-line"></div></div>
 </section>
+
+<!-- Passer typingSkills au script -->
+<script is:inline define:vars={{ typingSkills: hero.typingSkills }}>
+  window.TYPING_SKILLS = typingSkills;
+</script>
 
 <style>
     .hero {

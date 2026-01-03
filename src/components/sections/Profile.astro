@@ -1,13 +1,17 @@
 ---
-// Profile Section Component - "Qui est l'admin"
+// Profile Section Component - Utilise sections.json
+import sectionsData from '../../data/sections.json';
+import type { ProfileContent } from '../../types/content';
+
+const profile = sectionsData.profile as ProfileContent;
 ---
 
 <section class="section" id="profil">
     <div class="profile-container">
         <div class="section-header">
-            <span class="section-label">À propos</span>
-            <h2 class="section-title">Qui est <span>l'Admin</span></h2>
-            <p class="section-desc">Reconversion IT après 20 ans dans la restauration et l'e-commerce. Parce que gérer des crashs, ça ne date pas d'hier.</p>
+            <span class="section-label">{profile.sectionLabel}</span>
+            <h2 class="section-title" set:html={profile.sectionTitle}></h2>
+            <p class="section-desc">{profile.sectionDesc}</p>
         </div>
 
         <div class="profile-grid">
@@ -27,10 +31,10 @@
                     <span class="term-cmd">cat /etc/profile/adrien.conf</span>
                 </div>
                 <div class="term-output">
-                    USER: Adrien Mercadier<br>
-                    ROLE: Technicien Supérieur Systèmes & Réseaux<br>
-                    AGE: 39 ans<br>
-                    STATUS: <span class="highlight-magenta">████████████████████ READY_TO_DEPLOY</span>
+                    USER: {profile.terminal.user}<br>
+                    ROLE: {profile.terminal.role}<br>
+                    AGE: {profile.terminal.age}<br>
+                    STATUS: <span class="highlight-magenta">████████████████████ {profile.terminal.status}</span>
                 </div>
 
                 <div class="term-line">
@@ -38,14 +42,17 @@
                     <span class="term-cmd">cat /var/log/career.log</span>
                 </div>
                 <div class="term-output">
-                    &gt; Initialisation du protocole de reconversion...<br>
-                    &gt; <span class="highlight-magenta">ERROR 404: Routine not found.</span>
+                    {profile.terminal.careerLog.map((line: string, i: number) => (
+                        <Fragment>
+                            &gt; {i === 1 ? <span class="highlight-magenta">{line}</span> : line}<br>
+                        </Fragment>
+                    ))}
                 </div>
 
                 <div class="term-text-block">
-                    <p>Après 5 ans E-commerce + 15 ans restauration → Migration vers l'IT</p>
-                    <p class="text-neon-green">Ce background n'est pas obsolète. C'est mon firmware de base.</p>
-                    <p>J'ai appris à gérer des crashs en production bien avant de toucher à un serveur.</p>
+                    {profile.terminal.story.map((line: string, i: number) => (
+                        <p class={i === 1 ? 'text-neon-green' : ''}>{line}</p>
+                    ))}
                 </div>
 
                 <div class="term-line">
@@ -59,45 +66,17 @@
         <div class="soft-skills-wrapper">
             <h3 class="soft-title">Soft Skills ///</h3>
 
-            <div class="soft-skill-item">
-                <div class="soft-info">
-                    <span class="soft-label">Gestion de Crise</span>
-                    <span class="soft-val">98%</span>
+            {profile.softSkills.map((skill) => (
+                <div class="soft-skill-item">
+                    <div class="soft-info">
+                        <span class="soft-label">{skill.label}</span>
+                        <span class="soft-val">{skill.value}%</span>
+                    </div>
+                    <div class="soft-bar-bg">
+                        <div class={`soft-bar-fill ${skill.colorClass}`} style={`width: ${skill.value}%`}></div>
+                    </div>
                 </div>
-                <div class="soft-bar-bg">
-                    <div class="soft-bar-fill fill-cyan" style="width: 98%"></div>
-                </div>
-            </div>
-
-            <div class="soft-skill-item">
-                <div class="soft-info">
-                    <span class="soft-label">Management & Leadership</span>
-                    <span class="soft-val">90%</span>
-                </div>
-                <div class="soft-bar-bg">
-                    <div class="soft-bar-fill fill-magenta" style="width: 90%"></div>
-                </div>
-            </div>
-
-            <div class="soft-skill-item">
-                <div class="soft-info">
-                    <span class="soft-label">Relation Client</span>
-                    <span class="soft-val">95%</span>
-                </div>
-                <div class="soft-bar-bg">
-                    <div class="soft-bar-fill fill-green" style="width: 95%"></div>
-                </div>
-            </div>
-
-            <div class="soft-skill-item">
-                <div class="soft-info">
-                    <span class="soft-label">Adaptabilité</span>
-                    <span class="soft-val">100%</span>
-                </div>
-                <div class="soft-bar-bg">
-                    <div class="soft-bar-fill fill-yellow" style="width: 100%"></div>
-                </div>
-            </div>
+            ))}
 
             <!-- Certifications Section -->
             <div class="certifications-section">
