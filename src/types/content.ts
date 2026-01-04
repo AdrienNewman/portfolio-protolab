@@ -73,6 +73,22 @@ export interface SkillData {
   sections: SkillSection[];
 }
 
+// ============ PROJECTS ============
+export interface ProjectData {
+  id: string;
+  projectId: string;
+  title: string;
+  description: string;
+  stack: string[];
+  featured: boolean;
+  status: string;
+  icon: string;  // SVG path
+  iconColor: string;
+  glowColor: string;
+  statusDot?: string;
+  stats: Array<{ value: string; label: string }>;
+}
+
 // ============ PROJECT MODALS ============
 export type ProjectSectionType = 'text' | 'list' | 'tags';
 

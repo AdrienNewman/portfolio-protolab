@@ -1,6 +1,10 @@
 ---
-// Projects Section Component
+// Projects Section Component - Utilise projects.json
 import ProjectCard from '../ui/ProjectCard.astro';
+import projectsData from '../../data/projects.json';
+import type { ProjectData } from '../../types/content';
+
+const projects = projectsData as ProjectData[];
 ---
 
 <section class="section" id="projets">
@@ -12,51 +16,20 @@ import ProjectCard from '../ui/ProjectCard.astro';
         </div>
 
         <div class="projects-grid">
-            <!-- Project 1: Infrastructure Protolab -->
-            <ProjectCard
-                featured={true}
-                projectId="project-protolab"
-                title="Infrastructure Protolab"
-                description="Lab personnel complet avec segmentation réseau, firewall Palo Alto, Active Directory et stack de monitoring centralisée."
-                stack={['Proxmox', 'Palo Alto', 'Windows Server', 'Docker']}
-                icon='<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>'
-                stats={[
-                    { value: '4', label: 'VMs' },
-                    { value: '3', label: 'VLANs' },
-                    { value: '24/7', label: 'Uptime' }
-                ]}
-            />
-
-            <!-- Project 2: LLM Local -->
-            <ProjectCard
-                projectId="project-llm"
-                title="LLM Local + GPU"
-                description="Infrastructure IA locale avec Ollama et Open WebUI, accélération GPU RTX 3060, routing intelligent multi-modèles."
-                stack={['Ollama', 'Open WebUI', 'CUDA', 'LiteLLM']}
-                glowColor="magenta"
-                icon='<circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/>'
-                iconColor="magenta"
-                stats={[
-                    { value: '12GB', label: 'VRAM' },
-                    { value: '5+', label: 'Modèles' }
-                ]}
-            />
-
-            <!-- Project 3: Observability -->
-            <ProjectCard
-                projectId="project-observability"
-                title="Stack Observabilité"
-                description="Plateforme de monitoring complète : métriques temps réel, logs centralisés, dashboards Grafana et alerting multi-canal."
-                stack={['Grafana', 'VictoriaMetrics', 'VictoriaLogs', 'Alloy']}
-                glowColor="green"
-                icon='<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>'
-                iconColor="green"
-                statusDot="green"
-                stats={[
-                    { value: '15+', label: 'Services' },
-                    { value: '5', label: 'Dashboards' }
-                ]}
-            />
+            {projects.map((project) => (
+                <ProjectCard
+                    featured={project.featured}
+                    projectId={project.projectId}
+                    title={project.title}
+                    description={project.description}
+                    stack={project.stack}
+                    icon={project.icon}
+                    iconColor={project.iconColor}
+                    glowColor={project.glowColor}
+                    statusDot={project.statusDot}
+                    stats={project.stats}
+                />
+            ))}
         </div>
     </div>
 </section>

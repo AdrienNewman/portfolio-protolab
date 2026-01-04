@@ -325,6 +325,15 @@ const stackWithIcons = stack.map(tech => ({
     .project-icon-green :global(svg) { stroke: var(--neon-green); }
     .project-card:nth-child(3):hover .project-icon-container { box-shadow: 0 10px 30px rgba(0, 255, 136, 0.15); }
 
+    .project-icon-purple { border-color: #a855f7; background: rgba(168, 85, 247, 0.05); }
+    .project-icon-purple :global(svg) { stroke: #a855f7; }
+
+    .project-icon-blue { border-color: #3b82f6; background: rgba(59, 130, 246, 0.05); }
+    .project-icon-blue :global(svg) { stroke: #3b82f6; }
+
+    .project-glow-purple { background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, transparent 70%); }
+    .project-glow-blue { background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%); }
+
     .project-stats {
         display: flex;
         gap: 2rem;

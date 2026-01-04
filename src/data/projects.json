@@ -1,0 +1,143 @@
+[
+  {
+    "id": "protolab",
+    "projectId": "project-protolab",
+    "title": "Infra Protolab",
+    "description": "Mon labo d'apprentissage, de recherche et de découvertes.\nEn déploiement et en évolution depuis sa reconversion d'une tour d'occasion en serveur Proxmox.",
+    "stack": [
+      "Proxmox",
+      "Palo Alto",
+      "Windows Server",
+      "Docker",
+      "Agent IA",
+      "Serveur MCP",
+      "Serveur Web"
+    ],
+    "featured": true,
+    "status": "Production",
+    "icon": "<path d=\"M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z\"/><polyline points=\"3.27 6.96 12 12.01 20.73 6.96\"/><line x1=\"12\" y1=\"22.08\" x2=\"12\" y2=\"12\"/>",
+    "iconColor": "cyan",
+    "glowColor": "cyan",
+    "stats": [
+      {
+        "value": "10+",
+        "label": "VMs"
+      },
+      {
+        "value": "20+",
+        "label": "Technologies"
+      },
+      {
+        "value": "24/7",
+        "label": "Uptime"
+      }
+    ]
+  },
+  {
+    "id": "llm",
+    "projectId": "project-llm",
+    "title": "LLM Local + GPU",
+    "description": "Infrastructure IA locale avec Ollama et Open WebUI, acceleration GPU RTX 3060, routing intelligent multi-modeles.",
+    "stack": [
+      "Ollama",
+      "Open WebUI",
+      "CUDA",
+      "LiteLLM"
+    ],
+    "featured": false,
+    "status": "En developpement",
+    "icon": "<circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24\"/>",
+    "iconColor": "magenta",
+    "glowColor": "magenta",
+    "stats": [
+      {
+        "value": "12GB",
+        "label": "VRAM"
+      },
+      {
+        "value": "5+",
+        "label": "Modeles"
+      }
+    ]
+  },
+  {
+    "id": "observability",
+    "projectId": "project-observability",
+    "title": "Stack Observabilite",
+    "description": "Plateforme de monitoring complete : metriques temps reel, logs centralises, dashboards Grafana et alerting multi-canal.",
+    "stack": [
+      "Grafana",
+      "VictoriaMetrics",
+      "VictoriaLogs",
+      "Alloy"
+    ],
+    "featured": false,
+    "status": "Production",
+    "icon": "<path d=\"M22 12h-4l-3 9L9 3l-3 9H2\"/>",
+    "iconColor": "green",
+    "glowColor": "green",
+    "statusDot": "green",
+    "stats": [
+      {
+        "value": "15+",
+        "label": "Services"
+      },
+      {
+        "value": "5",
+        "label": "Dashboards"
+      }
+    ]
+  },
+  {
+    "id": "control-plane",
+    "projectId": "project-control-plane",
+    "title": "Control-Plane IA",
+    "description": "Centre de commande IA. Serveur MCP, orchestration infrastructure, inventaire intelligent.",
+    "stack": [
+      "MCP Server",
+      "Claude Code",
+      "Python"
+    ],
+    "featured": false,
+    "status": "Production",
+    "icon": "<path d=\"M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7.5 13A2.5 2.5 0 0 0 5 15.5 2.5 2.5 0 0 0 7.5 18a2.5 2.5 0 0 0 2.5-2.5A2.5 2.5 0 0 0 7.5 13m9 0a2.5 2.5 0 0 0-2.5 2.5 2.5 2.5 0 0 0 2.5 2.5 2.5 2.5 0 0 0 2.5-2.5 2.5 2.5 0 0 0-2.5-2.5z\"/>",
+    "iconColor": "purple",
+    "glowColor": "purple",
+    "stats": [
+      {
+        "value": "10+",
+        "label": "Tools"
+      },
+      {
+        "value": "24/7",
+        "label": "Uptime"
+      }
+    ]
+  },
+  {
+    "id": "web-interface",
+    "projectId": "project-web-interface",
+    "title": "Interface Web",
+    "description": "Portfolio Astro. Dashboard temps reel, design cyberpunk, evolutions IA a venir.",
+    "stack": [
+      "Astro",
+      "TypeScript",
+      "Docker"
+    ],
+    "featured": false,
+    "status": "En evolution",
+    "icon": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><line x1=\"2\" y1=\"12\" x2=\"22\" y2=\"12\"/><path d=\"M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z\"/>",
+    "iconColor": "blue",
+    "glowColor": "blue",
+    "stats": [
+      {
+        "value": "35+",
+        "label": "Composants"
+      },
+      {
+        "value": "V4.8",
+        "label": "Version"
+      }
+    ]
+  }
+]
