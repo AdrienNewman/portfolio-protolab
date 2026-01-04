@@ -11,13 +11,10 @@ import Contact from '../components/sections/Contact.astro';
 import Footer from '../components/layout/Footer.astro';
 import LiveLab from '../components/sections/LiveLab.astro';
 
-// Generic components (replaces 21 individual modal files)
-import SkillPreview from '../components/ui/SkillPreview.astro';
-import SkillModal from '../components/ui/SkillModal.astro';
+// Generic components
 import ProjectModal from '../components/ui/ProjectModal.astro';
 
 // Centralized data
-import { skills } from '../data/skills';
 import { projectModals } from '../data/projectModals';
 ---
 
@@ -39,31 +36,6 @@ import { projectModals } from '../data/projectModals';
         <LiveLab />
         <Documentation />
         <Contact />
-
-        <!-- ============================================
-             SKILL MODALS (Generated from centralized data)
-             ============================================ -->
-        <!-- Preview modals (hover) - Generated dynamically -->
-        {skills.map(skill => (
-            <SkillPreview
-                id={skill.id}
-                title={skill.previewTitle}
-                description={skill.previewDescription}
-                tags={skill.previewTags}
-                iconName={skill.icon}
-                modalId={`modal-${skill.id}`}
-            />
-        ))}
-
-        <!-- Detail modals - Generated dynamically -->
-        {skills.map(skill => (
-            <SkillModal
-                id={skill.id}
-                title={skill.modalTitle}
-                iconName={skill.icon}
-                sections={skill.sections}
-            />
-        ))}
 
         <!-- ============================================
              PROJECT MODALS (Generated from centralized data)
@@ -526,92 +498,6 @@ import { projectModals } from '../data/projectModals';
 
     .back-to-top:hover {
         background: var(--neon-magenta);
-    }
-
-    /* Modal Styles */
-    .modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.9);
-        z-index: 10000;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        backdrop-filter: blur(10px);
-    }
-
-    .modal-overlay.active {
-        display: flex;
-    }
-
-    .modal-content {
-        background: var(--gray-dark);
-        border: 2px solid var(--neon-cyan);
-        max-width: 800px;
-        max-height: 80vh;
-        overflow-y: auto;
-        position: relative;
-        padding: 40px;
-    }
-
-    .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-        border-bottom: 1px solid var(--gray-mid);
-        padding-bottom: 20px;
-    }
-
-    .modal-title {
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: 32px;
-        color: var(--neon-cyan);
-    }
-
-    .modal-close {
-        background: transparent;
-        border: 1px solid var(--gray-light);
-        color: var(--white);
-        width: 40px;
-        height: 40px;
-        font-size: 24px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .modal-close:hover {
-        border-color: var(--neon-magenta);
-        color: var(--neon-magenta);
-    }
-
-    .modal-body h4 {
-        color: var(--neon-cyan);
-        font-size: 20px;
-        margin: 20px 0 15px;
-        font-family: 'Space Mono', monospace;
-    }
-
-    .modal-body ul {
-        list-style: none;
-        padding-left: 0;
-    }
-
-    .modal-body li {
-        color: var(--gray-light);
-        margin-bottom: 10px;
-        padding-left: 20px;
-        position: relative;
-    }
-
-    .modal-body li:before {
-        content: "▸";
-        color: var(--neon-green);
-        position: absolute;
-        left: 0;
     }
 
     @media (max-width: 768px) {
