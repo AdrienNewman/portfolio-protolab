@@ -1,6 +1,6 @@
 # Profil Claude Code - Portfolio Protolab
 
-**Mise à jour** : 2026-01-04 | Version 4.0 (Admin Backend)
+**Mise à jour** : 2026-01-04 | Version 4.1 (Pattern Sauvegarde Unifié)
 
 ---
 
@@ -51,7 +51,7 @@ admin/                       # Repo séparé (privé)
 │   │   ├── contentLoader.ts # Load ../src/data/*.json
 │   │   └── fileSaver.ts     # Save ../src/data/*.json
 │   └── pages/
-│       ├── index.astro      # Dashboard (3 tabs)
+│       ├── index.astro      # Dashboard (5 sections éditables)
 │       └── api/             # GET/PUT routes
 └── package.json
 ```
@@ -64,9 +64,40 @@ admin/                       # Repo séparé (privé)
 | `src/data/skills.json` | 8 compétences | Compétences |
 | `src/data/projects.json` | 5 projets | Projets |
 
-**Interfaces** : `src/types/content.ts` (HeroContent, SkillData, etc.)
+**Interfaces** : `src/types/content.ts` (HeroContent, SkillData, ProjectData, etc.)
 
-### Workflow
+### Workflow Sauvegarde (V4.15) ⭐
+
+**Pattern unifié** appliqué aux 5 sections éditables :
+```javascript
+// 1. PUT vers API
+const saveRes = await fetch('/api/sections', { 
+  method: 'PUT', 
+  body: formData 
+});
+
+// 2. Re-fetch données confirmées serveur (source de vérité unique)
+if (saveRes.ok) {
+  const freshData = await fetch('/api/sections').then(r => r.json());
+  
+  // 3. Sync DOM automatique
+  // - Tuiles liste (titres, métadonnées)
+  // - Éditeurs (titres h2)
+  // - Formulaires (tous les champs input/textarea/select)
+  // - Stats/Données dynamiques
+  updateUIFromFreshData(freshData);
+}
+```
+
+**Sections implémentées** : Hero, Profile, Contact, Skills, Projects
+
+**Bénéfices** :
+- ✅ Cohérence garantie entre serveur et UI
+- ✅ Pas de refresh manuel `:4321` nécessaire après sauvegarde
+- ✅ Source de vérité unique (serveur)
+- ✅ Pattern documenté inline pour maintenabilité
+
+### Workflow Dev
 ```bash
 # Terminal 1: Portfolio
 npm run dev  # :4321
@@ -75,7 +106,7 @@ npm run dev  # :4321
 cd admin/ && npm run dev  # :4322
 ```
 
-**Édition** : Modifier sur `:4322` → Sauvegarder → Rafraîchir `:4321`
+**Édition** : Modifier sur `:4322` → Sauvegarder → **Sync auto UI** → Visible immédiatement sur `:4321`
 
 ### Git (2 Repos)
 
@@ -89,7 +120,7 @@ git push origin dev-admin
 **Admin** : Repo séparé
 ```bash
 cd admin/
-git commit -m "feat: editor improvement"
+git commit -m "feat: unified save pattern"
 git push origin main
 ```
 
@@ -134,15 +165,26 @@ git push origin main
 
 ## 📦 Content Collections
 
-### Projects (YAML)
-```yaml
-title: "Titre"
-stack: ["Tech1", "Tech2"]
-status: "Production"
-iconColor: "#00ffff"  # Toujours valider via MCP
+### Projects (JSON depuis V4.15)
+
+**Source** : `src/data/projects.json` (unifié avec admin)
+```json
+{
+  "title": "Titre",
+  "stack": ["Tech1", "Tech2"],
+  "status": "Production",
+  "featured": true,
+  "iconColor": "#00ffff",
+  "glowColor": "#ff0080",
+  "stats": [
+    { "label": "VMs", "value": "15+" }
+  ]
+}
 ```
 
-**Schéma Zod** : Voir `content.md`
+**Migration** : Anciennement `src/content/projects/*.yaml` (Astro Collections) → Migré vers JSON pour cohérence admin
+
+**Interfaces** : Voir `src/types/content.ts`
 
 ### Docs (Markdown)
 ```yaml
@@ -187,12 +229,14 @@ validate_project { ... }
 - ✅ Valider icônes MCP avant ajout stack
 - ✅ Respecter interfaces `src/types/content.ts`
 - ✅ Branche `dev-admin` → merger `master` après validation
+- ✅ **Respecter le pattern sauvegarde unifié** (re-fetch + sync DOM)
 
 ### À ÉVITER
 - ❌ Modifier `sections.json`, `skills.json`, `projects.json` manuellement
 - ❌ Commit direct sur `master` (passer par `dev-admin`)
 - ❌ Ajouter dépendances CSS (Tailwind, SCSS)
 - ❌ Scanner code quand `inventory.md` disponible
+- ❌ Sync DOM sans re-fetch serveur (risque divergence)
 
 ---
 
@@ -213,4 +257,4 @@ git commit -m "feat: X"  # Commits descriptifs
 
 ---
 
-*Profil optimisé | MCP Portfolio Server v3.12*
+*Profil optimisé | MCP Portfolio Server v3.12 | Admin Backend v1.1*

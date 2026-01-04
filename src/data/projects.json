@@ -3,7 +3,7 @@
     "id": "protolab",
     "projectId": "project-protolab",
     "title": "Infra Protolab",
-    "description": "Mon labo d'apprentissage, de recherche et de découvertes.\nEn déploiement et en évolution depuis sa reconversion d'une tour d'occasion en serveur Proxmox.",
+    "description": "Mon labo d'apprentissage, de recherches et de découvertes.\nEn déploiement et en évolution depuis sa reconversion d'une tour d'occasion en serveur Proxmox.",
     "stack": [
       "Proxmox",
       "Palo Alto",
