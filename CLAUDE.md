@@ -1,6 +1,6 @@
 # Profil Claude Code - Portfolio Protolab
 
-**Mise à jour** : 2026-01-04 | Version 4.1 (Pattern Sauvegarde Unifié)
+**Mise à jour** : 2026-01-04 | Version 4.16 (Skills V2 - Modal Dynamique)
 
 ---
 
@@ -61,7 +61,7 @@ admin/                       # Repo séparé (privé)
 | Fichier | Contenu | Tab Admin |
 |---------|---------|-----------|
 | `src/data/sections.json` | Hero, Profile, Contact | Sections |
-| `src/data/skills.json` | 8 compétences | Compétences |
+| `src/data/skills.json` | 12 compétences (grille 4x3) | Compétences |
 | `src/data/projects.json` | 5 projets | Projets |
 
 **Interfaces** : `src/types/content.ts` (HeroContent, SkillData, ProjectData, etc.)
@@ -164,6 +164,55 @@ git push origin main
 ---
 
 ## 📦 Content Collections
+
+### Skills (V4.16) ⭐
+
+**Architecture** : Modal unique dynamique avec injection contenu JS
+
+**Fichiers** :
+
+- `src/data/skills.json` : 12 compétences (données)
+- `src/components/sections/Skills.astro` : Grille 4x3 + modal HTML + styles CSS
+- `src/components/ui/SkillCard.astro` : Card avec hover glow
+- `public/scripts/modal-system.js` : Fonction `openSkillModal()`
+
+**Structure skill** :
+```json
+{
+  "id": "backup",
+  "icon": "git",
+  "previewTitle": "Backup",
+  "previewDescription": "Max 100 caractères.",
+  "previewTags": ["Tag1", "Tag2", "Tag3", "Tag4"],
+  "modalTitle": "Backup",
+  "sections": [
+    { "title": "Section1", "items": ["Item1", "Item2", "Item3"] },
+    { "title": "Section2", "items": ["Item1", "Item2", "Item3"] }
+  ]
+}
+```
+
+**Règles données** :
+
+- `previewTags` : exactement 4 tags
+- `sections` : exactement 2 sections
+- `items` : exactement 3 items par section
+
+**Icônes custom** (`src/utils/icons.ts`) :
+
+- `mcp` : Model Context Protocol (blanc)
+- `claude` : Claude AI (beige #D4A574, viewBox 16x16)
+- `github` : GitHub (blanc #f0f0f0)
+
+**CSS Modal** :
+
+- Overlay : `top: 60px` (sous navbar), centré verticalement
+- Content : `max-width: 500px`, `max-height: calc(100vh - 120px)`
+- Animation : fade-in 0.4s avec `visibility/opacity`
+
+**Supprimés** : `SkillModal.astro`, `SkillPreview.astro` (obsolètes)
+
+---
 
 ### Projects (JSON depuis V4.15)
 
