@@ -1,19 +1,20 @@
-version: '3.8'
-
 services:
   portfolio:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.ssr
     container_name: protolab-portfolio
-    ports:
-      - "3000:80"
     restart: unless-stopped
-    environment:
-      - NODE_ENV=production
+    env_file:
+      - .env
+    networks:
+      - bunkerweb-net
     labels:
-      # Traefik labels (si utilisé)
-      - "traefik.enable=true"
-      - "traefik.http.routers.portfolio.rule=Host(`portfolio.protolab.local`)"
-      - "traefik.http.routers.portfolio.entrypoints=web"
-      - "traefik.http.services.portfolio.loadbalancer.server.port=80"
+      - "bunkerweb.SERVER_NAME=protolab.ovh www.protolab.ovh"
+      - "bunkerweb.USE_REVERSE_PROXY=yes"
+      - "bunkerweb.REVERSE_PROXY_URL=/"
+      - "bunkerweb.REVERSE_PROXY_HOST=http://protolab-portfolio:4321"
+
+networks:
+  bunkerweb-net:
+    external: true
