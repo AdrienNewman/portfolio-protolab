@@ -270,25 +270,25 @@
         padding: 16px;
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 16px;
         position: relative;
         z-index: 1;
         min-height: 300px;
         max-height: 400px;
     }
 
-    /* Custom scrollbar */
+    /* Custom scrollbar - Style moderne */
     .chat-messages::-webkit-scrollbar {
-        width: 6px;
+        width: 8px;
     }
 
     .chat-messages::-webkit-scrollbar-track {
-        background: transparent;
+        background: var(--chat-bg);
     }
 
     .chat-messages::-webkit-scrollbar-thumb {
-        background: var(--chat-border);
-        border-radius: 3px;
+        background: #333;
+        border-radius: 4px;
     }
 
     .chat-messages::-webkit-scrollbar-thumb:hover {
@@ -297,7 +297,7 @@
 
     /* ===== Messages ===== */
     .message {
-        max-width: 85%;
+        max-width: 90%;
         animation: messageIn 0.3s ease;
     }
 
@@ -318,71 +318,101 @@
 
     .message.assistant {
         align-self: flex-start;
+        max-width: 100%;
     }
 
-    .message-content {
+    /* ===== Message utilisateur (bulle cyan) ===== */
+    .message.user .message-content {
         padding: 12px 16px;
         font-family: 'Space Mono', monospace;
         font-size: 0.85rem;
         line-height: 1.5;
         text-transform: none;
-    }
-
-    /* Style messagerie : bulles arrondies */
-    .message.user .message-content {
         background: linear-gradient(135deg, var(--chat-accent) 0%, #0088aa 100%);
         color: var(--chat-bg);
         border-radius: 18px 18px 4px 18px;
     }
 
+    /* ===== Message assistant (style LLM moderne) ===== */
     .message.assistant .message-content {
-        background: var(--chat-bg-secondary);
-        color: var(--chat-text);
-        border: 1px solid var(--chat-border);
-        border-radius: 18px 18px 18px 4px;
+        /* Police & Taille - Standard LLM interfaces */
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        font-size: 15px;
+        line-height: 1.7;
+        text-transform: none;
+
+        /* Couleurs */
+        color: #e8e8e8;
+        background: rgba(0, 255, 255, 0.03);
+
+        /* Espacement */
+        padding: 20px;
+
+        /* Bordure gauche accent */
+        border-left: 3px solid var(--chat-accent);
+        border-radius: 0 8px 8px 0;
     }
 
-    /* Markdown dans les messages */
+    /* Paragraphes dans messages assistant */
+    .message.assistant .message-content p {
+        margin-bottom: 12px;
+    }
+
+    .message.assistant .message-content p:last-child {
+        margin-bottom: 0;
+    }
+
+    /* ===== Markdown dans les messages ===== */
     .message-content strong {
         color: var(--chat-accent);
-        font-weight: 700;
+        font-weight: 600;
     }
 
+    /* Code inline (termes techniques) */
     .message-content code {
         font-family: 'JetBrains Mono', monospace;
-        background: rgba(0, 255, 255, 0.1);
+        font-size: 13px;
+        background: rgba(0, 255, 255, 0.15);
+        color: var(--chat-accent);
         padding: 2px 6px;
         border-radius: 4px;
-        font-size: 0.8rem;
     }
 
+    /* Blocs de code */
     .message-content pre {
-        background: var(--chat-bg);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 13px;
+        background: rgba(0, 255, 255, 0.1);
         padding: 12px;
-        border-radius: 8px;
-        border: 1px solid var(--chat-border);
+        border-radius: 6px;
         overflow-x: auto;
-        margin: 8px 0;
+        margin: 12px 0;
+        border: 1px solid var(--chat-border);
     }
 
     .message-content pre code {
         background: transparent;
         padding: 0;
+        color: var(--chat-text);
     }
 
     .message-content ul, .message-content ol {
-        margin: 8px 0;
-        padding-left: 20px;
+        margin: 12px 0;
+        padding-left: 24px;
     }
 
     .message-content li {
-        margin: 4px 0;
+        margin: 6px 0;
     }
 
     /* Message d'erreur */
     .message.error .message-content {
+        font-family: 'Space Mono', monospace;
+        font-size: 0.85rem;
+        padding: 12px 16px;
         background: rgba(255, 0, 128, 0.15);
-        border-color: var(--chat-accent-secondary);
+        border-left: 3px solid var(--chat-accent-secondary);
+        border-radius: 0 8px 8px 0;
         color: var(--chat-accent-secondary);
     }
 
