@@ -126,6 +126,13 @@
             elements.input.focus();
         }, 100);
 
+        // Afficher le message d'accueil après ouverture (effet "Proto entend")
+        setTimeout(function() {
+            if (STATE.messages.length === 0) {
+                appendMessage('assistant', "Salut ! Moi c'est Proto, je peux t'aider ?");
+            }
+        }, 500);
+
         // Disable body scroll on mobile
         if (window.innerWidth <= 480) {
             document.body.style.overflow = 'hidden';
