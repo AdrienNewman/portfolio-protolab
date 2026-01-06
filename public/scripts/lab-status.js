@@ -16,7 +16,7 @@
     const CATEGORIES = {
         management: { total: 2 },
         infrastructure: { total: 5 },
-        services: { total: 2 }
+        services: { total: 3 }
     };
 
     // DOM element references
@@ -201,7 +201,12 @@
             // Update Memory metric
             const memEl = card.querySelector('[data-memory]');
             if (memEl && service.memory !== undefined && service.status === 'up') {
-                memEl.textContent = `${service.memory}%`;
+                // Afficher % - Go si disponible
+                if (service.memoryGB) {
+                    memEl.textContent = `${service.memory}% - ${service.memoryGB.used} Go`;
+                } else {
+                    memEl.textContent = `${service.memory}%`;
+                }
                 updateMetricColor(memEl, service.memory);
             } else if (memEl) {
                 memEl.textContent = '--%';

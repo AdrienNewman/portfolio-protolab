@@ -58,6 +58,7 @@ interface ServiceMetrics {
   uptime?: string;
   cpu?: number;      // percentage
   memory?: number;   // percentage
+  memoryGB?: { used: number; total: number };
 }
 
 interface LabStatusResponse {
@@ -92,6 +93,7 @@ const SERVICE_CONFIG = [
   // SERVICES
   { id: 'dc01', name: 'Windows DC01', type: 'qemu' as const, pveId: 'qemu/103', category: 'services' as const },
   { id: 'webgateway', name: 'Web Gateway', type: 'lxc' as const, pveId: 'lxc/210', category: 'services' as const },
+  { id: 'llmserver', name: 'LLM Server', type: 'qemu' as const, pveId: 'qemu/101', category: 'services' as const },
 ];
 
 // Helper to query VictoriaMetrics with retry
@@ -241,7 +243,11 @@ export const GET: APIRoute = async () => {
         status: isUp === 1 ? 'up' as const : (isUp === 0 ? 'down' as const : 'unknown' as const),
         uptime: serviceUptime ? formatUptime(serviceUptime) : undefined,
         cpu: serviceCpu !== null ? Math.round(serviceCpu * 100) : undefined,
-        memory: memoryPercent
+        memory: memoryPercent,
+        memoryGB: (serviceMemUsed !== null && serviceMemTotal !== null) ? {
+          used: Math.round(serviceMemUsed / 1073741824 * 10) / 10,
+          total: Math.round(serviceMemTotal / 1073741824 * 10) / 10
+        } : undefined
       };
     });
 
