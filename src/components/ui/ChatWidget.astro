@@ -30,20 +30,7 @@
 
     <!-- Zone de messages -->
     <div class="chat-messages" id="chat-messages">
-        <!-- Message d'accueil injecté dynamiquement par JS -->
-
-        <!-- Suggestions -->
-        <div class="chat-suggestions" id="chat-suggestions">
-            <button class="suggestion-chip" data-suggestion="C'est quoi le Protolab ?">
-                C'est quoi le Protolab ?
-            </button>
-            <button class="suggestion-chip" data-suggestion="Quelles technos sont utilisées ?">
-                Quelles technos sont utilisées ?
-            </button>
-            <button class="suggestion-chip" data-suggestion="Comment fonctionne le monitoring ?">
-                Comment fonctionne le monitoring ?
-            </button>
-        </div>
+        <!-- Messages injectés dynamiquement par JS -->
     </div>
 
     <!-- Zone de saisie -->
@@ -409,37 +396,6 @@
         border-left: 3px solid var(--chat-accent-secondary);
         border-radius: 0 8px 8px 0;
         color: var(--chat-accent-secondary);
-    }
-
-    /* ===== Suggestions ===== */
-    .chat-suggestions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-top: 8px;
-    }
-
-    .suggestion-chip {
-        padding: 8px 14px;
-        background: transparent;
-        border: 1px solid var(--chat-border);
-        border-radius: 20px;
-        color: var(--chat-text-muted);
-        font-family: 'Space Mono', monospace;
-        font-size: 0.75rem;
-        cursor: pointer;
-        transition: all var(--chat-transition);
-        text-transform: none;
-    }
-
-    .suggestion-chip:hover {
-        border-color: var(--chat-accent);
-        color: var(--chat-accent);
-        background: rgba(0, 255, 255, 0.05);
-    }
-
-    .chat-suggestions.hidden {
-        display: none;
     }
 
     /* ===== Zone de saisie ===== */

@@ -28,7 +28,6 @@
         window: null,
         close: null,
         messages: null,
-        suggestions: null,
         input: null,
         send: null,
         loading: null
@@ -50,7 +49,6 @@
         elements.window = document.getElementById('chat-window');
         elements.close = document.getElementById('chat-close');
         elements.messages = document.getElementById('chat-messages');
-        elements.suggestions = document.getElementById('chat-suggestions');
         elements.input = document.getElementById('chat-input');
         elements.send = document.getElementById('chat-send');
         elements.loading = document.getElementById('chat-loading');
@@ -76,18 +74,6 @@
 
         elements.input.addEventListener('input', function() {
             elements.send.disabled = !this.value.trim();
-        });
-
-        // Suggestion chips
-        elements.suggestions.querySelectorAll('.suggestion-chip').forEach(function(chip) {
-            chip.addEventListener('click', function() {
-                const suggestion = this.getAttribute('data-suggestion');
-                if (suggestion) {
-                    elements.input.value = suggestion;
-                    elements.send.disabled = false;
-                    handleSend();
-                }
-            });
         });
 
         // ESC key to close
@@ -158,11 +144,6 @@
         // Clear input
         elements.input.value = '';
         elements.send.disabled = true;
-
-        // Hide suggestions after first message
-        if (elements.suggestions) {
-            elements.suggestions.classList.add('hidden');
-        }
 
         // Send message
         sendMessage(text);
@@ -310,14 +291,7 @@
         }
 
         msgDiv.appendChild(contentDiv);
-
-        // Insérer avant les suggestions si elles existent, sinon à la fin
-        if (elements.suggestions && elements.suggestions.parentNode === elements.messages) {
-            elements.messages.insertBefore(msgDiv, elements.suggestions);
-        } else {
-            elements.messages.appendChild(msgDiv);
-        }
-
+        elements.messages.appendChild(msgDiv);
         scrollToBottom();
 
         return contentDiv;
