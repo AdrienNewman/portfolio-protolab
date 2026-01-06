@@ -232,42 +232,33 @@
                 buffer = lines.pop() || ''; // Keep incomplete line in buffer
 
                 for (const line of lines) {
-                    if (line.startsWith('data: ')) {
-                        const data = line.slice(6).trim();
+                    if (line.startsWith('data:')) {
+                        // Get content after "data:" (may have space or not)
+                        let data = line.slice(5);
+                        if (data.startsWith(' ')) {
+                            data = data.slice(1);
+                        }
 
-                        if (data === '[DONE]') {
+                        // Skip empty lines
+                        if (data === '') {
                             continue;
                         }
 
-                        try {
-                            const parsed = JSON.parse(data);
-
-                            // Handle different response formats
-                            if (parsed.token) {
-                                fullResponse += parsed.token;
-                            } else if (parsed.content) {
-                                fullResponse += parsed.content;
-                            } else if (parsed.response) {
-                                fullResponse += parsed.response;
+                        // Handle [DONE] with optional conversation_id
+                        if (data.startsWith('[DONE]')) {
+                            // Extract conversation_id if present: [DONE]:uuid
+                            const doneMatch = data.match(/\[DONE\]:?(.+)?/);
+                            if (doneMatch && doneMatch[1]) {
+                                STATE.conversationId = doneMatch[1];
                             }
-
-                            // Update conversation ID
-                            if (parsed.conversation_id) {
-                                STATE.conversationId = parsed.conversation_id;
-                            }
-
-                            // Update message content
-                            updateMessageContent(messageEl, fullResponse);
-                            scrollToBottom();
-
-                        } catch (parseError) {
-                            // Not JSON, might be raw text
-                            if (data && data !== '[DONE]') {
-                                fullResponse += data;
-                                updateMessageContent(messageEl, fullResponse);
-                                scrollToBottom();
-                            }
+                            continue;
                         }
+
+                        // Backend sends raw text tokens, not JSON
+                        // Just append the token directly
+                        fullResponse += data;
+                        updateMessageContent(messageEl, fullResponse);
+                        scrollToBottom();
                     }
                 }
             }
