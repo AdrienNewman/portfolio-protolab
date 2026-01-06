@@ -310,7 +310,13 @@
         }
 
         msgDiv.appendChild(contentDiv);
-        elements.messages.appendChild(msgDiv);
+
+        // Insérer avant les suggestions si elles existent, sinon à la fin
+        if (elements.suggestions && elements.suggestions.parentNode === elements.messages) {
+            elements.messages.insertBefore(msgDiv, elements.suggestions);
+        } else {
+            elements.messages.appendChild(msgDiv);
+        }
 
         scrollToBottom();
 
