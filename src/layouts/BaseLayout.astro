@@ -1,6 +1,7 @@
 ---
 import DocModal from '../components/ui/DocModal.astro';
 import GameOverlay from '../components/game/GameOverlay.astro';
+import ChatWidget from '../components/ui/ChatWidget.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -71,11 +72,17 @@ const {
     <!-- NetDefender Game Overlay (Easter Egg) -->
     <GameOverlay />
 
+    <!-- Chat Widget - Protolab Assistant -->
+    <ChatWidget />
+
     <!-- Three.js via CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
             integrity="sha512-dLxUelApnYxpLt6K2iomGngnHO83iUvZytA3YjDUCjT0HDOHKXnVYdf3hU4JjM8uEhxf9nD1/ey98U3t2vZ0qQ=="
             crossorigin="anonymous"
             referrerpolicy="no-referrer"></script>
+
+    <!-- Marked.js for chat markdown parsing -->
+    <script is:inline src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
 
     <!-- Custom Scripts -->
     <script is:inline src="/scripts/custom-cursor.js"></script>
@@ -90,5 +97,8 @@ const {
 
     <!-- NetDefender Easter Egg - Floating Packet -->
     <script is:inline src="/scripts/floating-packet.js"></script>
+
+    <!-- Chat Widget -->
+    <script is:inline src="/scripts/chat-widget.js"></script>
 </body>
 </html>

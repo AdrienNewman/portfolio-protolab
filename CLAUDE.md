@@ -1,6 +1,6 @@
 # Profil Claude Code - Portfolio Protolab
 
-**Mise à jour** : 2026-01-04 | Version 4.16 (Skills V2 - Modal Dynamique)
+**Mise à jour** : 2026-01-06 | Version 4.17 (Proto_Bot - Chat Widget)
 
 ---
 
@@ -25,9 +25,11 @@ Ingénieur Web Senior dédié au portfolio d'Adrien Mercadier (TSSR). Approche :
 
 ## 🛠️ Stack Technique
 
-**Core** : Astro 5.16.6 (SSG) + TypeScript + CSS3 natif + Three.js r128 (CDN)
+**Core** : Astro 5.16.6 (SSG) + TypeScript + CSS3 natif + Three.js r128 (CDN) + marked.js (CDN)
 
 **Dépendances** : `astro`, `simple-icons`, `@astrojs/node`
+
+**APIs externes** : `protolab.ovh/api/chat/stream` (Proto_Bot SSE)
 
 **Build** : Static (`dist/`) via Nginx (Docker) | Dev : `localhost:4321`
 
@@ -214,6 +216,45 @@ git push origin main
 
 ---
 
+### Proto_Bot (V4.17) ⭐
+
+**Widget chatbot flottant** connecté à l'API Ollama locale (Qwen 2.5-coder 14B)
+
+**Fichiers** :
+
+- `src/components/ui/ChatWidget.astro` : Composant complet (HTML + CSS scoped)
+- `public/scripts/chat-widget.js` : Logique JS (IIFE, streaming SSE, markdown)
+
+**API Backend** :
+
+| Endpoint | Méthode | Description |
+|----------|---------|-------------|
+| `https://protolab.ovh/api/health` | GET | Health check |
+| `https://protolab.ovh/api/chat/stream` | POST | Chat streaming SSE |
+
+**Format requête** :
+```json
+{ "message": "Question utilisateur" }
+```
+
+**Fonctionnalités** :
+
+- Bouton flottant (bottom-right, z-index 15000)
+- Streaming SSE avec affichage progressif
+- Parsing markdown (marked.js CDN + fallback)
+- Style messagerie : bulles gauche/droite
+- Responsive (plein écran mobile)
+- Fermeture ESC, timeout 30s, retry automatique
+
+**Design** :
+
+- Fond noir simple (pas de grille/glow)
+- `text-transform: none` (pas de majuscules)
+- Bulles arrondies style messagerie
+- Accents : `--neon-cyan`, `--neon-magenta`
+
+---
+
 ### Projects (JSON depuis V4.15)
 
 **Source** : `src/data/projects.json` (unifié avec admin)
@@ -306,4 +347,4 @@ git commit -m "feat: X"  # Commits descriptifs
 
 ---
 
-*Profil optimisé | MCP Portfolio Server v3.12 | Admin Backend v1.1*
+*Profil optimisé | MCP Portfolio Server v3.12 | Admin Backend v1.1 | Proto_Bot v1.0*
