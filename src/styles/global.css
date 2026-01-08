@@ -15,6 +15,17 @@
 
     --glitch-1: #ff0080;
     --glitch-2: #00ffff;
+
+    /* UNIFIED MODAL SYSTEM */
+    --modal-overlay-bg: rgba(0, 0, 0, 0.7);
+    --modal-overlay-blur: 4px;
+    --modal-content-bg: #1a1a1a;
+    --modal-content-border: rgba(0, 255, 255, 0.2);
+    --modal-max-width: 500px;
+    --modal-max-width-doc: 800px;
+    --modal-max-width-project: 600px;
+    --modal-z-index: 20000;
+    --modal-top-offset: 60px;
 }
 
 /* ========================================
@@ -234,65 +245,6 @@ input, textarea, select {
 
 .modal-content.modal-large {
     max-width: 900px;
-}
-
-/* Variants de glow pour les modals projets */
-#project-llm .modal-content::after {
-    background: radial-gradient(circle, rgba(255, 0, 128, 0.12) 0%, transparent 70%);
-}
-
-#project-llm .modal-content {
-    border-color: var(--neon-magenta);
-}
-
-#project-llm .modal-content::before {
-    background-image:
-        linear-gradient(rgba(255, 0, 128, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 0, 128, 0.03) 1px, transparent 1px);
-}
-
-#project-observability .modal-content::after {
-    background: radial-gradient(circle, rgba(0, 255, 136, 0.12) 0%, transparent 70%);
-}
-
-#project-observability .modal-content {
-    border-color: var(--neon-green);
-}
-
-#project-observability .modal-content::before {
-    background-image:
-        linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
-}
-
-/* Control-Plane IA - Purple theme */
-#project-control-plane .modal-content::after {
-    background: radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, transparent 70%);
-}
-
-#project-control-plane .modal-content {
-    border-color: #a855f7;
-}
-
-#project-control-plane .modal-content::before {
-    background-image:
-        linear-gradient(rgba(168, 85, 247, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
-}
-
-/* Interface Web - Blue theme */
-#project-web-interface .modal-content::after {
-    background: radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, transparent 70%);
-}
-
-#project-web-interface .modal-content {
-    border-color: #3b82f6;
-}
-
-#project-web-interface .modal-content::before {
-    background-image:
-        linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
 }
 
 .modal-overlay.active .modal-content {
@@ -526,6 +478,134 @@ input, textarea, select {
     stroke: currentColor;
     stroke-width: 2;
     fill: none;
+}
+
+/* ========================================
+   UNIFIED MODAL SYSTEM (Skills-style)
+   Used by: Skills, Projects, Documentation
+   ======================================== */
+.unified-modal {
+    position: fixed;
+    top: var(--modal-top-offset);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--modal-overlay-bg);
+    backdrop-filter: blur(var(--modal-overlay-blur));
+    z-index: var(--modal-z-index);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.unified-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.unified-modal .modal-content {
+    background: var(--modal-content-bg);
+    border: 1px solid var(--modal-content-border);
+    padding: 1.5rem;
+    max-width: var(--modal-max-width);
+    width: 90%;
+    max-height: calc(100vh - var(--modal-top-offset) - 60px);
+    overflow-y: auto;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.4s ease;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.unified-modal.active .modal-content {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Remove complex pseudo-elements for unified modals */
+.unified-modal .modal-content::before,
+.unified-modal .modal-content::after {
+    display: none;
+}
+
+/* Unified modal header */
+.unified-modal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Unified modal title */
+.unified-modal .modal-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.05em;
+    color: var(--neon-cyan);
+    margin: 0;
+}
+
+/* Unified modal icon */
+.unified-modal .modal-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gray-mid);
+    flex-shrink: 0;
+}
+
+.unified-modal .modal-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* Unified modal close button */
+.unified-modal .modal-close {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: var(--gray-light);
+    transition: color 0.3s ease;
+    width: auto;
+    height: auto;
+}
+
+.unified-modal .modal-close:hover {
+    color: var(--neon-cyan);
+}
+
+.unified-modal .modal-close svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    stroke-width: 2;
+}
+
+/* Unified modal body */
+.unified-modal .modal-body {
+    position: relative;
+    z-index: 1;
+}
+
+/* Unified modal description */
+.unified-modal .modal-desc {
+    color: var(--gray-lighter);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
 }
 
 /* ========================================

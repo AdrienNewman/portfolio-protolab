@@ -79,6 +79,7 @@ export interface ProjectData {
   projectId: string;
   title: string;
   description: string;
+  longDescription?: string;  // Extended description for modal
   stack: string[];
   featured: boolean;
   status: string;
@@ -87,6 +88,9 @@ export interface ProjectData {
   glowColor: string;
   statusDot?: string;
   stats: Array<{ value: string; label: string }>;
+  // Optional media fields
+  media?: string[];  // ["screenshot1.jpg", "screenshot2.png"]
+  video?: string;    // "demo.mp4"
 }
 
 // ============ PROJECT MODALS ============

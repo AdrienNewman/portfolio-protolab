@@ -1,951 +1,473 @@
 ---
-// DocModal.astro - Modal overlay pour afficher les documentations (style Terminal)
+/**
+ * DocModal.astro - Unified documentation modal (Skills-style)
+ * Simplified version - no TOC, no terminal dots
+ * @version 2.0 - Unified modal system
+ */
 ---
 
-<div id="doc-modal" class="doc-modal" data-modal-state="closed">
-    <div class="doc-modal-overlay" data-modal-close></div>
-
-    <div class="doc-modal-container">
-        <!-- Header avec grille qui se fond -->
-        <div class="doc-modal-header-zone">
-            <!-- Header style terminal -->
-            <div class="terminal-header">
-                <div class="terminal-dots">
-                    <span class="terminal-dot red"></span>
-                    <span class="terminal-dot yellow"></span>
-                    <span class="terminal-dot green"></span>
-                </div>
-
-                <div class="terminal-title">
-                    <span class="doc-modal-category"></span>
-                    <span class="terminal-separator">/</span>
-                    <span class="doc-modal-title-text"></span>
-                </div>
-
-                <div class="terminal-actions">
-                    <button class="terminal-nav-btn" id="doc-modal-prev" disabled title="Précédent">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="15 18 9 12 15 6" />
-                        </svg>
-                    </button>
-                    <button class="terminal-nav-btn" id="doc-modal-next" disabled title="Suivant">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="9 18 15 12 9 6" />
-                        </svg>
-                    </button>
-                    <button class="terminal-close-btn" data-modal-close aria-label="Fermer">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 6L6 18M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Barre de métadonnées -->
-            <div class="doc-modal-meta">
-                <div class="meta-info">
-                    <span class="meta-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                            <line x1="16" y1="2" x2="16" y2="6"></line>
-                            <line x1="8" y1="2" x2="8" y2="6"></line>
-                            <line x1="3" y1="10" x2="21" y2="10"></line>
-                        </svg>
-                        <span class="doc-modal-date"></span>
-                    </span>
-                    <span class="meta-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10" />
-                            <path d="M12 6v6l4 2" />
-                        </svg>
-                        <span id="doc-modal-reading-time">5 min</span>
-                    </span>
-                    <span class="meta-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                            <polyline points="14 2 14 8 20 8" />
-                        </svg>
-                        <span id="doc-modal-words">~2000 mots</span>
-                    </span>
-                </div>
-                <div class="doc-modal-tags" id="doc-modal-tags"></div>
-            </div>
-
-            <!-- Description -->
-            <div class="doc-modal-description-bar">
-                <p class="doc-modal-description"></p>
-            </div>
-
-            <!-- Progress Bar -->
-            <div class="doc-progress-bar">
-                <div class="doc-progress-fill"></div>
+<div id="doc-modal-overlay" class="unified-modal doc-unified-modal" data-modal-state="closed">
+    <div class="modal-content modal-content-doc">
+        <!-- Header -->
+        <div class="modal-header">
+            <h2 class="modal-title">
+                <span class="doc-modal-category"></span>
+                <span class="title-separator">/</span>
+                <span class="modal-title-text doc-modal-title-text"></span>
+            </h2>
+            <div class="modal-nav">
+                <button class="nav-btn" id="doc-modal-prev" disabled title="Précédent">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15 18 9 12 15 6" />
+                    </svg>
+                </button>
+                <button class="nav-btn" id="doc-modal-next" disabled title="Suivant">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                </button>
+                <button class="modal-close" data-modal-close aria-label="Fermer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12" />
+                    </svg>
+                </button>
             </div>
         </div>
 
-        <!-- Contenu de la documentation avec TOC -->
-        <div class="doc-modal-body-wrapper">
-            <div class="doc-modal-content">
-                <div id="doc-modal-body" class="doc-modal-body markdown-content">
-                    <!-- Le contenu Markdown sera injecté ici -->
-                </div>
+        <!-- Meta info -->
+        <div class="doc-modal-meta">
+            <div class="meta-info">
+                <span class="meta-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    <span class="doc-modal-date"></span>
+                </span>
+                <span class="meta-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 6v6l4 2" />
+                    </svg>
+                    <span id="doc-modal-reading-time">5 min</span>
+                </span>
             </div>
+            <div class="doc-modal-tags" id="doc-modal-tags"></div>
+        </div>
 
-            <!-- Table des Matières (TOC) -->
-            <nav class="doc-toc" id="doc-toc" aria-label="Table des matières">
-                <div class="doc-toc-title">Sommaire</div>
-                <ul class="doc-toc-list" id="doc-toc-list">
-                    <!-- Généré dynamiquement par JavaScript -->
-                </ul>
-            </nav>
+        <!-- Description -->
+        <div class="doc-modal-description-bar">
+            <p class="doc-modal-description"></p>
+        </div>
+
+        <!-- Content body -->
+        <div class="doc-modal-body-wrapper">
+            <div id="doc-modal-body" class="doc-modal-body markdown-content">
+                <!-- Markdown content injected here -->
+            </div>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="doc-progress-bar">
+            <div class="doc-progress-fill"></div>
         </div>
     </div>
 </div>
 
 <style>
-    .doc-modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 9999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 1.5rem;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.3s ease;
+    /* Override unified modal for doc specifics */
+    #doc-modal-overlay.doc-unified-modal {
+        top: 0; /* Docs start from top */
+        padding: 1rem;
     }
 
-    .doc-modal[data-modal-state="open"] {
-        opacity: 1;
-        pointer-events: all;
-    }
-
-    .doc-modal-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.92);
-        backdrop-filter: blur(12px);
-        cursor: pointer;
-    }
-
-    .doc-modal-container {
-        position: relative;
-        width: 100%;
-        max-width: 1100px;
+    #doc-modal-overlay .modal-content-doc {
+        max-width: var(--modal-max-width-doc, 800px);
         max-height: 90vh;
-        background: #000;
-        border: 2px solid var(--neon-cyan, #00ffff);
-        border-radius: 4px;
         display: flex;
         flex-direction: column;
-        overflow: hidden;
-        transform: translateY(30px) scale(0.95);
-        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        box-shadow: 0 0 80px rgba(0, 255, 255, 0.15);
+        padding: 0;
     }
 
-    .doc-modal[data-modal-state="open"] .doc-modal-container {
-        transform: translateY(0) scale(1);
-    }
-
-    /* Zone header avec grille qui se fond en noir */
-    .doc-modal-header-zone {
-        position: relative;
-        background: #0a0a0a;
-        /* Grille uniquement sur le header */
-        background-image:
-            linear-gradient(rgba(0, 255, 255, 0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0, 255, 255, 0.04) 1px, transparent 1px);
-        background-size: 25px 25px;
-    }
-
-    /* Dégradé pour fondre la grille vers le noir */
-    .doc-modal-header-zone::after {
-        content: '';
-        position: absolute;
-        bottom: 3px;
-        left: 0;
-        right: 0;
-        height: 40px;
-        background: linear-gradient(to bottom, transparent, #000);
-        pointer-events: none;
-    }
-
-    /* Progress Bar */
-    .doc-progress-bar {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: rgba(0, 255, 255, 0.1);
-        z-index: 10;
-    }
-
-    .doc-progress-fill {
-        height: 100%;
-        width: 0%;
-        background: linear-gradient(90deg, var(--neon-cyan, #00ffff), var(--neon-magenta, #ff0080));
-        transition: width 0.1s ease-out;
-        will-change: width;
-    }
-
-    /* Terminal Header */
-    .terminal-header {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        padding: 0.75rem 1.25rem;
+    /* Header */
+    #doc-modal-overlay .modal-header {
+        padding: 1rem 1.5rem;
+        margin-bottom: 0;
         border-bottom: 1px solid rgba(0, 255, 255, 0.2);
     }
 
-    .terminal-dots {
+    #doc-modal-overlay .modal-title {
         display: flex;
-        gap: 8px;
+        align-items: center;
+        gap: 0.5rem;
+        flex: 1;
+        overflow: hidden;
+    }
+
+    #doc-modal-overlay .doc-modal-category {
+        color: var(--neon-cyan);
+        text-transform: uppercase;
+        font-size: 1rem;
         flex-shrink: 0;
     }
 
-    .terminal-dot {
-        width: 14px;
-        height: 14px;
-        border-radius: 50%;
-        transition: transform 0.2s ease;
-    }
-
-    .terminal-dot:hover {
-        transform: scale(1.15);
-    }
-
-    .terminal-dot.red { background: #ff5f56; }
-    .terminal-dot.yellow { background: #ffbd2e; }
-    .terminal-dot.green { background: #27ca40; }
-
-    .terminal-title {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: 1.1rem;
-        letter-spacing: 0.05em;
-        color: rgba(255, 255, 255, 0.95);
-        overflow: hidden;
-        white-space: nowrap;
-    }
-
-    .doc-modal-category {
-        color: var(--neon-cyan, #00ffff);
-        font-weight: 400;
-        text-transform: uppercase;
-    }
-
-    .terminal-separator {
+    #doc-modal-overlay .title-separator {
         color: rgba(255, 255, 255, 0.25);
-        font-weight: 300;
     }
 
-    .doc-modal-title-text {
+    #doc-modal-overlay .doc-modal-title-text {
         color: #fff;
         overflow: hidden;
         text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
-    .terminal-actions {
+    /* Navigation buttons */
+    #doc-modal-overlay .modal-nav {
         display: flex;
         align-items: center;
         gap: 0.5rem;
         flex-shrink: 0;
     }
 
-    .terminal-nav-btn,
-    .terminal-close-btn {
+    #doc-modal-overlay .nav-btn {
         width: 36px;
         height: 36px;
         display: flex;
         align-items: center;
         justify-content: center;
         background: transparent;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 4px;
-        color: rgba(255, 255, 255, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: var(--gray-light);
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: all 0.3s ease;
     }
 
-    .terminal-nav-btn:hover:not(:disabled) {
+    #doc-modal-overlay .nav-btn:hover:not(:disabled) {
+        border-color: var(--neon-cyan);
+        color: var(--neon-cyan);
         background: rgba(0, 255, 255, 0.1);
-        border-color: var(--neon-cyan, #00ffff);
-        color: var(--neon-cyan, #00ffff);
     }
 
-    .terminal-close-btn:hover {
-        background: rgba(255, 0, 128, 0.1);
-        border-color: var(--neon-magenta, #ff0080);
-        color: var(--neon-magenta, #ff0080);
-    }
-
-    .terminal-nav-btn:disabled {
-        opacity: 0.25;
+    #doc-modal-overlay .nav-btn:disabled {
+        opacity: 0.3;
         cursor: not-allowed;
     }
 
-    .terminal-nav-btn svg,
-    .terminal-close-btn svg {
+    #doc-modal-overlay .nav-btn svg {
         width: 18px;
         height: 18px;
     }
 
-    /* Meta Bar */
-    .doc-modal-meta {
+    #doc-modal-overlay .modal-close {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: var(--gray-light);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        padding: 0;
+    }
+
+    #doc-modal-overlay .modal-close:hover {
+        border-color: var(--neon-magenta);
+        color: var(--neon-magenta);
+        background: rgba(255, 0, 128, 0.1);
+    }
+
+    #doc-modal-overlay .modal-close svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    /* Meta bar */
+    #doc-modal-overlay .doc-modal-meta {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        gap: 1rem;
+        padding: 0.75rem 1.5rem;
+        background: rgba(0, 0, 0, 0.3);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    #doc-modal-overlay .meta-info {
+        display: flex;
+        align-items: center;
         gap: 1.5rem;
-        padding: 0.875rem 1.25rem;
+    }
+
+    #doc-modal-overlay .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
         font-family: 'Space Mono', monospace;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
+        color: var(--gray-light);
     }
 
-    .meta-info {
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-    }
-
-    .meta-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: rgba(255, 255, 255, 0.5);
-    }
-
-    .meta-item svg {
-        width: 15px;
-        height: 15px;
-        color: var(--neon-cyan, #00ffff);
+    #doc-modal-overlay .meta-item svg {
+        width: 14px;
+        height: 14px;
+        color: var(--neon-cyan);
         opacity: 0.6;
     }
 
-    .doc-modal-tags {
+    #doc-modal-overlay .doc-modal-tags {
         display: flex;
         flex-wrap: nowrap;
-        gap: 0.75rem;
+        gap: 0.5rem;
         overflow-x: auto;
-        max-width: 50%;
-        align-items: center;
+        max-width: 40%;
     }
 
-    .doc-modal-tags::-webkit-scrollbar {
+    #doc-modal-overlay .doc-modal-tags::-webkit-scrollbar {
         height: 0;
     }
 
-    /* Technology icons - fixed colors, no hover effects */
-    .doc-modal-tags :global(.doc-modal-icon) {
-        width: 24px;
-        height: 24px;
+    #doc-modal-overlay .doc-modal-tags :global(.doc-modal-icon) {
+        width: 20px;
+        height: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        /* Color is set inline via JavaScript with brand colors */
     }
 
-    .doc-modal-tags :global(.doc-modal-icon svg) {
-        width: 20px;
-        height: 20px;
+    #doc-modal-overlay .doc-modal-tags :global(.doc-modal-icon svg) {
+        width: 16px;
+        height: 16px;
     }
 
-    /* Description Bar */
-    .doc-modal-description-bar {
-        position: relative;
-        padding: 1rem 1.25rem 1.5rem;
-        z-index: 1;
+    /* Description */
+    #doc-modal-overlay .doc-modal-description-bar {
+        padding: 0.75rem 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .doc-modal-description {
+    #doc-modal-overlay .doc-modal-description {
         margin: 0;
         font-family: 'Space Mono', monospace;
-        font-size: 0.9rem;
-        color: rgba(255, 255, 255, 0.6);
-        line-height: 1.6;
+        font-size: 0.8rem;
+        color: var(--gray-light);
+        line-height: 1.5;
         font-style: italic;
-        text-transform: uppercase;
     }
 
-    /* Body Wrapper - Grid layout avec TOC */
-    .doc-modal-body-wrapper {
+    /* Body wrapper - no TOC, full width */
+    #doc-modal-overlay .doc-modal-body-wrapper {
         flex: 1;
-        display: grid;
-        grid-template-columns: 1fr 220px;
-        overflow: hidden;
+        overflow-y: auto;
+        padding: 1.5rem;
         background: #000;
     }
 
-    /* Content Area - Fond noir pur pour la lecture */
-    .doc-modal-content {
-        overflow-y: auto;
-        padding: 2.5rem 3rem;
-        background: #000;
+    #doc-modal-overlay .doc-modal-body {
+        max-width: 700px;
+        margin: 0 auto;
     }
 
-    /* Table des Matières (TOC) */
-    .doc-toc {
-        position: sticky;
-        top: 0;
-        height: fit-content;
-        max-height: calc(90vh - 180px);
-        overflow-y: auto;
-        padding: 1.5rem 0 1.5rem 0;
-        border-left: 1px solid rgba(0, 255, 255, 0.15);
-        background: rgba(0, 0, 0, 0.3);
-    }
-
-    .doc-toc::-webkit-scrollbar {
-        width: 3px;
-    }
-
-    .doc-toc::-webkit-scrollbar-track {
-        background: transparent;
-    }
-
-    .doc-toc::-webkit-scrollbar-thumb {
-        background: rgba(0, 255, 255, 0.2);
-        border-radius: 2px;
-    }
-
-    .doc-toc-title {
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: 0.9rem;
-        color: var(--neon-cyan, #00ffff);
-        text-transform: uppercase;
-        letter-spacing: 0.15em;
-        padding: 0 1.25rem 1rem;
-        margin-bottom: 0.5rem;
-        border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-    }
-
-    .doc-toc-list {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-    }
-
-    .doc-toc-list li {
-        margin: 0;
-        padding: 0;
-    }
-
-    .doc-toc-list a {
-        position: relative;
-        display: block;
-        padding: 0.5rem 1.25rem;
-        font-family: 'Space Mono', monospace;
-        font-size: 0.75rem;
-        color: rgba(255, 255, 255, 0.45);
-        text-decoration: none;
-        border-left: 2px solid transparent;
-        margin-left: -1px;
-        transition: all 0.2s ease;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    .doc-toc-list a:hover {
-        color: rgba(255, 255, 255, 0.75);
-        background: rgba(0, 255, 255, 0.03);
-    }
-
-    .doc-toc-list a.active {
-        color: var(--neon-cyan, #00ffff);
-        border-left-color: var(--neon-cyan, #00ffff);
-        background: rgba(0, 255, 255, 0.08);
-        font-weight: 500;
-    }
-
-    /* Indicateur visuel position */
-    .doc-toc-list a.active::before {
-        content: '▸';
-        position: absolute;
-        left: 0.4rem;
-        color: var(--neon-cyan, #00ffff);
-        font-size: 0.65rem;
-    }
-
-    /* H3 dans la TOC - indentation */
-    .doc-toc-list a.toc-h3 {
-        padding-left: 2rem;
-        font-size: 0.7rem;
-        color: rgba(255, 255, 255, 0.35);
-    }
-
-    .doc-toc-list a.toc-h3.active::before {
-        left: 0.65rem;
-    }
-
-    .doc-modal-content::-webkit-scrollbar {
+    #doc-modal-overlay .doc-modal-body-wrapper::-webkit-scrollbar {
         width: 6px;
     }
 
-    .doc-modal-content::-webkit-scrollbar-track {
+    #doc-modal-overlay .doc-modal-body-wrapper::-webkit-scrollbar-track {
         background: transparent;
     }
 
-    .doc-modal-content::-webkit-scrollbar-thumb {
+    #doc-modal-overlay .doc-modal-body-wrapper::-webkit-scrollbar-thumb {
         background: rgba(0, 255, 255, 0.2);
         border-radius: 3px;
     }
 
-    .doc-modal-content::-webkit-scrollbar-thumb:hover {
-        background: rgba(0, 255, 255, 0.4);
+    /* Progress bar */
+    #doc-modal-overlay .doc-progress-bar {
+        height: 3px;
+        background: rgba(255, 255, 255, 0.1);
+        flex-shrink: 0;
     }
 
-    /* Markdown Content Styles - Plus aéré et lisible */
-    .markdown-content {
-        color: rgba(255, 255, 255, 0.85);
-        line-height: 2;
-        font-family: 'Space Mono', monospace;
-        font-size: 0.9rem;
-        max-width: 100%;
+    #doc-modal-overlay .doc-progress-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+        transition: width 0.1s ease-out;
     }
 
-    .markdown-content h1,
-    .markdown-content h2,
-    .markdown-content h3,
-    .markdown-content h4 {
+    /* Markdown content styles */
+    #doc-modal-overlay .markdown-content {
+        color: var(--gray-lighter);
+        line-height: 1.7;
+    }
+
+    #doc-modal-overlay .markdown-content h1,
+    #doc-modal-overlay .markdown-content h2,
+    #doc-modal-overlay .markdown-content h3 {
         font-family: 'Bebas Neue', sans-serif;
         color: #fff;
-        letter-spacing: 0.04em;
-        line-height: 1.3;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        letter-spacing: 0.03em;
     }
 
-    .markdown-content h1 {
-        font-size: 2.2rem;
-        color: var(--neon-cyan, #00ffff);
-        margin-top: 0;
-        margin-bottom: 2rem;
-        padding-bottom: 0.75rem;
-        border-bottom: 2px solid var(--neon-cyan, #00ffff);
+    #doc-modal-overlay .markdown-content h1 {
+        font-size: 1.8rem;
+        color: var(--neon-cyan);
+        border-bottom: 2px solid var(--neon-cyan);
+        padding-bottom: 0.5rem;
     }
 
-    .markdown-content h2 {
-        position: relative;
-        font-size: 1.6rem;
-        color: #fff;
-        margin-top: 4rem;
-        margin-bottom: 1.5rem;
-        padding-top: 2rem;
-        padding-left: 0;
-        border-left: none;
-        border-top: 1px solid rgba(0, 255, 255, 0.15);
+    #doc-modal-overlay .markdown-content h2 {
+        font-size: 1.4rem;
+        color: var(--neon-cyan);
+        padding-left: 0.75rem;
+        border-left: 3px solid var(--neon-cyan);
     }
 
-    .markdown-content h2::before {
-        content: '';
-        position: absolute;
-        top: -1px;
-        left: 0;
-        width: 60px;
-        height: 3px;
-        background: var(--neon-cyan, #00ffff);
+    #doc-modal-overlay .markdown-content h3 {
+        font-size: 1.1rem;
+        color: var(--gray-lighter);
     }
 
-    .markdown-content h3 {
-        font-size: 1.3rem;
-        color: rgba(255, 255, 255, 0.95);
-        margin-top: 2.5rem;
+    #doc-modal-overlay .markdown-content p {
         margin-bottom: 1rem;
     }
 
-    .markdown-content h4 {
-        font-size: 1.1rem;
-        color: rgba(255, 255, 255, 0.85);
-        margin-top: 2rem;
-        margin-bottom: 0.75rem;
-    }
-
-    .markdown-content p {
-        margin: 1.5rem 0;
-        text-transform: uppercase;
-    }
-
-    .markdown-content strong {
-        color: #fff;
-        font-weight: 700;
-    }
-
-    .markdown-content code {
-        background: rgba(0, 255, 255, 0.08);
-        border: 1px solid rgba(0, 255, 255, 0.15);
-        padding: 0.2rem 0.5rem;
-        border-radius: 3px;
-        font-family: 'JetBrains Mono', 'Fira Code', monospace;
-        font-size: 0.85em;
-        color: var(--neon-cyan, #00ffff);
-    }
-
-    /* Labels colorés automatiques */
-    .markdown-content .doc-label {
-        font-weight: 700;
-        letter-spacing: 0.02em;
-    }
-
-    /* Effet 3D réutilisable */
-    .effect-3d {
-        background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
-        border: 1px solid rgba(0, 255, 255, 0.1);
-        box-shadow:
-            4px 4px 8px rgba(0, 0, 0, 0.5),
-            -2px -2px 6px rgba(255, 255, 255, 0.02),
-            inset 0 1px 0 rgba(255, 255, 255, 0.05);
-        border-radius: 8px;
-    }
-
-    /* Code Blocks Terminal-Style V3.15 */
-    .markdown-content .code-block {
-        margin: 2rem 0;
-        border-radius: 8px;
-        overflow: hidden;
-        background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
-        border: 1px solid rgba(0, 255, 255, 0.1);
-        box-shadow:
-            4px 4px 8px rgba(0, 0, 0, 0.5),
-            -2px -2px 6px rgba(255, 255, 255, 0.02),
-            inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    }
-
-    .markdown-content .code-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0.6rem 1rem;
-        background: linear-gradient(180deg, #1f1f1f 0%, #151515 100%);
-        border-bottom: 1px solid rgba(0, 255, 255, 0.08);
-        min-height: 40px;
-    }
-
-    .markdown-content .code-header-left {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    /* Dots macOS */
-    .markdown-content .code-header-left .dot {
-        display: inline-block;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        flex-shrink: 0;
-    }
-
-    .markdown-content .code-header-left .dot.red { background: #ff5f56; }
-    .markdown-content .code-header-left .dot.yellow { background: #ffbd2e; }
-    .markdown-content .code-header-left .dot.green { background: #27ca40; }
-
-    .markdown-content .code-lang {
-        font-family: 'Space Mono', monospace;
-        font-size: 0.75rem;
-        color: rgba(255, 255, 255, 0.4);
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        margin-left: 8px;
-    }
-
-    .markdown-content .code-filename {
-        font-family: 'Space Mono', monospace;
-        font-size: 0.8rem;
-        color: rgba(255, 255, 255, 0.6);
-    }
-
-    .markdown-content .code-copy-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        padding: 0.35rem 0.75rem;
-        background: transparent;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 4px;
-        color: rgba(255, 255, 255, 0.5);
-        font-family: 'Space Mono', monospace;
-        font-size: 0.7rem;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        flex-shrink: 0;
-    }
-
-    .markdown-content .code-copy-btn:hover {
-        background: rgba(0, 255, 255, 0.1);
-        border-color: var(--neon-cyan, #00ffff);
-        color: var(--neon-cyan, #00ffff);
-    }
-
-    .markdown-content .code-copy-btn.copied {
-        background: rgba(0, 255, 136, 0.1);
-        border-color: var(--neon-green, #00ff88);
-        color: var(--neon-green, #00ff88);
-    }
-
-    .markdown-content .code-copy-btn svg {
-        width: 14px;
-        height: 14px;
-        flex-shrink: 0;
-    }
-
-    .markdown-content .code-block pre {
-        margin: 0;
-        padding: 1.25rem 1rem;
-        background: transparent;
-        border: none;
-        border-radius: 0;
-        overflow-x: auto;
-    }
-
-    .markdown-content .code-block pre code {
-        background: none;
-        border: none;
-        padding: 0;
-        color: rgba(255, 255, 255, 0.85);
-        font-size: 0.85rem;
-        line-height: 1.7;
-    }
-
-    /* Fallback for simple pre without wrapper */
-    .markdown-content pre:not(.code-block pre) {
-        background: #0a0a0a;
-        border: 1px solid rgba(0, 255, 255, 0.15);
-        border-left: 3px solid var(--neon-cyan, #00ffff);
-        border-radius: 4px;
-        padding: 1.5rem;
-        overflow-x: auto;
-        margin: 2rem 0;
-    }
-
-    .markdown-content pre:not(.code-block pre) code {
-        background: none;
-        border: none;
-        padding: 0;
-        color: rgba(255, 255, 255, 0.85);
-        font-size: 0.85rem;
-        line-height: 1.7;
-    }
-
-    .markdown-content ul,
-    .markdown-content ol {
-        margin: 1.5rem 0;
-        padding-left: 0;
-    }
-
-    .markdown-content ul {
-        list-style: none;
-    }
-
-    .markdown-content ul li {
-        position: relative;
-        padding-left: 1.5rem;
-        margin: 1rem 0;
-        text-transform: uppercase;
-    }
-
-    .markdown-content ul li::before {
-        content: '▹';
-        position: absolute;
-        left: 0;
-        color: var(--neon-cyan, #00ffff);
-        font-size: 1rem;
-    }
-
-    .markdown-content ol {
-        list-style: none;
-        counter-reset: item;
-    }
-
-    .markdown-content ol li {
-        position: relative;
-        padding-left: 2rem;
-        margin: 1rem 0;
-        counter-increment: item;
-        text-transform: uppercase;
-    }
-
-    .markdown-content ol li::before {
-        content: counter(item) '.';
-        position: absolute;
-        left: 0;
-        color: var(--neon-cyan, #00ffff);
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: 1.1rem;
-    }
-
-    .markdown-content a {
-        color: var(--neon-cyan, #00ffff);
+    #doc-modal-overlay .markdown-content a {
+        color: var(--neon-cyan);
         text-decoration: none;
-        border-bottom: 1px solid rgba(0, 255, 255, 0.3);
-        transition: all 0.2s ease;
+        border-bottom: 1px solid transparent;
+        transition: border-color 0.2s;
     }
 
-    .markdown-content a:hover {
-        border-bottom-color: var(--neon-cyan, #00ffff);
+    #doc-modal-overlay .markdown-content a:hover {
+        border-bottom-color: var(--neon-cyan);
     }
 
-    .markdown-content blockquote {
-        border-left: 3px solid var(--neon-magenta, #ff0080);
-        background: rgba(255, 0, 128, 0.03);
-        padding: 1.25rem 1.5rem;
-        margin: 2rem 0;
-        color: rgba(255, 255, 255, 0.75);
+    #doc-modal-overlay .markdown-content ul,
+    #doc-modal-overlay .markdown-content ol {
+        margin-bottom: 1rem;
+        padding-left: 1.5rem;
+    }
+
+    #doc-modal-overlay .markdown-content li {
+        margin-bottom: 0.5rem;
+    }
+
+    #doc-modal-overlay .markdown-content ul li::marker {
+        color: var(--neon-cyan);
+    }
+
+    #doc-modal-overlay .markdown-content code {
+        font-family: 'JetBrains Mono', monospace;
+        background: rgba(0, 255, 255, 0.1);
+        padding: 0.15rem 0.4rem;
+        border-radius: 3px;
+        font-size: 0.85em;
+        color: var(--neon-cyan);
+    }
+
+    #doc-modal-overlay .markdown-content pre {
+        background: #0a0a0a;
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        border-radius: 4px;
+        padding: 1rem;
+        overflow-x: auto;
+        margin-bottom: 1rem;
+    }
+
+    #doc-modal-overlay .markdown-content pre code {
+        background: transparent;
+        padding: 0;
+        color: var(--gray-lighter);
+    }
+
+    #doc-modal-overlay .markdown-content blockquote {
+        border-left: 3px solid var(--neon-magenta);
+        margin: 1rem 0;
+        padding: 0.5rem 0 0.5rem 1rem;
+        background: rgba(255, 0, 128, 0.05);
+        color: var(--gray-light);
         font-style: italic;
-        border-radius: 0 4px 4px 0;
     }
 
-    .markdown-content table {
+    #doc-modal-overlay .markdown-content table {
         width: 100%;
         border-collapse: collapse;
-        margin: 2rem 0;
-        font-size: 0.85rem;
+        margin-bottom: 1rem;
     }
 
-    .markdown-content th,
-    .markdown-content td {
-        padding: 1rem;
-        border: 1px solid rgba(0, 255, 255, 0.15);
+    #doc-modal-overlay .markdown-content th,
+    #doc-modal-overlay .markdown-content td {
+        padding: 0.5rem 0.75rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
         text-align: left;
-        text-transform: uppercase;
     }
 
-    .markdown-content th {
-        background: rgba(0, 255, 255, 0.08);
-        color: var(--neon-cyan, #00ffff);
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: 1rem;
-        letter-spacing: 0.03em;
-        font-weight: 400;
+    #doc-modal-overlay .markdown-content th {
+        background: rgba(0, 255, 255, 0.1);
+        color: var(--neon-cyan);
+        font-weight: 600;
     }
 
-    .markdown-content tr:nth-child(even) {
-        background: rgba(255, 255, 255, 0.02);
-    }
-
-    .markdown-content hr {
-        border: none;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
-        margin: 3rem 0;
-    }
-
-    .markdown-content img {
+    #doc-modal-overlay .markdown-content img {
         max-width: 100%;
         height: auto;
         border-radius: 4px;
-        border: 1px solid rgba(0, 255, 255, 0.15);
-        margin: 1.5rem 0;
+        margin: 1rem 0;
     }
 
-    /* Responsive - PLEIN ÉCRAN MOBILE */
+    /* Responsive */
     @media (max-width: 768px) {
-        .doc-modal {
+        #doc-modal-overlay.doc-unified-modal {
             padding: 0;
-            z-index: 100000; /* Au-dessus de tout, y compris navbar */
         }
 
-        .doc-modal-container {
-            width: 100vw;
-            max-width: 100vw;
-            height: 100vh;
+        #doc-modal-overlay .modal-content-doc {
+            max-width: 100%;
+            width: 100%;
             max-height: 100vh;
             border-radius: 0;
             border: none;
-            margin: 0;
         }
 
-        .doc-modal-header-zone {
-            border-radius: 0;
-        }
-
-        /* Masquer la TOC sur mobile */
-        .doc-modal-body-wrapper {
-            grid-template-columns: 1fr;
-            height: calc(100vh - 145px);
-        }
-
-        .doc-toc {
-            display: none;
-        }
-
-        .terminal-header {
+        #doc-modal-overlay .modal-header {
             padding: 0.75rem 1rem;
-            gap: 0.5rem;
         }
 
-        .terminal-dots {
-            display: none;
+        #doc-modal-overlay .modal-title {
+            font-size: 1rem;
         }
 
-        .terminal-title {
-            font-size: 0.85rem;
-        }
-
-        .doc-modal-close {
-            width: 32px;
-            height: 32px;
-            top: 0.4rem;
-            right: 0.5rem;
-        }
-
-        .doc-modal-meta {
+        #doc-modal-overlay .doc-modal-meta {
             flex-direction: column;
             align-items: flex-start;
-            gap: 0.4rem;
-            padding: 0.4rem 1rem;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
         }
 
-        .doc-modal-tags {
+        #doc-modal-overlay .doc-modal-tags {
             max-width: 100%;
         }
 
-        .doc-modal-description-bar {
-            padding: 0.4rem 1rem 0.75rem;
+        #doc-modal-overlay .doc-modal-description-bar {
+            padding: 0.5rem 1rem;
         }
 
-        .doc-modal-content {
+        #doc-modal-overlay .doc-modal-body-wrapper {
             padding: 1rem;
         }
 
-        .markdown-content {
-            font-size: 0.9rem;
-            line-height: 1.8;
-        }
-
-        .markdown-content h1 {
-            font-size: 1.5rem;
-        }
-
-        .markdown-content h2 {
-            font-size: 1.25rem;
-            margin-top: 2rem;
-        }
-
-        .markdown-content h3 {
-            font-size: 1.1rem;
-        }
-
-        /* Code blocks responsive */
-        .markdown-content .code-header {
-            padding: 0.5rem 0.75rem;
-        }
-
-        .markdown-content .code-lang {
-            display: none;
-        }
-
-        .markdown-content .code-copy-btn .copy-text {
-            display: none;
+        #doc-modal-overlay .nav-btn,
+        #doc-modal-overlay .modal-close {
+            width: 32px;
+            height: 32px;
         }
     }
 </style>

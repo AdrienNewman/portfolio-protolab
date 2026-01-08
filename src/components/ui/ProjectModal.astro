@@ -1,65 +1,158 @@
 ---
 /**
- * ProjectModal - Generic project detail modal component
- * Replaces: ProjectProtolab, ProjectLLM, ProjectObservability,
- *           ProjectControlPlane, ProjectWebInterface
+ * ProjectModal - Unified dynamic project modal (Skills-style)
+ * Single modal element, content injected via JavaScript
+ * @version 2.0 - Unified modal system
  */
-
-interface ProjectSection {
-  title: string;
-  type: 'text' | 'list' | 'tags';
-  content?: string;
-  items?: string[];
-  tags?: string[];
-}
-
-interface Props {
-  id: string;
-  title: string;
-  iconSvg: string;
-  iconColorClass?: string;
-  sections: ProjectSection[];
-}
-
-const { id, title, iconSvg, iconColorClass, sections } = Astro.props;
 ---
 
-<div id={`project-${id}`} class="modal-overlay">
-  <div class="modal-content modal-large">
+<!-- Single dynamic modal - content populated by openProjectModal() -->
+<div id="project-modal-overlay" class="unified-modal">
+  <div class="modal-content">
     <div class="modal-header">
       <h2 class="modal-title">
-        <div class:list={['modal-title-icon', iconColorClass]}>
-          <svg viewBox="0 0 24 24"><path d={iconSvg} /></svg>
-        </div>
-        {title}
+        <div class="modal-icon"></div>
+        <span class="modal-title-text"></span>
       </h2>
       <button class="modal-close" aria-label="Fermer">
-        <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
       </button>
     </div>
     <div class="modal-body">
-      {sections.map(section => (
-        <div class="modal-section">
-          <h4 class="modal-section-title">{section.title}</h4>
-          {section.type === 'text' && section.content && (
-            <p class="modal-text">{section.content}</p>
-          )}
-          {section.type === 'list' && section.items && (
-            <ul class="modal-list">
-              {section.items.map(item => (
-                <li set:html={item} />
-              ))}
-            </ul>
-          )}
-          {section.type === 'tags' && section.tags && (
-            <div class="modal-tags">
-              {section.tags.map(tag => (
-                <span class="modal-tag">{tag}</span>
-              ))}
-            </div>
-          )}
-        </div>
-      ))}
+      <!-- Conditional media zone (hidden by default) -->
+      <div class="modal-media"></div>
+      <!-- Project description -->
+      <p class="modal-desc"></p>
+      <!-- Technology stack -->
+      <div class="modal-stack"></div>
+      <!-- Project stats -->
+      <div class="modal-stats"></div>
     </div>
   </div>
 </div>
+
+<style>
+  /* Project modal specific overrides */
+  #project-modal-overlay .modal-content {
+    max-width: var(--modal-max-width-project, 600px);
+  }
+
+  /* Media zone - hidden by default */
+  #project-modal-overlay .modal-media {
+    display: none;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    background: #0a0a0a;
+    overflow: hidden;
+  }
+
+  #project-modal-overlay .modal-media.has-media {
+    display: block;
+  }
+
+  #project-modal-overlay .modal-video,
+  #project-modal-overlay .modal-image {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Stack tags */
+  #project-modal-overlay .modal-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0;
+  }
+
+  #project-modal-overlay .modal-stack .modal-tag {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--neon-cyan);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    background: rgba(0, 255, 255, 0.05);
+    transition: all 0.3s ease;
+  }
+
+  #project-modal-overlay .modal-stack .modal-tag:hover {
+    background: rgba(0, 255, 255, 0.15);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+  }
+
+  /* Stats grid */
+  #project-modal-overlay .modal-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  #project-modal-overlay .modal-stat {
+    text-align: center;
+  }
+
+  #project-modal-overlay .stat-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    color: var(--neon-cyan);
+    display: block;
+  }
+
+  #project-modal-overlay .stat-label {
+    font-size: 0.65rem;
+    color: var(--gray-light);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Icon container */
+  #project-modal-overlay .modal-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gray-mid);
+    flex-shrink: 0;
+  }
+
+  #project-modal-overlay .modal-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    #project-modal-overlay .modal-content {
+      max-width: 100%;
+      width: 95%;
+    }
+
+    #project-modal-overlay .modal-stats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    #project-modal-overlay .stat-value {
+      font-size: 1.2rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    #project-modal-overlay .modal-icon {
+      width: 32px;
+      height: 32px;
+    }
+
+    #project-modal-overlay .modal-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+</style>

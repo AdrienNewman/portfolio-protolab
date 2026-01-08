@@ -10,12 +10,6 @@ import Documentation from '../components/sections/Documentation.astro';
 import Contact from '../components/sections/Contact.astro';
 import Footer from '../components/layout/Footer.astro';
 import LiveLab from '../components/sections/LiveLab.astro';
-
-// Generic components
-import ProjectModal from '../components/ui/ProjectModal.astro';
-
-// Centralized data
-import { projectModals } from '../data/projectModals';
 ---
 
 <BaseLayout
@@ -36,19 +30,6 @@ import { projectModals } from '../data/projectModals';
         <LiveLab />
         <Documentation />
         <Contact />
-
-        <!-- ============================================
-             PROJECT MODALS (Generated from centralized data)
-             ============================================ -->
-        {projectModals.map(project => (
-            <ProjectModal
-                id={project.id}
-                title={project.title}
-                iconSvg={project.iconSvg}
-                iconColorClass={project.iconColorClass}
-                sections={project.sections}
-            />
-        ))}
     </div>
 
     <!-- Footer -->

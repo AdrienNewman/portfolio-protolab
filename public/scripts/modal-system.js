@@ -90,17 +90,8 @@ function initModals() {
         }
     });
 
-    // PROJECT CARDS - Open detail modal on click
-    projectCards.forEach(card => {
-        card.addEventListener('click', () => {
-            const projectId = card.dataset.project;
-            const modal = document.getElementById(projectId);
-            if (modal) {
-                modal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-        });
-    });
+    // PROJECT CARDS - Click handlers now in initProjectModal() for unified system
+    // This ensures window.projectsDataForModal is available
 
     // DETAIL MODALS - Close buttons
     document.querySelectorAll('.modal-close').forEach(btn => {
@@ -419,18 +410,17 @@ const THEME_TAGS = [
 
 class DocModalSystem {
     constructor() {
-        this.modal = document.getElementById('doc-modal');
-        this.overlay = this.modal?.querySelector('.doc-modal-overlay');
-        this.closeButtons = this.modal?.querySelectorAll('[data-modal-close]');
+        // Updated for unified modal system (V2)
+        this.modal = document.getElementById('doc-modal-overlay');
+        this.closeButtons = this.modal?.querySelectorAll('.modal-close, [data-modal-close]');
         this.prevButton = document.getElementById('doc-modal-prev');
         this.nextButton = document.getElementById('doc-modal-next');
         this.progressFill = this.modal?.querySelector('.doc-progress-fill');
-        this.contentEl = this.modal?.querySelector('.doc-modal-content');
-        this.tocList = document.getElementById('doc-toc-list');
+        // Content scrollable element is now .doc-modal-body-wrapper
+        this.contentEl = this.modal?.querySelector('.doc-modal-body-wrapper');
 
         this.currentDocIndex = -1;
         this.allDocs = [];
-        this.tocObserver = null;
         this.headingIdCounter = 0;
 
         this.init();
@@ -493,16 +483,24 @@ class DocModalSystem {
     }
 
     attachEventListeners() {
-        // Fermeture du modal
+        // Fermeture du modal via boutons close
         this.closeButtons?.forEach(btn => {
             btn.addEventListener('click', () => this.closeModal());
         });
 
-        // Navigation avec les flèches
+        // Fermeture via clic sur l'overlay (clic extérieur)
+        this.modal?.addEventListener('click', (e) => {
+            if (e.target === this.modal) {
+                this.closeModal();
+            }
+        });
+
+        // Navigation avec les flèches + ESC pour fermer
         document.addEventListener('keydown', (e) => {
-            if (this.modal?.dataset.modalState === 'open') {
+            if (this.modal?.classList.contains('active')) {
                 if (e.key === 'ArrowLeft') this.navigatePrevious();
                 if (e.key === 'ArrowRight') this.navigateNext();
+                if (e.key === 'Escape') this.closeModal();
             }
         });
 
@@ -533,8 +531,9 @@ class DocModalSystem {
         // Charger le contenu
         await this.loadDocContent(slug);
 
-        // Afficher le modal
-        this.modal.dataset.modalState = 'open';
+        // Afficher le modal (unified system uses .active class)
+        this.modal.classList.add('active');
+        this.modal.dataset.modalState = 'open'; // Keep for compatibility
         document.body.style.overflow = 'hidden';
 
         // Mettre à jour les boutons de navigation
@@ -542,14 +541,13 @@ class DocModalSystem {
     }
 
     closeModal() {
-        this.modal.dataset.modalState = 'closed';
+        // Unified system uses .active class
+        this.modal.classList.remove('active');
+        this.modal.dataset.modalState = 'closed'; // Keep for compatibility
         document.body.style.overflow = '';
 
         // Réinitialiser la progress bar
         this.resetProgressBar();
-
-        // Nettoyer la TOC
-        this.cleanupTOC();
 
         // Nettoyer le hash
         history.pushState('', document.title, window.location.pathname + window.location.search);
@@ -991,12 +989,9 @@ class DocModalSystem {
             }).filter(html => html).join('');
         }
 
-        // Stats
+        // Stats (reading time only - words removed in simplified version)
         const readingTimeEl = this.modal.querySelector('#doc-modal-reading-time');
-        const wordsEl = this.modal.querySelector('#doc-modal-words');
-
         if (readingTimeEl) readingTimeEl.textContent = `${docData.readingTime} min`;
-        if (wordsEl) wordsEl.textContent = `~${docData.wordCount} mots`;
 
         // Contenu
         const bodyEl = this.modal.querySelector('#doc-modal-body');
@@ -1007,11 +1002,10 @@ class DocModalSystem {
         // Initialiser les boutons copier pour les code blocks
         this.initCodeCopyButtons();
 
-        // Générer la table des matières
-        this.generateTOC();
+        // TOC removed in unified modal system V2
 
-        // Scroll to top
-        const contentEl = this.modal.querySelector('.doc-modal-content');
+        // Scroll to top (updated selector for unified modal)
+        const contentEl = this.modal.querySelector('.doc-modal-body-wrapper');
         if (contentEl) contentEl.scrollTop = 0;
     }
 
@@ -1227,4 +1221,160 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initSkillCards);
 } else {
     initSkillCards();
+}
+
+// =============================================================================
+// PROJECT MODAL SYSTEM (Unified - Skills-style)
+// =============================================================================
+
+// Color mapping for project icons
+const PROJECT_ICON_COLORS = {
+    'cyan': '#00ffff',
+    'magenta': '#ff0080',
+    'green': '#00ff88',
+    'purple': '#a855f7',
+    'blue': '#3b82f6',
+    'yellow': '#ffff00'
+};
+
+// Open project modal with dynamic content
+function openProjectModal(projectId) {
+    const projectsData = window.projectsDataForModal;
+    if (!projectsData) {
+        console.warn('Projects data not found');
+        return;
+    }
+
+    const project = projectsData.find(p => p.id === projectId);
+    if (!project) {
+        console.warn('Project not found:', projectId);
+        return;
+    }
+
+    const overlay = document.getElementById('project-modal-overlay');
+    if (!overlay) {
+        console.warn('Project modal overlay not found');
+        return;
+    }
+
+    // Get elements
+    const iconEl = overlay.querySelector('.modal-icon');
+    const titleEl = overlay.querySelector('.modal-title-text');
+    const descEl = overlay.querySelector('.modal-desc');
+    const mediaEl = overlay.querySelector('.modal-media');
+    const stackEl = overlay.querySelector('.modal-stack');
+    const statsEl = overlay.querySelector('.modal-stats');
+
+    // Get icon color
+    const iconColor = PROJECT_ICON_COLORS[project.iconColor] || project.iconColor || '#00ffff';
+
+    // Fill icon
+    if (iconEl) {
+        iconEl.innerHTML = `<svg viewBox="0 0 24 24" stroke="${iconColor}" fill="none" stroke-width="1.5">${project.icon}</svg>`;
+    }
+
+    // Fill title
+    if (titleEl) titleEl.textContent = project.title;
+
+    // Fill description (use longDescription if available)
+    if (descEl) descEl.textContent = project.longDescription || project.description;
+
+    // Handle media (conditional - hidden if no media)
+    if (mediaEl) {
+        if (project.video) {
+            mediaEl.innerHTML = `<video src="/media/projects/${project.id}/${project.video}" controls class="modal-video"></video>`;
+            mediaEl.classList.add('has-media');
+        } else if (project.media && project.media.length > 0) {
+            mediaEl.innerHTML = `<img src="/media/projects/${project.id}/${project.media[0]}" alt="${project.title}" class="modal-image"/>`;
+            mediaEl.classList.add('has-media');
+        } else {
+            mediaEl.innerHTML = '';
+            mediaEl.classList.remove('has-media');
+        }
+    }
+
+    // Fill stack tags
+    if (stackEl) {
+        stackEl.innerHTML = project.stack.map(tech =>
+            `<span class="modal-tag">${tech}</span>`
+        ).join('');
+    }
+
+    // Fill stats
+    if (statsEl && project.stats && project.stats.length > 0) {
+        statsEl.innerHTML = project.stats.map(stat => `
+            <div class="modal-stat">
+                <span class="stat-value">${stat.value}</span>
+                <span class="stat-label">${stat.label}</span>
+            </div>
+        `).join('');
+        statsEl.style.display = '';
+    } else if (statsEl) {
+        statsEl.innerHTML = '';
+        statsEl.style.display = 'none';
+    }
+
+    // Show modal
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+// Close project modal
+function closeProjectModal() {
+    const overlay = document.getElementById('project-modal-overlay');
+    if (overlay) {
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+// Initialize project modal event listeners
+function initProjectModal() {
+    // PROJECT CARDS - Attach click handlers (always, even if modal not ready)
+    const projectCards = document.querySelectorAll('[data-project]');
+    projectCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const projectId = card.dataset.project;
+            if (window.projectsDataForModal) {
+                openProjectModal(projectId);
+            } else {
+                console.warn('Projects data not loaded yet');
+            }
+        });
+    });
+
+    const overlay = document.getElementById('project-modal-overlay');
+    if (!overlay) {
+        console.warn('Project modal overlay not found in DOM');
+        return;
+    }
+
+    // Close button
+    const closeBtn = overlay.querySelector('.modal-close');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeProjectModal);
+    }
+
+    // Click outside to close
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            closeProjectModal();
+        }
+    });
+
+    // ESC key (redundancy for reliability)
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeProjectModal();
+        }
+    });
+
+    console.log('✓ Project modal V2 (unified) initialized');
+}
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initProjectModal);
+} else {
+    initProjectModal();
 }
