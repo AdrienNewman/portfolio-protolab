@@ -3,15 +3,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const typingText = document.querySelector('.typing-text');
     if (!typingText) return;
 
-    // Liste des compétences à afficher
-    const skills = [
-        'Active Directory & GPO',
-        'Linux & Docker',
-        'Palo Alto Firewall',
-        'Proxmox Virtualisation',
-        'Monitoring & Observabilité',
-        'Scripting Bash & PowerShell',
-        'Infrastructure Cloud'
+    // Liste des compétences depuis sections.json (injecté par Hero.astro)
+    const skills = window.TYPING_SKILLS || [
+        'Linux/Windows/Active Directory',
+        'Palo Alto NextGen Firewall',
+        'Virtualisation Proxmox'
     ];
 
     let skillIndex = 0;

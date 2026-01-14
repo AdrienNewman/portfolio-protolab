@@ -11,13 +11,13 @@
       "icon": "dot"
     },
     "typingSkills": [
-      "Windows Server & Active Directory",
-      "Linux & Scripting Bash",
+      "Linux/Windows/Active Directory",
       "Palo Alto NextGen Firewall",
-      "Proxmox & Virtualisation",
+      "Virtualisation Proxmox",
       "Observabilité & Monitoring",
       "LLM Local & GPU Computing",
-      "Backup & Haute Disponibilité"
+      "Backup & Haute Disponibilité",
+      "Agent IA et Serveur MCP"
     ],
     "stats": [
       {
