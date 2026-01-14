@@ -102,6 +102,16 @@
       }
     ]
   },
+  "skills": {
+    "sectionLabel": "Expertise",
+    "sectionTitle": "Mes <span>Compétences</span>",
+    "sectionDesc": "Technologies et outils maîtrisés au cours de ma formation TSSR et de mes projets personnels sur mon homelab Protolab."
+  },
+  "projects": {
+    "sectionLabel": "Réalisations",
+    "sectionTitle": "Mes <span>Projets</span>",
+    "sectionDesc": "Infrastructures complètes déployées sur mon homelab Protolab, démontrant mes compétences en environnement réel."
+  },
   "contact": {
     "sectionLabel": "Disponibilité",
     "sectionTitle": "Me <span>Contacter</span>",

@@ -51,9 +51,17 @@ export interface ContactContent {
   }>;
 }
 
+export interface SectionHeader {
+  sectionLabel: string;
+  sectionTitle: string;
+  sectionDesc: string;
+}
+
 export interface SectionsData {
   hero: HeroContent;
   profile: ProfileContent;
+  skills: SectionHeader;
+  projects: SectionHeader;
   contact: ContactContent;
 }
 

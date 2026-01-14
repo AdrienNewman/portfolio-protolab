@@ -5,17 +5,19 @@
  */
 import SkillCard from '../ui/SkillCard.astro';
 import skillsData from '../../data/skills.json';
+import sectionsData from '../../data/sections.json';
 import type { SkillData } from '../../types/content';
 
 const skills = skillsData as SkillData[];
+const section = sectionsData.skills;
 ---
 
 <section class="section section-dark" id="competences">
     <div class="skills-container">
         <div class="section-header">
-            <span class="section-label">Expertise</span>
-            <h2 class="section-title">Mes <span>Competences</span></h2>
-            <p class="section-desc">Technologies et outils maitrises au cours de ma formation TSSR et de mes projets personnels sur mon homelab Protolab.</p>
+            <span class="section-label">{section.sectionLabel}</span>
+            <h2 class="section-title" set:html={section.sectionTitle}></h2>
+            <p class="section-desc">{section.sectionDesc}</p>
         </div>
 
         <div class="skills-grid">

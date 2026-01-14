@@ -1,25 +1,33 @@
 ---
-// Projects Section Component - Utilise projects.json
+// Projects Section Component - Utilise projects.json + sections.json
 import ProjectCard from '../ui/ProjectCard.astro';
+import ProjectModal from '../ui/ProjectModal.astro';
 import projectsData from '../../data/projects.json';
+import sectionsData from '../../data/sections.json';
 import type { ProjectData } from '../../types/content';
 
 const projects = projectsData as ProjectData[];
+const section = sectionsData.projects;
 ---
+
+<!-- Inject projects data for JavaScript modal -->
+<script is:inline define:vars={{ projectsData: projects }}>
+    window.projectsDataForModal = projectsData;
+</script>
 
 <section class="section" id="projets">
     <div class="projects-container">
         <div class="section-header">
-            <span class="section-label">Réalisations</span>
-            <h2 class="section-title">Mes <span>Projets</span></h2>
-            <p class="section-desc">Infrastructures complètes déployées sur mon homelab Protolab, démontrant mes compétences en environnement réel.</p>
+            <span class="section-label">{section.sectionLabel}</span>
+            <h2 class="section-title" set:html={section.sectionTitle}></h2>
+            <p class="section-desc">{section.sectionDesc}</p>
         </div>
 
         <div class="projects-grid">
             {projects.map((project) => (
                 <ProjectCard
                     featured={project.featured}
-                    projectId={project.projectId}
+                    projectId={project.id}
                     title={project.title}
                     description={project.description}
                     stack={project.stack}
@@ -33,6 +41,9 @@ const projects = projectsData as ProjectData[];
         </div>
     </div>
 </section>
+
+<!-- Single dynamic project modal -->
+<ProjectModal />
 
 <style>
     .section { position: relative; z-index: 1; padding: 8rem 2rem; }
