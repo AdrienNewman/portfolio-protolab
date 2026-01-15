@@ -1136,22 +1136,16 @@
             this.loadGameScript().catch(console.error);
         }
 
-        onIntroComplete() {
+        async onIntroComplete() {
             // Hide intro canvas
             this.introCanvas.classList.add('hidden');
 
-            // Show start screen with animation
-            this.showScreen('start');
-
-            // Update high score display
-            const highScore = localStorage.getItem('netdefender_highscore') || 0;
-            document.getElementById('menu-high-score').textContent = parseInt(highScore).toLocaleString('fr-FR');
-
-            // Animate OSI bars
-            this.animateOsiBars();
-
-            // Initialize game if not already done
-            this.initGame();
+            // Démarrer directement le jeu (comme prototype-game.html)
+            // Pas de start screen - le prototype gère tout (Jimmy Wales, etc.)
+            await this.initGame();
+            if (this.game) {
+                this.game.start();
+            }
         }
 
         animateOsiBars() {
@@ -1194,13 +1188,17 @@
                     this.game = new window.NetDefender('game-canvas');
 
                     // Set up callbacks
-                    this.game.onScoreUpdate = (score) => this.updateScore(score);
-                    this.game.onHealthUpdate = (health, max) => this.updateHealth(health, max);
-                    this.game.onWaveUpdate = (wave, total, layer) => this.updateWave(wave, total, layer);
-                    this.game.onPause = (paused) => paused ? this.showScreen('pause') : this.showScreen('playing');
+                    // Note: Le prototype a son propre HUD canvas, on n'utilise plus le HUD HTML
+                    // On garde uniquement les écrans Pause/GameOver/Victory pour le retour portfolio
+                    this.game.onPause = (paused) => {
+                        if (paused) {
+                            this.showScreen('pause');
+                        } else {
+                            this.hideAllScreens(); // Juste cacher, pas afficher le HUD
+                        }
+                    };
                     this.game.onGameOver = (score, highScore) => this.showGameOver(score, highScore);
                     this.game.onVictory = (score, highScore) => this.showVictory(score, highScore);
-                    this.game.onPowerUpCollect = (name, color, isPositive) => this.showPowerUpNotification(name, color);
                 } else {
                     console.error('NetDefender not available on window');
                 }
@@ -1250,18 +1248,11 @@
         }
 
         showScreen(screen) {
-            // Hide all screens
-            this.startScreen.classList.add('hidden');
-            this.pauseScreen.classList.add('hidden');
-            this.gameOverScreen.classList.add('hidden');
-            this.victoryScreen.classList.add('hidden');
-            this.hud.style.display = 'none';
+            // Hide all screens first
+            this.hideAllScreens();
 
             // Show requested screen
             switch (screen) {
-                case 'start':
-                    this.startScreen.classList.remove('hidden');
-                    break;
                 case 'pause':
                     this.pauseScreen.classList.remove('hidden');
                     if (this.game) {
@@ -1275,10 +1266,18 @@
                 case 'victory':
                     this.victoryScreen.classList.remove('hidden');
                     break;
-                case 'playing':
-                    this.hud.style.display = 'flex';
-                    break;
+                // Note: 'start' et 'playing' ne sont plus utilisés
+                // Le prototype gère tout lui-même
             }
+        }
+
+        hideAllScreens() {
+            // Cache tous les écrans HTML overlay
+            this.startScreen.classList.add('hidden');
+            this.pauseScreen.classList.add('hidden');
+            this.gameOverScreen.classList.add('hidden');
+            this.victoryScreen.classList.add('hidden');
+            this.hud.style.display = 'none';
         }
 
         updateScore(score) {
