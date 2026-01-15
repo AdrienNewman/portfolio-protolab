@@ -16,7 +16,7 @@ export const boss_gates = {
     layer: 1,
 
     // Stats - Boss final = plus costaud
-    health: 600,
+    health: 300,
     speed: 1.0,
     size: 100,
     points: 10000,
@@ -43,7 +43,7 @@ export const boss_gates = {
             projectileSpeed: 4,
             projectileSize: 15,
             projectileColor: '#0078D4',
-            damage: 12,
+            damage: 5,
             phase: 1
         },
         // ATTAQUE 2: Secure Boot - zones de danger au sol
@@ -54,7 +54,7 @@ export const boss_gates = {
             hazardCount: 5,
             hazardDuration: 4000,
             hazardRadius: 45,
-            damagePerSecond: 18,
+            damagePerSecond: 6,
             hazardColor: '#FFD700',
             phase: 1
         },
@@ -67,7 +67,7 @@ export const boss_gates = {
             beamWidth: 20,
             sweepSpeed: 0.04,
             sweepAngle: 160,
-            damage: 15,
+            damage: 6,
             beamColor: '#00A4EF',
             phase: 1
         }
@@ -119,7 +119,7 @@ export const boss_gates = {
                 projectileSpeed: 3,
                 redirectDelay: 800,
                 projectileColor: '#50E6FF',
-                damage: 14,
+                damage: 5,
                 phase: 2
             },
             // ATTAQUE 5: Region Lock - zones restrictives
@@ -131,7 +131,7 @@ export const boss_gates = {
                 zoneDuration: 5000,
                 zoneRadius: 80,
                 zoneColor: '#0089D6',
-                damage: 10,
+                damage: 4,
                 phase: 2
             },
             // ATTAQUE 6: Subscription Drain - zone cloud qui draine HP
@@ -140,7 +140,7 @@ export const boss_gates = {
                 type: 'subscription_drain',
                 cooldown: 8000,
                 duration: 3000,
-                drainPerSecond: 8,
+                drainPerSecond: 3,
                 drainRadius: 200,
                 drainColor: '#FF4444',
                 phase: 2

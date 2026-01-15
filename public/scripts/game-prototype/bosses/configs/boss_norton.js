@@ -16,7 +16,7 @@ export const boss_norton = {
     layer: 3,
 
     // Stats
-    health: 450,
+    health: 225,
     speed: 1.2,
     size: 80,
     points: 2600,
@@ -39,7 +39,7 @@ export const boss_norton = {
             cooldown: 8000,
             beamWidth: 50,
             sweepSpeed: 3,
-            damage: 12,
+            damage: 5,
             warningTime: 1000,
             warningColor: '#FFD700',
             beamColor: '#FF0000'
@@ -53,7 +53,7 @@ export const boss_norton = {
             minionHealth: 25,
             minionSpeed: 2,
             minionColor: '#FF0000',
-            damage: 8
+            damage: 4
         },
         // ATTAQUE 3: Quarantine Zone - zones de danger
         {
@@ -63,7 +63,7 @@ export const boss_norton = {
             hazardCount: 3,
             hazardDuration: 4000,
             hazardRadius: 60,
-            damagePerSecond: 15,
+            damagePerSecond: 6,
             hazardColor: '#FFD700'
         }
     ],
@@ -73,7 +73,7 @@ export const boss_norton = {
         type: 'quarantine',
         triggerCooldown: 12000,
         captureDuration: 2000,
-        damagePerSecond: 10,
+        damagePerSecond: 4,
         captureRange: 120,
         captureSpeed: 8,
         bubbleColor: '#FFD700'

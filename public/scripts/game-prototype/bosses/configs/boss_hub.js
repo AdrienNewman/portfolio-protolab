@@ -16,7 +16,7 @@ export const boss_hub = {
     layer: 2,
 
     // Stats
-    health: 500,
+    health: 250,
     speed: 0.8,
     size: 90,
     points: 2400,
@@ -42,7 +42,7 @@ export const boss_hub = {
             projectileSpeed: 3,
             projectileSize: 10,
             projectileColor: '#FF6600',
-            damage: 8
+            damage: 4
         },
         // ATTAQUE 2: Collision Storm - projectiles qui se multiplient
         {
@@ -55,7 +55,7 @@ export const boss_hub = {
             projectileSpeed: 4,
             projectileSize: 12,
             projectileColor: '#C0C0C0',
-            damage: 10
+            damage: 4
         },
         // ATTAQUE 3: Port Jam - lignes de tir depuis les "ports"
         {
@@ -68,7 +68,7 @@ export const boss_hub = {
             projectileSpeed: 5,
             projectileSize: 8,
             projectileColor: '#FF6600',
-            damage: 6
+            damage: 3
         }
     ],
 

@@ -16,7 +16,7 @@ export const boss_clippe = {
     layer: 7,
 
     // Stats
-    health: 250,
+    health: 125,
     speed: 1.0,
     size: 80,
     points: 3000,
@@ -42,7 +42,7 @@ export const boss_clippe = {
             projectileSize: 18,
             projectileColor: '#0078D4',
             projectileType: 'letter',
-            damage: 12
+            damage: 5
         },
         // ATTAQUE 2: Help Bubble - bulles d'aide qui traquent le joueur
         {
@@ -54,7 +54,7 @@ export const boss_clippe = {
             duration: 5000,
             bubbleSize: 25,
             bubbleColor: '#FFFF00',
-            damage: 8
+            damage: 4
         }
     ],
 

@@ -16,7 +16,7 @@ export const boss_explorer = {
     layer: 6,
 
     // Stats
-    health: 300,
+    health: 150,
     speed: 2.0,
     size: 90,
     points: 2800,
@@ -52,7 +52,7 @@ export const boss_explorer = {
             dropSize: 25,
             dropColor: '#1E90FF',
             projectileType: 'popup_window',
-            damage: 12,
+            damage: 5,
             spreadWidth: 350
         },
         // ATTAQUE 2: ActiveX Laser - rayon balayant
@@ -64,7 +64,7 @@ export const boss_explorer = {
             beamWidth: 25,
             sweepSpeed: 0.03,
             sweepAngle: 140,
-            damage: 18,
+            damage: 8,
             beamColor: '#1E90FF'
         }
     ],
@@ -89,7 +89,7 @@ export const boss_explorer = {
             hazardCount: 4,
             hazardDuration: 5000,
             hazardRadius: 50,
-            damagePerSecond: 20,
+            damagePerSecond: 8,
             hazardColor: '#FF4444'
         }
     }

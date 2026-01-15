@@ -16,7 +16,7 @@ export const boss_update = {
     layer: 4,
 
     // Stats
-    health: 400,
+    health: 200,
     speed: 1.0,
     size: 85,
     points: 2800,
@@ -38,7 +38,7 @@ export const boss_update = {
             type: 'screen_flash',
             cooldown: 8000,
             chargeTime: 2000,
-            flashDamage: 15,
+            flashDamage: 6,
             stunDuration: 3000,
             warningColor: '#00BCF2'
         },
@@ -62,7 +62,7 @@ export const boss_update = {
             projectileSpeed: 3.5,
             projectileSize: 12,
             projectileColor: '#00BCF2',
-            damage: 10
+            damage: 4
         }
     ],
 

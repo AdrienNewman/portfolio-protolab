@@ -4,6 +4,9 @@
 ---
 
 <div id="game-overlay" class="game-overlay">
+    <!-- Beta Badge -->
+    <div class="beta-badge">BETA</div>
+
     <!-- Intro Canvas (for cinematic sequence) -->
     <canvas id="intro-canvas" class="intro-canvas"></canvas>
 
@@ -234,6 +237,25 @@
 </div>
 
 <style>
+    /* ========================================
+       BETA BADGE
+       ======================================== */
+    .beta-badge {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        background: rgba(255, 0, 128, 0.15);
+        border: 1px solid var(--neon-magenta);
+        color: var(--neon-magenta);
+        font-family: 'Space Mono', monospace;
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        padding: 0.25rem 0.5rem;
+        z-index: 30001;
+        pointer-events: none;
+    }
+
     /* ========================================
        GAME OVERLAY BASE
        ======================================== */
@@ -1049,7 +1071,7 @@
 
                 const script = document.createElement('script');
                 script.type = 'module';
-                script.src = '/scripts/game/intro/IntroSequence.js';
+                script.src = '/scripts/game-prototype/intro/IntroSequence.js';
                 script.onload = () => {
                     this.introLoaded = true;
                     resolve();
@@ -1068,7 +1090,7 @@
 
                 const script = document.createElement('script');
                 script.type = 'module';
-                script.src = '/scripts/game/NetDefender.js';
+                script.src = '/scripts/game-prototype/NetDefender.js';
                 script.onload = () => {
                     this.gameLoaded = true;
                     resolve();

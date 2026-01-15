@@ -16,7 +16,7 @@ export const boss_messenger = {
     layer: 5,
 
     // Stats
-    health: 350,
+    health: 175,
     speed: 1.5,
     size: 75,
     points: 2500,
@@ -39,7 +39,7 @@ export const boss_messenger = {
             cooldown: 5000,
             shakeDuration: 2000,
             shakeIntensity: 15,
-            damage: 10,
+            damage: 5,
             warningColor: '#7FBA00'
         },
         // ATTAQUE 2: Wink Spam - pluie d'emoticons
@@ -52,7 +52,7 @@ export const boss_messenger = {
             dropSize: 20,
             dropColor: '#7FBA00',
             projectileType: 'emoticon',
-            damage: 8,
+            damage: 4,
             spreadWidth: 300
         },
         // ATTAQUE 3: Contact Request - projectiles ciblés
@@ -63,7 +63,7 @@ export const boss_messenger = {
             projectileSpeed: 5,
             projectileSize: 15,
             projectileColor: '#00FF00',
-            damage: 12,
+            damage: 5,
             aimPrediction: 0.2
         }
     ],
