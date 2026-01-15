@@ -3,24 +3,30 @@
     "id": "windows",
     "icon": "windows",
     "previewTitle": "Windows Server",
-    "previewDescription": "Administration AD DS, GPO, gestion utilisateurs et services reseau.",
-    "previewTags": ["AD DS", "GPO", "WSUS", "PowerShell"],
+    "previewDescription": "Administration AD DS, GPO, Gestion OU / Groupes / Profil LDAP",
+    "previewTags": [
+      "AD DS",
+      "GPO",
+      "WSUS",
+      "PowerShell",
+      "LADP"
+    ],
     "modalTitle": "Windows Server",
     "sections": [
       {
         "title": "Administration",
         "items": [
           "Active Directory DS",
-          "Group Policy Objects",
+          "GPO | O.U | LDAP | Groupe",
           "DNS / DHCP / WSUS"
         ]
       },
       {
-        "title": "Stack",
+        "title": "Stack Protoloab",
         "items": [
-          "PowerShell scripting",
-          "Server Manager / RSAT",
-          "Event Viewer / Logs"
+          "Windows Serveur Core",
+          "Gestion via Sconfig & Outils RSAT",
+          "Gestion/Monitoring des logs AD/LDAP avec VictoriaLogs"
         ]
       }
     ]
@@ -30,13 +36,19 @@
     "icon": "linux",
     "previewTitle": "Linux",
     "previewDescription": "Administration Debian/Ubuntu, scripting Bash, systemd et containers.",
-    "previewTags": ["Debian", "Bash", "systemd", "LXC"],
+    "previewTags": [
+      "Debian",
+      "Bash",
+      "systemd",
+      "LXC"
+    ],
     "modalTitle": "Linux",
     "sections": [
       {
         "title": "Administration",
         "items": [
-          "Debian 12 / Ubuntu Server",
+          "Debian | Ubuntu ",
+          "Création et Exploitation de conteneur LXC",
           "Gestion services systemd",
           "Cron et automatisation"
         ]
@@ -54,10 +66,15 @@
   {
     "id": "proxmox",
     "icon": "proxmox",
-    "previewTitle": "Proxmox",
-    "previewDescription": "Hyperviseur Proxmox VE, VMs, containers LXC et GPU passthrough.",
-    "previewTags": ["Proxmox VE", "KVM", "LXC", "ZFS"],
-    "modalTitle": "Proxmox",
+    "previewTitle": "Virtualisation",
+    "previewDescription": "Hyperviseur Proxmox VE/ VmWare / HyperV, \nVMs, containers LXC et GPU passthrough.",
+    "previewTags": [
+      "Proxmox VE",
+      "KVM",
+      "LXC",
+      "ZFS"
+    ],
+    "modalTitle": "Virtualisation",
     "sections": [
       {
         "title": "Infrastructure",
@@ -79,11 +96,16 @@
   },
   {
     "id": "paloalto",
-    "icon": "paloaltonetworks",
-    "previewTitle": "Palo Alto",
+    "icon": "paloalto",
+    "previewTitle": "Firewall NG",
     "previewDescription": "Firewall Next-Gen, NAT, VPN GlobalProtect et App-ID.",
-    "previewTags": ["NGFW", "NAT", "VPN", "App-ID"],
-    "modalTitle": "Palo Alto",
+    "previewTags": [
+      "NGFW",
+      "NAT",
+      "VPN",
+      "App-ID"
+    ],
+    "modalTitle": "Firewall New Generation",
     "sections": [
       {
         "title": "Securite",
@@ -108,7 +130,12 @@
     "icon": "grafana",
     "previewTitle": "Monitoring",
     "previewDescription": "Stack observabilite : OpenTelemetry, Victoria Logs, Grafana.",
-    "previewTags": ["Grafana", "OTel", "Victoria", "Logs"],
+    "previewTags": [
+      "Grafana",
+      "OTel",
+      "Victoria",
+      "Logs"
+    ],
     "modalTitle": "Monitoring",
     "sections": [
       {
@@ -134,7 +161,12 @@
     "icon": "nvidia",
     "previewTitle": "LLM Local",
     "previewDescription": "Deploiement Ollama, GPU passthrough, API REST locale.",
-    "previewTags": ["Ollama", "Llama 3", "RTX 3060", "API"],
+    "previewTags": [
+      "Ollama",
+      "Llama 3",
+      "RTX 3060",
+      "API"
+    ],
     "modalTitle": "LLM Local",
     "sections": [
       {
@@ -160,7 +192,12 @@
     "icon": "git",
     "previewTitle": "Backup",
     "previewDescription": "Strategie 3-2-1, scripts automatises, restauration testee.",
-    "previewTags": ["3-2-1", "PBS", "Snapshots", "Git"],
+    "previewTags": [
+      "3-2-1",
+      "PBS",
+      "Snapshots",
+      "Git"
+    ],
     "modalTitle": "Backup",
     "sections": [
       {
@@ -184,9 +221,14 @@
   {
     "id": "cloud",
     "icon": "docker",
-    "previewTitle": "Cloud Local",
-    "previewDescription": "Cloud prive containerise, Nextcloud, Portainer, Traefik.",
-    "previewTags": ["Nextcloud", "Portainer", "S3", "Traefik"],
+    "previewTitle": "Conteneurisation",
+    "previewDescription": "Conteneur LXC & Docker",
+    "previewTags": [
+      "Nextcloud",
+      "Portainer",
+      "S3",
+      "Traefik"
+    ],
     "modalTitle": "Cloud Local",
     "sections": [
       {
@@ -212,7 +254,12 @@
     "icon": "astro",
     "previewTitle": "Web Dev",
     "previewDescription": "Portfolio Astro from scratch, TypeScript, Three.js, Traefik.",
-    "previewTags": ["Astro", "TypeScript", "Three.js", "Traefik"],
+    "previewTags": [
+      "Astro",
+      "TypeScript",
+      "Three.js",
+      "Traefik"
+    ],
     "modalTitle": "Web Dev",
     "sections": [
       {
@@ -238,7 +285,12 @@
     "icon": "mcp",
     "previewTitle": "Agent IA",
     "previewDescription": "Claude control plane, orchestration MCP multi-serveur.",
-    "previewTags": ["Claude API", "MCP", "Control Plane", "RAG"],
+    "previewTags": [
+      "Claude API",
+      "MCP",
+      "Control Plane",
+      "RAG"
+    ],
     "modalTitle": "Agent IA",
     "sections": [
       {
@@ -264,7 +316,12 @@
     "icon": "claude",
     "previewTitle": "Vibe Coding",
     "previewDescription": "VSCode + Claude Code, profils CLAUDE.md, workflow assiste.",
-    "previewTags": ["Claude Code", "VSCode", "CLAUDE.md", "MCP"],
+    "previewTags": [
+      "Claude Code",
+      "VSCode",
+      "CLAUDE.md",
+      "MCP"
+    ],
     "modalTitle": "Vibe Coding",
     "sections": [
       {
@@ -290,7 +347,12 @@
     "icon": "github",
     "previewTitle": "Versionning",
     "previewDescription": "Git workflow complet, branches structurees, CI/CD GitHub.",
-    "previewTags": ["Git", "GitHub", "Branches", "CI/CD"],
+    "previewTags": [
+      "Git",
+      "GitHub",
+      "Branches",
+      "CI/CD"
+    ],
     "modalTitle": "Versionning",
     "sections": [
       {
