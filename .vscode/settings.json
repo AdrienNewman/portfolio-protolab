@@ -1,0 +1,10 @@
+{
+  "claude.contextFiles": [
+    ".claude/inventory.md",
+    ".claude/components.md",
+    ".claude/scripts.md",
+    ".claude/content.md",
+    ".claude/changelog.md",
+    "CLAUDE.md"
+  ]
+}

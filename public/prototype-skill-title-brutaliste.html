@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototype - Skills Polish Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* ========================================
+           VARIABLES CSS - DESIGN SYSTEM + EASING
+           ======================================== */
+        :root {
+            --neon-cyan: #00ffff;
+            --neon-magenta: #ff0080;
+            --neon-green: #00ff88;
+            --gray-dark: #0a0a0a;
+            --gray-mid: #1a1a1a;
+            --gray-light: #888888;
+            --gray-lighter: #aaaaaa;
+            --black: #000000;
+            --white: #ffffff;
+
+            /* Easing Premium */
+            --ease-bounce: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--gray-dark);
+            min-height: 100vh;
+            padding: 2rem;
+            font-family: 'Space Mono', monospace;
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 0.5rem;
+            color: var(--neon-cyan);
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.5rem;
+            letter-spacing: 0.1em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--gray-light);
+            font-size: 0.8rem;
+            margin-bottom: 3rem;
+        }
+
+        /* ========================================
+           KEYFRAMES ANIMATIONS
+           ======================================== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes modalContentIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% {
+                filter: drop-shadow(0 0 8px currentColor);
+            }
+            50% {
+                filter: drop-shadow(0 0 16px currentColor);
+            }
+        }
+
+        @keyframes titleGlow {
+            0%, 100% {
+                text-shadow: 0 0 0 transparent;
+            }
+            50% {
+                text-shadow: 0 0 8px var(--neon-cyan);
+            }
+        }
+
+        /* ========================================
+           GRILLE SKILLS - 4x3 (12 competences)
+           ======================================== */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            max-width: 900px;
+            margin: 0 auto 3rem;
+        }
+
+        /* ========================================
+           SKILL CARD - POLISH PREMIUM
+           ======================================== */
+        .skill-card {
+            background: transparent;
+            border: none;
+            padding: 1.25rem 0.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+
+            /* Stagger animation */
+            opacity: 0;
+            animation: fadeInUp 0.6s var(--ease-bounce) forwards;
+            animation-delay: calc(var(--card-index, 0) * 0.06s);
+
+            /* Base transition for hover */
+            transition: transform 0.35s var(--ease-bounce),
+                        filter 0.35s var(--ease-bounce);
+        }
+
+        /* HOVER PREMIUM - Scale + Glow marqué */
+        .skill-card:hover {
+            transform: translateY(-5px) scale(1.03);
+            filter: drop-shadow(0 12px 40px rgba(0, 255, 255, 0.3));
+        }
+
+        /* ACTIVE STATE - Feedback click */
+        .skill-card:active {
+            transform: scale(0.97);
+            transition: transform 0.1s ease;
+        }
+
+        .skill-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.75rem;
+            transition: transform 0.35s var(--ease-bounce);
+        }
+
+        .skill-icon svg {
+            width: 56px;
+            height: 56px;
+            transition: all 0.35s var(--ease-bounce);
+        }
+
+        /* Hover icon - Glow + Rotation micro */
+        .skill-card:hover .skill-icon svg {
+            filter: brightness(1.25) drop-shadow(0 0 14px currentColor);
+            transform: rotate(3deg) scale(1.05);
+        }
+
+        .skill-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 0.05em;
+            text-align: center;
+            color: #ffffff;
+            -webkit-text-stroke: 1px #000000;
+            paint-order: stroke fill;
+            transition: all 0.35s var(--ease-bounce);
+            position: relative;
+        }
+
+        /* Hover titre - Grossissement + Color shift + underline animée */
+        .skill-card:hover .skill-title {
+            transform: scale(1.05);
+            color: #d4a5c9;
+            text-shadow: 0 0 10px rgba(212, 165, 201, 0.5);
+        }
+
+        /* Underline animée */
+        .skill-title::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #d4a5c9;
+            transition: all 0.35s var(--ease-bounce);
+            transform: translateX(-50%);
+            box-shadow: 0 0 8px #d4a5c9;
+        }
+
+        .skill-card:hover .skill-title::after {
+            width: 80%;
+        }
+
+        /* ========================================
+           OVERLAY MODAL - EXPANSION
+           ======================================== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(6px);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s var(--ease-smooth);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* ========================================
+           MODAL CONTENT - EXPANSION ANIMATION
+           ======================================== */
+        .modal-content {
+            background: rgba(10, 10, 10, 0.98);
+            border: 1px solid rgba(0, 255, 255, 0.25);
+            max-width: 550px;
+            width: 90%;
+            padding: 2rem;
+            position: relative;
+
+            /* Expansion depuis card */
+            transform-origin: var(--origin-x, 50%) var(--origin-y, 50%);
+            transform: scale(0.2);
+            opacity: 0;
+            transition: all 0.5s var(--ease-bounce);
+
+            box-shadow:
+                0 25px 80px rgba(0, 0, 0, 0.6),
+                0 0 40px rgba(0, 255, 255, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        /* Close button */
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 36px;
+            height: 36px;
+            background: transparent;
+            border: 1px solid var(--gray-mid);
+            color: var(--gray-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s var(--ease-bounce);
+        }
+
+        .modal-close:hover {
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+            transform: rotate(90deg);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+
+        .modal-close svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        /* ========================================
+           MODAL HEADER - STAGGER ANIMATION
+           ======================================== */
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-mid);
+
+            /* Stagger in */
+            opacity: 0;
+            animation: modalContentIn 0.4s var(--ease-bounce) forwards;
+            animation-delay: 0.15s;
+        }
+
+        .modal-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gray-mid);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s var(--ease-bounce);
+        }
+
+        .modal-overlay.active .modal-icon {
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+        }
+
+        .modal-icon svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .modal-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.6rem;
+            color: var(--neon-cyan);
+            letter-spacing: 0.08em;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+
+        /* ========================================
+           MODAL DESCRIPTION - STAGGER
+           ======================================== */
+        .modal-desc {
+            color: var(--gray-lighter);
+            font-size: 0.85rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+
+            /* Stagger in */
+            opacity: 0;
+            animation: modalContentIn 0.4s var(--ease-bounce) forwards;
+            animation-delay: 0.2s;
+        }
+
+        /* ========================================
+           MODAL TAGS - STAGGER + HOVER
+           ======================================== */
+        .modal-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+
+            /* Stagger in */
+            opacity: 0;
+            animation: modalContentIn 0.4s var(--ease-bounce) forwards;
+            animation-delay: 0.25s;
+        }
+
+        .modal-tag {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--neon-cyan);
+            border: 1px solid rgba(0, 255, 255, 0.35);
+            background: rgba(0, 255, 255, 0.08);
+            transition: all 0.25s var(--ease-bounce);
+            cursor: default;
+        }
+
+        .modal-tag:hover {
+            border-color: var(--neon-cyan);
+            background: rgba(0, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
+        }
+
+        /* ========================================
+           MODAL SECTIONS - STAGGER
+           ======================================== */
+        .modal-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .modal-section {
+            padding: 0.75rem 1rem;
+            background: rgba(0, 0, 0, 0.4);
+            border-left: 3px solid var(--neon-cyan);
+
+            /* Stagger in - per section */
+            opacity: 0;
+            animation: modalContentIn 0.4s var(--ease-bounce) forwards;
+        }
+
+        .modal-section:nth-child(1) {
+            animation-delay: 0.3s;
+        }
+
+        .modal-section:nth-child(2) {
+            animation-delay: 0.35s;
+        }
+
+        .modal-section-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1rem;
+            color: var(--gray-lighter);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .modal-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .modal-section li {
+            font-size: 0.75rem;
+            color: var(--gray-light);
+            padding: 0.35rem 0;
+            padding-left: 1.25rem;
+            position: relative;
+            transition: color 0.2s ease;
+        }
+
+        .modal-section li:hover {
+            color: var(--white);
+        }
+
+        .modal-section li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 6px;
+            height: 6px;
+            background: var(--neon-cyan);
+            transform: translateY(-50%) rotate(45deg);
+            transition: all 0.2s ease;
+        }
+
+        .modal-section li:hover::before {
+            transform: translateY(-50%) rotate(45deg) scale(1.3);
+            box-shadow: 0 0 8px var(--neon-cyan);
+        }
+
+        /* ========================================
+           NOTES EXPLICATIVES
+           ======================================== */
+        .notes {
+            max-width: 900px;
+            margin: 3rem auto 0;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-left: 3px solid var(--neon-cyan);
+        }
+
+        .notes h3 {
+            color: var(--neon-cyan);
+            font-family: 'Bebas Neue', sans-serif;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            letter-spacing: 0.12em;
+        }
+
+        .notes ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .notes li {
+            font-size: 0.75rem;
+            color: var(--gray-light);
+            line-height: 2;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .notes li::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            color: var(--neon-cyan);
+            font-weight: bold;
+        }
+
+        .notes code {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 0.15em 0.4em;
+            font-size: 0.7rem;
+            color: var(--neon-cyan);
+        }
+
+        /* ========================================
+           RESPONSIVE
+           ======================================== */
+        @media (max-width: 768px) {
+            .skills-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1rem;
+            }
+
+            .skill-icon svg {
+                width: 48px;
+                height: 48px;
+            }
+
+            .skill-title {
+                font-size: 1rem;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .skills-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+
+            .skill-icon svg {
+                width: 40px;
+                height: 40px;
+            }
+
+            .skill-title {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>MES COMPETENCES</h1>
+    <p class="subtitle">Prototype Polish Premium - Stagger + Easing + Hover + Modal Expansion</p>
+
+    <!-- GRILLE SKILLS 4x3 (12 competences) -->
+    <div class="skills-grid">
+        <!-- Windows -->
+        <div class="skill-card" data-skill="windows">
+            <div class="skill-icon">
+                <svg viewBox="0 0 24 24" fill="#0078D4"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>
+            </div>
+            <h3 class="skill-title">WINDOWS</h3>
+        </div>
+
+        <!-- Linux -->
+        <div class="skill-card" data-skill="linux">
+            <div class="skill-icon">
+                <svg viewBox="0 0 24 24" fill="#FCC624"><path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.832-.41 1.684-.287 2.489a.424.424 0 00-.11.135c-.26.268-.45.6-.663.839-.199.199-.485.267-.797.4-.313.136-.658.269-.864.68-.09.189-.136.394-.132.602 0 .199.027.4.055.536.058.399.116.728.04.97-.249.68-.28 1.145-.106 1.484.174.334.535.47.94.601.81.2 1.91.135 2.774.6.926.466 1.866.67 2.616.47.526-.116.97-.464 1.208-.946.587-.003 1.23-.269 2.26-.334.699-.058 1.574.267 2.577.2.025.134.063.198.114.333l.003.003c.391.778 1.113 1.132 1.884 1.071.771-.06 1.592-.536 2.257-1.306.631-.765 1.683-1.084 2.378-1.503.348-.199.629-.469.649-.853.023-.4-.2-.811-.714-1.376v-.097l-.003-.003c-.17-.2-.25-.535-.338-.926-.085-.401-.182-.786-.492-1.046h-.003c-.059-.054-.123-.067-.188-.135a.357.357 0 00-.19-.064c.431-1.278.264-2.55-.173-3.694-.533-1.41-1.465-2.638-2.175-3.483-.796-1.005-1.576-1.957-1.56-3.368.026-2.152.236-6.133-3.544-6.139z"/></svg>
+            </div>
+            <h3 class="skill-title">LINUX</h3>
+        </div>
+
+        <!-- Proxmox -->
+        <div class="skill-card" data-skill="proxmox">
+            <div class="skill-icon">
+                <svg viewBox="0 0 24 24" fill="#E57000"><path d="M4.928 1.825c-1.09.553-1.09.64-.07 1.78 5.655 6.295 7.004 7.782 7.107 7.782.139.017 7.971-8.542 8.058-8.801.034-.07-.208-.312-.519-.536-.415-.312-.864-.433-1.712-.467-1.59-.104-2.144.242-4.115 2.455-.899 1.003-1.66 1.833-1.66 1.833-.017 0-.76-.813-1.642-1.798S8.473 2.1 8.127 1.91c-.796-.45-2.421-.484-3.2-.086zM1.297 4.367C.45 4.695 0 5.007 0 5.248c0 .121 1.331 1.678 2.94 3.459 1.625 1.78 2.939 3.268 2.939 3.302 0 .035-1.331 1.522-2.94 3.303C1.314 17.11.017 18.683.035 18.822c.086.467 1.504 1.055 2.541 1.055 1.678-.018 2.058-.312 5.603-4.202 1.78-1.954 3.233-3.614 3.233-3.666 0-.069-1.435-1.694-3.199-3.63-2.3-2.508-3.423-3.632-3.96-3.874-.812-.398-2.126-.467-2.956-.138zm18.467.12c-.502.26-1.764 1.505-3.943 3.891-1.763 1.937-3.199 3.562-3.199 3.631 0 .07 1.453 1.712 3.234 3.666 3.544 3.89 3.925 4.184 5.602 4.202 1.038 0 2.455-.588 2.542-1.055.017-.156-1.28-1.712-2.905-3.493-1.608-1.78-2.94-3.285-2.94-3.32 0-.034 1.332-1.539 2.94-3.32C22.72 6.91 24.017 5.352 24 5.214c-.087-.45-1.366-.968-2.473-1.038-.795-.034-1.21.035-1.763.312zM7.954 16.973c-2.144 2.369-3.908 4.374-3.943 4.46-.034.07.208.312.52.537.414.311.864.432 1.711.467 1.574.103 2.161-.26 4.15-2.508.864-.968 1.608-1.78 1.625-1.78s.761.812 1.643 1.798c2.023 2.248 2.559 2.576 4.132 2.49.848-.035 1.297-.156 1.712-.467.311-.225.553-.467.519-.536-.087-.26-7.92-8.819-8.058-8.801-.069 0-1.867 1.954-4.011 4.34z"/></svg>
+            </div>
+            <h3 class="skill-title">VIRTUALISATION</h3>
+        </div>
+
+        <!-- Palo Alto -->
+        <div class="skill-card" data-skill="paloalto">
+            <div class="skill-icon">
+                <svg viewBox="0 0 24 24" fill="#F04E23"><path d="m10.278 15.443 1.705 1.705-3.426 3.426-3.427-3.426 8.592-8.591-1.705-1.705 3.426-3.426 3.427 3.426-8.592 8.591zM0 12.017l3.426 3.426 8.591-8.59-3.426-3.427L0 12.017zm11.983 5.13 3.426 3.427L24 11.983l-3.426-3.426-8.591 8.59z"/></svg>
+            </div>
+            <h3 class="skill-title">PALO ALTO</h3>
+        </div>
+
+        <!-- Grafana (Monitoring) -->
+        <div class="skill-card" data-skill="monitoring">
+            <div class="skill-icon">
+                <svg viewBox="0 0 24 24" fill="#F46800"><path d="M23.02 10.59a8.578 8.578 0 0 0-.862-3.034 8.911 8.911 0 0 0-1.789-2.445c.337-1.342-.413-2.505-.413-2.505-1.292-.08-2.113.4-2.416.62-.052-.02-.102-.044-.154-.064-.22-.089-.446-.172-.677-.247-.231-.073-.47-.14-.711-.197a9.867 9.867 0 0 0-.875-.161C14.557.753 12.94 0 12.94 0c-1.804 1.145-2.147 2.744-2.147 2.744l-.018.093c-.098.029-.2.057-.298.088-.138.042-.275.094-.413.143-.138.055-.275.107-.41.166a8.869 8.869 0 0 0-1.557.87l-.063-.029c-2.497-.955-4.716.195-4.716.195-.203 2.658.996 4.33 1.235 4.636a11.608 11.608 0 0 0-.607 2.635C1.636 12.677.953 15.014.953 15.014c1.926 2.214 4.171 2.351 4.171 2.351.003-.002.006-.002.006-.005.285.509.615.994.986 1.446.156.19.32.371.488.548-.704 2.009.099 3.68.099 3.68 2.144.08 3.553-.937 3.849-1.173a9.784 9.784 0 0 0 3.164.501h.08l.055-.003.107-.002.103-.005.003.002c1.01 1.44 2.788 1.646 2.788 1.646 1.264-1.332 1.337-2.653 1.337-2.94v-.058c0-.02-.003-.039-.003-.06.265-.187.52-.387.758-.6a7.875 7.875 0 0 0 1.415-1.7c1.43.083 2.437-.885 2.437-.885-.236-1.49-1.085-2.216-1.264-2.354l-.018-.013-.016-.013a.217.217 0 0 1-.031-.02c.008-.092.016-.18.02-.27.011-.162.016-.323.016-.48v-.253l-.005-.098-.008-.135a1.891 1.891 0 0 0-.01-.13c-.003-.042-.008-.083-.013-.125l-.016-.124-.018-.122a6.215 6.215 0 0 0-2.032-3.73 6.015 6.015 0 0 0-3.222-1.46 6.292 6.292 0 0 0-.85-.048l-.107.002h-.063l-.044.003-.104.008a4.777 4.777 0 0 0-3.335 1.695c-.332.4-.592.84-.768 1.297a4.594 4.594 0 0 0-.312 1.817l.003.091c.005.055.007.11.013.164a3.615 3.615 0 0 0 .698 1.82 3.53 3.53 0 0 0 1.827 1.282c.33.098.66.14.971.137.039 0 .078 0 .114-.002l.063-.003c.02 0 .041-.003.062-.003.034-.002.065-.007.099-.01.007 0 .018-.003.028-.003l.031-.005.06-.008a1.18 1.18 0 0 0 .112-.02c.036-.008.072-.013.109-.024a2.634 2.634 0 0 0 .914-.415c.028-.02.056-.041.085-.065a.248.248 0 0 0 .039-.35.244.244 0 0 0-.309-.06l-.078.042c-.09.044-.184.083-.283.116a2.476 2.476 0 0 1-.475.096c-.028.003-.054.006-.083.006l-.083.002c-.026 0-.054 0-.08-.002l-.102-.006h-.012l-.024.006c-.016-.003-.031-.003-.044-.006-.031-.002-.06-.007-.091-.01a2.59 2.59 0 0 1-.724-.213 2.557 2.557 0 0 1-.667-.438 2.52 2.52 0 0 1-.805-1.475 2.306 2.306 0 0 1-.029-.444l.006-.122v-.023l.002-.031c.003-.021.003-.04.005-.06a3.163 3.163 0 0 1 1.352-2.29 3.12 3.12 0 0 1 .937-.43 2.946 2.946 0 0 1 .776-.101h.06l.07.002.045.003h.026l.07.005a4.041 4.041 0 0 1 1.635.49 3.94 3.94 0 0 1 1.602 1.662 3.77 3.77 0 0 1 .397 1.414l.005.076.003.075c.002.026.002.05.002.075 0 .024.003.052 0 .07v.065l-.002.073-.008.174a6.195 6.195 0 0 1-.08.639 5.1 5.1 0 0 1-.267.927 5.31 5.31 0 0 1-.624 1.13 5.052 5.052 0 0 1-3.237 2.014 4.82 4.82 0 0 1-.649.066l-.039.003h-.287a6.607 6.607 0 0 1-1.716-.265 6.776 6.776 0 0 1-3.4-2.274 6.75 6.75 0 0 1-.746-1.15 6.616 6.616 0 0 1-.714-2.596l-.005-.083-.002-.02v-.056l-.003-.073v-.096l-.003-.104v-.07l.003-.163c.008-.22.026-.45.054-.678a8.707 8.707 0 0 1 .28-1.355c.128-.444.286-.872.473-1.277a7.04 7.04 0 0 1 1.456-2.1 5.925 5.925 0 0 1 .953-.763c.169-.111.343-.213.524-.306.089-.05.182-.091.273-.135.047-.02.093-.042.138-.062a7.177 7.177 0 0 1 .714-.267l.145-.045c.049-.015.098-.026.148-.041.098-.029.197-.052.296-.076.049-.013.1-.02.15-.033l.15-.032.151-.028.076-.013.075-.01.153-.024c.057-.01.114-.013.171-.023l.169-.021c.036-.003.073-.008.106-.01l.073-.008.036-.003.042-.002c.057-.003.114-.008.171-.01l.086-.006h.023l.037-.003.145-.007a7.999 7.999 0 0 1 1.708.125 7.917 7.917 0 0 1 2.048.68 8.253 8.253 0 0 1 1.672 1.09l.09.077.089.078c.06.052.114.107.171.159.057.052.112.106.166.16.052.055.107.107.159.164a8.671 8.671 0 0 1 1.41 1.978c.012.026.028.052.04.078l.04.078.075.156c.023.051.05.1.07.153l.065.15a8.848 8.848 0 0 1 .45 1.34.19.19 0 0 0 .201.142.186.186 0 0 0 .172-.184c.01-.246.002-.532-.024-.856z"/></svg>
+            </div>
+            <h3 class="skill-title">MONITORING</h3>
+        </div>
+
+        <!-- Nvidia (LLM) -->
+        <div class="skill-card" data-skill="llm">
+            <div class="skill-icon">
+                <svg viewBox="0 0 24 24" fill="#76B900"><path d="M8.948 8.798v-1.43a6.7 6.7 0 0 1 .424-.018c3.922-.124 6.493 3.374 6.493 3.374s-2.774 3.851-5.75 3.851c-.398 0-.787-.062-1.158-.185v-4.346c1.528.185 1.837.857 2.747 2.385l2.04-1.714s-1.492-1.952-4-1.952a6.016 6.016 0 0 0-.796.035m0-4.735v2.138l.424-.027c5.45-.185 9.01 4.47 9.01 4.47s-4.08 4.964-8.33 4.964c-.37 0-.733-.035-1.095-.097v1.325c.3.035.61.062.91.062 3.957 0 6.82-2.023 9.593-4.408.459.371 2.34 1.263 2.73 1.652-2.633 2.208-8.772 3.984-12.253 3.984-.335 0-.653-.018-.971-.053v1.864H24V4.063zm0 10.326v1.131c-3.657-.654-4.673-4.46-4.673-4.46s1.758-1.944 4.673-2.262v1.237H8.94c-1.528-.186-2.73 1.245-2.73 1.245s.68 2.412 2.739 3.11M2.456 10.9s2.164-3.197 6.5-3.533V6.201C4.153 6.59 0 10.653 0 10.653s2.35 6.802 8.948 7.42v-1.237c-4.84-.6-6.492-5.936-6.492-5.936z"/></svg>
+            </div>
+            <h3 class="skill-title">LOCAL LLM</h3>
+        </div>
+
+        <!-- Git (Backup) -->
+        <div class="skill-card" data-skill="backup">
+            <div class="skill-icon">
+                <svg viewBox="0 0 24 24" fill="#F05032"><path d="M23.546 10.93L13.067.452c-.604-.603-1.582-.603-2.188 0L8.708 2.627l2.76 2.76c.645-.215 1.379-.07 1.889.441.516.515.658 1.258.438 1.9l2.658 2.66c.645-.223 1.387-.078 1.9.435.721.72.721 1.884 0 2.604-.719.719-1.881.719-2.6 0-.539-.541-.674-1.337-.404-1.996L12.86 8.955v6.525c.176.086.342.203.488.348.713.721.713 1.883 0 2.6-.719.721-1.889.721-2.609 0-.719-.719-.719-1.879 0-2.598.182-.18.387-.316.605-.406V8.835c-.217-.091-.424-.222-.6-.401-.545-.545-.676-1.342-.396-2.009L7.636 3.7.45 10.881c-.6.605-.6 1.584 0 2.189l10.48 10.477c.604.604 1.582.604 2.186 0l10.43-10.43c.605-.603.605-1.582 0-2.187"/></svg>
+            </div>
+            <h3 class="skill-title">BACKUP</h3>
+        </div>
+
+        <!-- Docker (Cloud Local) -->
+        <div class="skill-card" data-skill="cloud">
+            <div class="skill-icon">
+                <svg viewBox="0 0 24 24" fill="#2496ED"><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.184-.186h-2.12a.186.186 0 00-.186.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 00-.75.748 11.376 11.376 0 00.692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 003.823-1.389c.98-.567 1.86-1.288 2.61-2.136 1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009.309-.293.55-.65.707-1.046l.098-.288Z"/></svg>
+            </div>
+            <h3 class="skill-title">CLOUD LOCAL</h3>
+        </div>
+
+        <!-- Web (Astro) -->
+        <div class="skill-card" data-skill="web">
+            <div class="skill-icon">
+                <svg viewBox="0 0 24 24" fill="#FF5D01"><path d="M8.358 20.162c-1.186-1.07-1.532-3.316-1.038-4.944.856 1.026 2.043 1.352 3.272 1.535 1.897.283 3.76.177 5.522-.678.202-.098.388-.229.608-.36.166.473.209.95.151 1.437-.14 1.185-.738 2.1-1.688 2.794-.38.277-.782.525-1.175.787-1.205.804-1.531 1.747-1.078 3.119l.044.148a3.158 3.158 0 0 1-1.407-1.188 3.31 3.31 0 0 1-.544-1.815c-.004-.32-.004-.642-.048-.958-.106-.769-.472-1.113-1.161-1.133-.707-.02-1.267.411-1.415 1.09-.012.053-.028.104-.043.2zm-5.961-4.445s3.24-1.575 6.49-1.575l2.451-7.565c.092-.366.36-.614.662-.614.302 0 .57.248.662.614l2.45 7.565c3.85 0 6.491 1.575 6.491 1.575L16.088.727C15.93.285 15.663 0 15.303 0H8.697c-.36 0-.615.285-.784.727l-5.516 14.99z"/></svg>
+            </div>
+            <h3 class="skill-title">WEB</h3>
+        </div>
+
+        <!-- Agent IA (MCP) -->
+        <div class="skill-card" data-skill="agentia">
+            <div class="skill-icon">
+                <svg viewBox="0 0 24 24" fill="#ffffff"><path d="M15.688 2.343a2.588 2.588 0 00-3.61 0l-9.626 9.44a.863.863 0 01-1.203 0 .823.823 0 010-1.18l9.626-9.44a4.313 4.313 0 016.016 0 4.116 4.116 0 011.204 3.54 4.3 4.3 0 013.609 1.18l.05.05a4.115 4.115 0 010 5.9l-8.706 8.537a.274.274 0 000 .393l1.788 1.754a.823.823 0 010 1.18.863.863 0 01-1.203 0l-1.788-1.753a1.92 1.92 0 010-2.754l8.706-8.538a2.47 2.47 0 000-3.54l-.05-.049a2.588 2.588 0 00-3.607-.003l-7.172 7.034-.002.002-.098.097a.863.863 0 01-1.204 0 .823.823 0 010-1.18l7.273-7.133a2.47 2.47 0 00-.003-3.537z"/><path d="M14.485 4.703a.823.823 0 000-1.18.863.863 0 00-1.204 0l-7.119 6.982a4.115 4.115 0 000 5.9 4.314 4.314 0 006.016 0l7.12-6.982a.823.823 0 000-1.18.863.863 0 00-1.204 0l-7.119 6.982a2.588 2.588 0 01-3.61 0 2.47 2.47 0 010-3.54l7.12-6.982z"/></svg>
+            </div>
+            <h3 class="skill-title">AGENT IA</h3>
+        </div>
+
+        <!-- Vibe Coding (Claude) -->
+        <div class="skill-card" data-skill="vibecoding">
+            <div class="skill-icon">
+                <svg viewBox="0 0 16 16" fill="#D4A574"><path d="m3.127 10.604 3.135-1.76.053-.153-.053-.085H6.11l-.525-.032-1.791-.048-1.554-.065-1.505-.08-.38-.081L0 7.832l.036-.234.32-.214.455.04 1.009.069 1.513.105 1.097.064 1.626.17h.259l.036-.105-.089-.065-.068-.064-1.566-1.062-1.695-1.121-.887-.646-.48-.327-.243-.306-.104-.67.435-.48.585.04.15.04.593.456 1.267.981 1.654 1.218.242.202.097-.068.012-.049-.109-.181-.9-1.626-.96-1.655-.428-.686-.113-.411a2 2 0 0 1-.068-.484l.496-.674L4.446 0l.662.089.279.242.411.94.666 1.48 1.033 2.014.302.597.162.553.06.17h.105v-.097l.085-1.134.157-1.392.154-1.792.052-.504.25-.605.497-.327.387.186.319.456-.045.294-.19 1.23-.37 1.93-.243 1.29h.142l.161-.16.654-.868 1.097-1.372.484-.545.565-.601.363-.287h.686l.505.751-.226.775-.707.895-.585.759-.839 1.13-.524.904.048.072.125-.012 1.897-.403 1.024-.186 1.223-.21.553.258.06.263-.218.536-1.307.323-1.533.307-2.284.54-.028.02.032.04 1.029.098.44.024h1.077l2.005.15.525.346.315.424-.053.323-.807.411-3.631-.863-.872-.218h-.12v.073l.726.71 1.331 1.202 1.667 1.55.084.383-.214.302-.226-.032-1.464-1.101-.565-.497-1.28-1.077h-.084v.113l.295.432 1.557 2.34.08.718-.112.234-.404.141-.444-.08-.911-1.28-.94-1.44-.759-1.291-.093.053-.448 4.821-.21.246-.484.186-.403-.307-.214-.496.214-.98.258-1.28.21-1.016.19-1.263.112-.42-.008-.028-.092.012-.953 1.307-1.448 1.957-1.146 1.227-.274.109-.477-.247.045-.44.266-.39 1.586-2.018.956-1.25.617-.723-.004-.105h-.036l-4.212 2.736-.75.096-.324-.302.04-.496.154-.162 1.267-.871z"/></svg>
+            </div>
+            <h3 class="skill-title">VIBE CODING</h3>
+        </div>
+
+        <!-- Versionning (GitHub) -->
+        <div class="skill-card" data-skill="versionning">
+            <div class="skill-icon">
+                <svg viewBox="0 0 24 24" fill="#f0f0f0"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+            </div>
+            <h3 class="skill-title">VERSIONNING</h3>
+        </div>
+    </div>
+
+    <!-- MODAL OVERLAY (unique, contenu dynamique) -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close">
+                <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+
+            <!-- Header -->
+            <div class="modal-header">
+                <div class="modal-icon"></div>
+                <h2 class="modal-title"></h2>
+            </div>
+
+            <!-- Description -->
+            <p class="modal-desc"></p>
+
+            <!-- Tags -->
+            <div class="modal-tags"></div>
+
+            <!-- Sections -->
+            <div class="modal-sections"></div>
+        </div>
+    </div>
+
+    <!-- NOTES -->
+    <div class="notes">
+        <h3>POLISH PREMIUM - EFFETS IMPLEMENTES</h3>
+        <ul>
+            <li><strong>Stagger Load</strong> : Cards apparaissent en cascade (<code>0.06s × index</code>)</li>
+            <li><strong>Easing Bounce</strong> : <code>cubic-bezier(0.16, 1, 0.3, 1)</code> partout</li>
+            <li><strong>Hover Premium</strong> : Scale 1.03 + Glow 30% + Rotation icone 3deg</li>
+            <li><strong>Active State</strong> : Feedback click (<code>scale(0.97)</code>)</li>
+            <li><strong>Underline Animee</strong> : Ligne cyan apparait sous le titre au hover</li>
+            <li><strong>Modal Expansion</strong> : Scale depuis la position de la card cliquee</li>
+            <li><strong>Stagger Contenu</strong> : Header → Desc → Tags → Sections en cascade</li>
+            <li><strong>Micro-interactions</strong> : Close button rotation + tags hover lift</li>
+        </ul>
+    </div>
+
+    <script>
+        // ========================================
+        // DONNEES SKILLS
+        // ========================================
+        const skillsData = {
+            windows: {
+                title: 'Microsoft Windows',
+                icon: '<svg viewBox="0 0 24 24" fill="#0078D4"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>',
+                desc: 'Administration systemes Windows Server, Active Directory, GPO et services reseaux Microsoft.',
+                tags: ['AD DS', 'GPO', 'DNS', 'DHCP'],
+                sections: [
+                    { title: 'Services', items: ['Active Directory Domain Services', 'Group Policy Management', 'Windows Server Update Services'] },
+                    { title: 'Outils', items: ['PowerShell', 'Server Manager', 'Event Viewer'] }
+                ]
+            },
+            linux: {
+                title: 'Linux',
+                icon: '<svg viewBox="0 0 24 24" fill="#FCC624"><path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.832-.41 1.684-.287 2.489a.424.424 0 00-.11.135c-.26.268-.45.6-.663.839-.199.199-.485.267-.797.4-.313.136-.658.269-.864.68-.09.189-.136.394-.132.602 0 .199.027.4.055.536.058.399.116.728.04.97-.249.68-.28 1.145-.106 1.484.174.334.535.47.94.601.81.2 1.91.135 2.774.6.926.466 1.866.67 2.616.47.526-.116.97-.464 1.208-.946.587-.003 1.23-.269 2.26-.334.699-.058 1.574.267 2.577.2.025.134.063.198.114.333l.003.003c.391.778 1.113 1.132 1.884 1.071.771-.06 1.592-.536 2.257-1.306.631-.765 1.683-1.084 2.378-1.503.348-.199.629-.469.649-.853.023-.4-.2-.811-.714-1.376v-.097l-.003-.003c-.17-.2-.25-.535-.338-.926-.085-.401-.182-.786-.492-1.046h-.003c-.059-.054-.123-.067-.188-.135a.357.357 0 00-.19-.064c.431-1.278.264-2.55-.173-3.694-.533-1.41-1.465-2.638-2.175-3.483-.796-1.005-1.576-1.957-1.56-3.368.026-2.152.236-6.133-3.544-6.139z"/></svg>',
+                desc: 'Administration serveurs Debian/Ubuntu, gestion services, scripting Bash et automatisation.',
+                tags: ['Debian', 'Ubuntu', 'Bash', 'systemd'],
+                sections: [
+                    { title: 'Distributions', items: ['Debian 12', 'Ubuntu Server 24.04', 'Rocky Linux'] },
+                    { title: 'Services', items: ['Nginx', 'Apache', 'MariaDB'] }
+                ]
+            },
+            proxmox: {
+                title: 'Virtualisation',
+                icon: '<svg viewBox="0 0 24 24" fill="#E57000"><path d="M4.928 1.825c-1.09.553-1.09.64-.07 1.78 5.655 6.295 7.004 7.782 7.107 7.782.139.017 7.971-8.542 8.058-8.801.034-.07-.208-.312-.519-.536-.415-.312-.864-.433-1.712-.467-1.59-.104-2.144.242-4.115 2.455-.899 1.003-1.66 1.833-1.66 1.833-.017 0-.76-.813-1.642-1.798S8.473 2.1 8.127 1.91c-.796-.45-2.421-.484-3.2-.086zM1.297 4.367C.45 4.695 0 5.007 0 5.248c0 .121 1.331 1.678 2.94 3.459 1.625 1.78 2.939 3.268 2.939 3.302 0 .035-1.331 1.522-2.94 3.303C1.314 17.11.017 18.683.035 18.822c.086.467 1.504 1.055 2.541 1.055 1.678-.018 2.058-.312 5.603-4.202 1.78-1.954 3.233-3.614 3.233-3.666 0-.069-1.435-1.694-3.199-3.63-2.3-2.508-3.423-3.632-3.96-3.874-.812-.398-2.126-.467-2.956-.138zm18.467.12c-.502.26-1.764 1.505-3.943 3.891-1.763 1.937-3.199 3.562-3.199 3.631 0 .07 1.453 1.712 3.234 3.666 3.544 3.89 3.925 4.184 5.602 4.202 1.038 0 2.455-.588 2.542-1.055.017-.156-1.28-1.712-2.905-3.493-1.608-1.78-2.94-3.285-2.94-3.32 0-.034 1.332-1.539 2.94-3.32C22.72 6.91 24.017 5.352 24 5.214c-.087-.45-1.366-.968-2.473-1.038-.795-.034-1.21.035-1.763.312zM7.954 16.973c-2.144 2.369-3.908 4.374-3.943 4.46-.034.07.208.312.52.537.414.311.864.432 1.711.467 1.574.103 2.161-.26 4.15-2.508.864-.968 1.608-1.78 1.625-1.78s.761.812 1.643 1.798c2.023 2.248 2.559 2.576 4.132 2.49.848-.035 1.297-.156 1.712-.467.311-.225.553-.467.519-.536-.087-.26-7.92-8.819-8.058-8.801-.069 0-1.867 1.954-4.011 4.34z"/></svg>',
+                desc: 'Hyperviseur Proxmox VE, gestion clusters, haute disponibilite et migration live.',
+                tags: ['Proxmox VE', 'KVM', 'LXC', 'Ceph'],
+                sections: [
+                    { title: 'Infrastructure', items: ['Cluster 3 noeuds', '15+ VMs production', 'Stockage Ceph'] },
+                    { title: 'Features', items: ['Live Migration', 'HA automatique', 'Snapshots ZFS'] }
+                ]
+            },
+            paloalto: {
+                title: 'Palo Alto',
+                icon: '<svg viewBox="0 0 24 24" fill="#F04E23"><path d="m10.278 15.443 1.705 1.705-3.426 3.426-3.427-3.426 8.592-8.591-1.705-1.705 3.426-3.426 3.427 3.426-8.592 8.591zM0 12.017l3.426 3.426 8.591-8.59-3.426-3.427L0 12.017zm11.983 5.13 3.426 3.427L24 11.983l-3.426-3.426-8.591 8.59z"/></svg>',
+                desc: 'Firewall Next-Gen, politiques de securite, VPN et analyse des menaces.',
+                tags: ['NGFW', 'GlobalProtect', 'Threat Prevention', 'URL Filtering'],
+                sections: [
+                    { title: 'Securite', items: ['Politiques App-ID', 'Threat Prevention', 'WildFire'] },
+                    { title: 'VPN', items: ['GlobalProtect', 'Site-to-Site IPSec'] }
+                ]
+            },
+            monitoring: {
+                title: 'Monitoring',
+                icon: '<svg viewBox="0 0 24 24" fill="#F46800"><path d="M23.02 10.59a8.578 8.578 0 0 0-.862-3.034 8.911 8.911 0 0 0-1.789-2.445c.337-1.342-.413-2.505-.413-2.505-1.292-.08-2.113.4-2.416.62-.052-.02-.102-.044-.154-.064-.22-.089-.446-.172-.677-.247-.231-.073-.47-.14-.711-.197a9.867 9.867 0 0 0-.875-.161C14.557.753 12.94 0 12.94 0c-1.804 1.145-2.147 2.744-2.147 2.744l-.018.093c-.098.029-.2.057-.298.088-.138.042-.275.094-.413.143-.138.055-.275.107-.41.166a8.869 8.869 0 0 0-1.557.87l-.063-.029c-2.497-.955-4.716.195-4.716.195-.203 2.658.996 4.33 1.235 4.636a11.608 11.608 0 0 0-.607 2.635C1.636 12.677.953 15.014.953 15.014c1.926 2.214 4.171 2.351 4.171 2.351.003-.002.006-.002.006-.005.285.509.615.994.986 1.446.156.19.32.371.488.548-.704 2.009.099 3.68.099 3.68 2.144.08 3.553-.937 3.849-1.173a9.784 9.784 0 0 0 3.164.501h.08l.055-.003.107-.002.103-.005.003.002c1.01 1.44 2.788 1.646 2.788 1.646 1.264-1.332 1.337-2.653 1.337-2.94v-.058c0-.02-.003-.039-.003-.06.265-.187.52-.387.758-.6a7.875 7.875 0 0 0 1.415-1.7c1.43.083 2.437-.885 2.437-.885-.236-1.49-1.085-2.216-1.264-2.354l-.018-.013-.016-.013a.217.217 0 0 1-.031-.02c.008-.092.016-.18.02-.27.011-.162.016-.323.016-.48v-.253l-.005-.098-.008-.135a1.891 1.891 0 0 0-.01-.13c-.003-.042-.008-.083-.013-.125l-.016-.124-.018-.122a6.215 6.215 0 0 0-2.032-3.73 6.015 6.015 0 0 0-3.222-1.46 6.292 6.292 0 0 0-.85-.048l-.107.002h-.063l-.044.003-.104.008a4.777 4.777 0 0 0-3.335 1.695c-.332.4-.592.84-.768 1.297a4.594 4.594 0 0 0-.312 1.817l.003.091c.005.055.007.11.013.164a3.615 3.615 0 0 0 .698 1.82 3.53 3.53 0 0 0 1.827 1.282c.33.098.66.14.971.137.039 0 .078 0 .114-.002l.063-.003c.02 0 .041-.003.062-.003.034-.002.065-.007.099-.01.007 0 .018-.003.028-.003l.031-.005.06-.008a1.18 1.18 0 0 0 .112-.02c.036-.008.072-.013.109-.024a2.634 2.634 0 0 0 .914-.415c.028-.02.056-.041.085-.065a.248.248 0 0 0 .039-.35.244.244 0 0 0-.309-.06l-.078.042c-.09.044-.184.083-.283.116a2.476 2.476 0 0 1-.475.096c-.028.003-.054.006-.083.006l-.083.002c-.026 0-.054 0-.08-.002l-.102-.006h-.012l-.024.006c-.016-.003-.031-.003-.044-.006-.031-.002-.06-.007-.091-.01a2.59 2.59 0 0 1-.724-.213 2.557 2.557 0 0 1-.667-.438 2.52 2.52 0 0 1-.805-1.475 2.306 2.306 0 0 1-.029-.444l.006-.122v-.023l.002-.031c.003-.021.003-.04.005-.06a3.163 3.163 0 0 1 1.352-2.29 3.12 3.12 0 0 1 .937-.43 2.946 2.946 0 0 1 .776-.101h.06l.07.002.045.003h.026l.07.005a4.041 4.041 0 0 1 1.635.49 3.94 3.94 0 0 1 1.602 1.662 3.77 3.77 0 0 1 .397 1.414l.005.076.003.075c.002.026.002.05.002.075 0 .024.003.052 0 .07v.065l-.002.073-.008.174a6.195 6.195 0 0 1-.08.639 5.1 5.1 0 0 1-.267.927 5.31 5.31 0 0 1-.624 1.13 5.052 5.052 0 0 1-3.237 2.014 4.82 4.82 0 0 1-.649.066l-.039.003h-.287a6.607 6.607 0 0 1-1.716-.265 6.776 6.776 0 0 1-3.4-2.274 6.75 6.75 0 0 1-.746-1.15 6.616 6.616 0 0 1-.714-2.596l-.005-.083-.002-.02v-.056l-.003-.073v-.096l-.003-.104v-.07l.003-.163c.008-.22.026-.45.054-.678a8.707 8.707 0 0 1 .28-1.355c.128-.444.286-.872.473-1.277a7.04 7.04 0 0 1 1.456-2.1 5.925 5.925 0 0 1 .953-.763c.169-.111.343-.213.524-.306.089-.05.182-.091.273-.135.047-.02.093-.042.138-.062a7.177 7.177 0 0 1 .714-.267l.145-.045c.049-.015.098-.026.148-.041.098-.029.197-.052.296-.076.049-.013.1-.02.15-.033l.15-.032.151-.028.076-.013.075-.01.153-.024c.057-.01.114-.013.171-.023l.169-.021c.036-.003.073-.008.106-.01l.073-.008.036-.003.042-.002c.057-.003.114-.008.171-.01l.086-.006h.023l.037-.003.145-.007a7.999 7.999 0 0 1 1.708.125 7.917 7.917 0 0 1 2.048.68 8.253 8.253 0 0 1 1.672 1.09l.09.077.089.078c.06.052.114.107.171.159.057.052.112.106.166.16.052.055.107.107.159.164a8.671 8.671 0 0 1 1.41 1.978c.012.026.028.052.04.078l.04.078.075.156c.023.051.05.1.07.153l.065.15a8.848 8.848 0 0 1 .45 1.34.19.19 0 0 0 .201.142.186.186 0 0 0 .172-.184c.01-.246.002-.532-.024-.856z"/></svg>',
+                desc: 'Stack observabilite complete avec Grafana, Prometheus et alerting avance.',
+                tags: ['Grafana', 'Prometheus', 'Loki', 'Alertmanager'],
+                sections: [
+                    { title: 'Metriques', items: ['Node Exporter', 'cAdvisor', 'Custom exporters'] },
+                    { title: 'Visualisation', items: ['Dashboards temps reel', 'Alertes Slack/Email'] }
+                ]
+            },
+            llm: {
+                title: 'Local LLM',
+                icon: '<svg viewBox="0 0 24 24" fill="#76B900"><path d="M8.948 8.798v-1.43a6.7 6.7 0 0 1 .424-.018c3.922-.124 6.493 3.374 6.493 3.374s-2.774 3.851-5.75 3.851c-.398 0-.787-.062-1.158-.185v-4.346c1.528.185 1.837.857 2.747 2.385l2.04-1.714s-1.492-1.952-4-1.952a6.016 6.016 0 0 0-.796.035m0-4.735v2.138l.424-.027c5.45-.185 9.01 4.47 9.01 4.47s-4.08 4.964-8.33 4.964c-.37 0-.733-.035-1.095-.097v1.325c.3.035.61.062.91.062 3.957 0 6.82-2.023 9.593-4.408.459.371 2.34 1.263 2.73 1.652-2.633 2.208-8.772 3.984-12.253 3.984-.335 0-.653-.018-.971-.053v1.864H24V4.063zm0 10.326v1.131c-3.657-.654-4.673-4.46-4.673-4.46s1.758-1.944 4.673-2.262v1.237H8.94c-1.528-.186-2.73 1.245-2.73 1.245s.68 2.412 2.739 3.11M2.456 10.9s2.164-3.197 6.5-3.533V6.201C4.153 6.59 0 10.653 0 10.653s2.35 6.802 8.948 7.42v-1.237c-4.84-.6-6.492-5.936-6.492-5.936z"/></svg>',
+                desc: 'Deploiement LLM locaux avec Ollama, GPU passthrough et inference optimisee.',
+                tags: ['Ollama', 'Llama 3', 'Mistral', 'GPU Passthrough'],
+                sections: [
+                    { title: 'Modeles', items: ['Llama 3.1 70B', 'Mistral 7B', 'CodeLlama'] },
+                    { title: 'Infrastructure', items: ['RTX 4090 24GB', 'VRAM pooling', 'API REST'] }
+                ]
+            },
+            backup: {
+                title: 'Backup',
+                icon: '<svg viewBox="0 0 24 24" fill="#F05032"><path d="M23.546 10.93L13.067.452c-.604-.603-1.582-.603-2.188 0L8.708 2.627l2.76 2.76c.645-.215 1.379-.07 1.889.441.516.515.658 1.258.438 1.9l2.658 2.66c.645-.223 1.387-.078 1.9.435.721.72.721 1.884 0 2.604-.719.719-1.881.719-2.6 0-.539-.541-.674-1.337-.404-1.996L12.86 8.955v6.525c.176.086.342.203.488.348.713.721.713 1.883 0 2.6-.719.721-1.889.721-2.609 0-.719-.719-.719-1.879 0-2.598.182-.18.387-.316.605-.406V8.835c-.217-.091-.424-.222-.6-.401-.545-.545-.676-1.342-.396-2.009L7.636 3.7.45 10.881c-.6.605-.6 1.584 0 2.189l10.48 10.477c.604.604 1.582.604 2.186 0l10.43-10.43c.605-.603.605-1.582 0-2.187"/></svg>',
+                desc: 'Strategie backup 3-2-1, Proxmox Backup Server et replication off-site.',
+                tags: ['PBS', 'Restic', 'BorgBackup', 'S3'],
+                sections: [
+                    { title: 'Solutions', items: ['Proxmox Backup Server', 'Restic + S3', 'Snapshots ZFS'] },
+                    { title: 'Politique', items: ['Retention 30j local', 'Replication quotidienne'] }
+                ]
+            },
+            cloud: {
+                title: 'Cloud Local',
+                icon: '<svg viewBox="0 0 24 24" fill="#2496ED"><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.184-.186h-2.12a.186.186 0 00-.186.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 00-.75.748 11.376 11.376 0 00.692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 003.823-1.389c.98-.567 1.86-1.288 2.61-2.136 1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009.309-.293.55-.65.707-1.046l.098-.288Z"/></svg>',
+                desc: 'Infrastructure containerisee avec Docker, orchestration et registre prive.',
+                tags: ['Docker', 'Compose', 'Traefik', 'Portainer'],
+                sections: [
+                    { title: 'Services', items: ['50+ containers', 'Traefik reverse proxy', 'Registry prive'] },
+                    { title: 'Orchestration', items: ['Docker Compose', 'Portainer CE', 'Watchtower updates'] }
+                ]
+            },
+            web: {
+                title: 'Developpement Web',
+                icon: '<svg viewBox="0 0 24 24" fill="#FF5D01"><path d="M8.358 20.162c-1.186-1.07-1.532-3.316-1.038-4.944.856 1.026 2.043 1.352 3.272 1.535 1.897.283 3.76.177 5.522-.678.202-.098.388-.229.608-.36.166.473.209.95.151 1.437-.14 1.185-.738 2.1-1.688 2.794-.38.277-.782.525-1.175.787-1.205.804-1.531 1.747-1.078 3.119l.044.148a3.158 3.158 0 0 1-1.407-1.188 3.31 3.31 0 0 1-.544-1.815c-.004-.32-.004-.642-.048-.958-.106-.769-.472-1.113-1.161-1.133-.707-.02-1.267.411-1.415 1.09-.012.053-.028.104-.043.2zm-5.961-4.445s3.24-1.575 6.49-1.575l2.451-7.565c.092-.366.36-.614.662-.614.302 0 .57.248.662.614l2.45 7.565c3.85 0 6.491 1.575 6.491 1.575L16.088.727C15.93.285 15.663 0 15.303 0H8.697c-.36 0-.615.285-.784.727l-5.516 14.99z"/></svg>',
+                desc: 'Portfolio from scratch avec Astro, experience e-commerce et gateway Traefik.',
+                tags: ['Astro', 'TypeScript', 'CSS3', 'Traefik'],
+                sections: [
+                    { title: 'Frontend', items: ['Astro 5 SSG', 'TypeScript strict', 'CSS3 natif'] },
+                    { title: 'Backend', items: ['API REST Node.js', 'Traefik reverse proxy', 'SSL automatique'] }
+                ]
+            },
+            agentia: {
+                title: 'Agent IA',
+                icon: '<svg viewBox="0 0 24 24" fill="#ffffff"><path d="M15.688 2.343a2.588 2.588 0 00-3.61 0l-9.626 9.44a.863.863 0 01-1.203 0 .823.823 0 010-1.18l9.626-9.44a4.313 4.313 0 016.016 0 4.116 4.116 0 011.204 3.54 4.3 4.3 0 013.609 1.18l.05.05a4.115 4.115 0 010 5.9l-8.706 8.537a.274.274 0 000 .393l1.788 1.754a.823.823 0 010 1.18.863.863 0 01-1.203 0l-1.788-1.753a1.92 1.92 0 010-2.754l8.706-8.538a2.47 2.47 0 000-3.54l-.05-.049a2.588 2.588 0 00-3.607-.003l-7.172 7.034-.002.002-.098.097a.863.863 0 01-1.204 0 .823.823 0 010-1.18l7.273-7.133a2.47 2.47 0 00-.003-3.537z"/><path d="M14.485 4.703a.823.823 0 000-1.18.863.863 0 00-1.204 0l-7.119 6.982a4.115 4.115 0 000 5.9 4.314 4.314 0 006.016 0l7.12-6.982a.823.823 0 000-1.18.863.863 0 00-1.204 0l-7.119 6.982a2.588 2.588 0 01-3.61 0 2.47 2.47 0 010-3.54l7.12-6.982z"/></svg>',
+                desc: 'Integration Claude control plane, orchestration MCP multi-serveur et profils de contexte.',
+                tags: ['Claude API', 'MCP Server', 'Control Plane', 'RAG'],
+                sections: [
+                    { title: 'Architecture', items: ['Claude control plane', 'Multi-serveur MCP', 'Profils contexte fins'] },
+                    { title: 'Workflow', items: ['Agents autonomes', 'Tool orchestration', 'Memory management'] }
+                ]
+            },
+            vibecoding: {
+                title: 'Vibe Coding',
+                icon: '<svg viewBox="0 0 16 16" fill="#D4A574"><path d="m3.127 10.604 3.135-1.76.053-.153-.053-.085H6.11l-.525-.032-1.791-.048-1.554-.065-1.505-.08-.38-.081L0 7.832l.036-.234.32-.214.455.04 1.009.069 1.513.105 1.097.064 1.626.17h.259l.036-.105-.089-.065-.068-.064-1.566-1.062-1.695-1.121-.887-.646-.48-.327-.243-.306-.104-.67.435-.48.585.04.15.04.593.456 1.267.981 1.654 1.218.242.202.097-.068.012-.049-.109-.181-.9-1.626-.96-1.655-.428-.686-.113-.411a2 2 0 0 1-.068-.484l.496-.674L4.446 0l.662.089.279.242.411.94.666 1.48 1.033 2.014.302.597.162.553.06.17h.105v-.097l.085-1.134.157-1.392.154-1.792.052-.504.25-.605.497-.327.387.186.319.456-.045.294-.19 1.23-.37 1.93-.243 1.29h.142l.161-.16.654-.868 1.097-1.372.484-.545.565-.601.363-.287h.686l.505.751-.226.775-.707.895-.585.759-.839 1.13-.524.904.048.072.125-.012 1.897-.403 1.024-.186 1.223-.21.553.258.06.263-.218.536-1.307.323-1.533.307-2.284.54-.028.02.032.04 1.029.098.44.024h1.077l2.005.15.525.346.315.424-.053.323-.807.411-3.631-.863-.872-.218h-.12v.073l.726.71 1.331 1.202 1.667 1.55.084.383-.214.302-.226-.032-1.464-1.101-.565-.497-1.28-1.077h-.084v.113l.295.432 1.557 2.34.08.718-.112.234-.404.141-.444-.08-.911-1.28-.94-1.44-.759-1.291-.093.053-.448 4.821-.21.246-.484.186-.403-.307-.214-.496.214-.98.258-1.28.21-1.016.19-1.263.112-.42-.008-.028-.092.012-.953 1.307-1.448 1.957-1.146 1.227-.274.109-.477-.247.045-.44.266-.39 1.586-2.018.956-1.25.617-.723-.004-.105h-.036l-4.212 2.736-.75.096-.324-.302.04-.496.154-.162 1.267-.871z"/></svg>',
+                desc: 'VSCode avec integration Claude Code, profils de contexte personnalises et workflow optimise.',
+                tags: ['Claude Code', 'VSCode', 'CLAUDE.md', 'MCP'],
+                sections: [
+                    { title: 'Setup', items: ['VSCode + Claude Code extension', 'Profils CLAUDE.md par projet', 'MCP servers personnalises'] },
+                    { title: 'Workflow', items: ['Plan mode systematique', 'Code review automatise', 'Documentation generee'] }
+                ]
+            },
+            versionning: {
+                title: 'Versionning',
+                icon: '<svg viewBox="0 0 24 24" fill="#f0f0f0"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>',
+                desc: 'Git integre a tous les niveaux du workflow, branches structurees et CI/CD.',
+                tags: ['Git', 'GitHub', 'Branches', 'CI/CD'],
+                sections: [
+                    { title: 'Workflow', items: ['Branching model (dev/staging/prod)', 'Commits conventionnels', 'Pull requests systematiques'] },
+                    { title: 'Automation', items: ['GitHub Actions', 'Pre-commit hooks', 'Auto-deploy staging'] }
+                ]
+            }
+        };
+
+        // ========================================
+        // STAGGER ANIMATION AU CHARGEMENT
+        // ========================================
+        document.querySelectorAll('.skill-card').forEach((card, index) => {
+            card.style.setProperty('--card-index', index);
+        });
+
+        // ========================================
+        // GESTION MODAL EXPANSION
+        // ========================================
+        const overlay = document.getElementById('modal-overlay');
+        const modalContent = overlay.querySelector('.modal-content');
+
+        function openModal(skill, cardRect) {
+            const data = skillsData[skill];
+            if (!data) return;
+
+            // Calculer transform-origin depuis la card
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            const centerX = cardRect.left + cardRect.width / 2;
+            const centerY = cardRect.top + cardRect.height / 2;
+
+            // Convertir en pourcentage du viewport pour transform-origin
+            const originX = (centerX / viewportWidth) * 100;
+            const originY = (centerY / viewportHeight) * 100;
+
+            modalContent.style.setProperty('--origin-x', `${originX}%`);
+            modalContent.style.setProperty('--origin-y', `${originY}%`);
+
+            // Remplir contenu
+            overlay.querySelector('.modal-icon').innerHTML = data.icon;
+            overlay.querySelector('.modal-title').textContent = data.title;
+            overlay.querySelector('.modal-desc').textContent = data.desc;
+
+            // Tags
+            overlay.querySelector('.modal-tags').innerHTML = data.tags.map(tag =>
+                `<span class="modal-tag">${tag}</span>`
+            ).join('');
+
+            // Sections
+            overlay.querySelector('.modal-sections').innerHTML = data.sections.map(section => `
+                <div class="modal-section">
+                    <h4 class="modal-section-title">${section.title}</h4>
+                    <ul>
+                        ${section.items.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                </div>
+            `).join('');
+
+            // Reset animations pour stagger
+            overlay.querySelectorAll('.modal-header, .modal-desc, .modal-tags, .modal-section').forEach(el => {
+                el.style.animation = 'none';
+                el.offsetHeight; // Force reflow
+                el.style.animation = '';
+            });
+
+            // Activer
+            requestAnimationFrame(() => {
+                overlay.classList.add('active');
+            });
+        }
+
+        function closeModal() {
+            overlay.classList.remove('active');
+        }
+
+        // Click sur card
+        document.querySelectorAll('.skill-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const skill = card.dataset.skill;
+                const rect = card.getBoundingClientRect();
+                openModal(skill, rect);
+            });
+        });
+
+        // Fermeture
+        overlay.querySelector('.modal-close').addEventListener('click', closeModal);
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) closeModal();
+        });
+
+        // Echap
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+    </script>
+</body>
+</html>

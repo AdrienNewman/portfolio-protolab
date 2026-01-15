@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototype V2 - Néon SVG "Site en construction..."</title>
+
+    <!-- Google Font: Tilt Neon (style tube arrondi) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --neon-color: #ff0080;
+            --neon-white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #0a0a0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .background {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.95) 100%);
+        }
+
+        .demo-container {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* ==========================================
+           NEON SIGN SVG - BASÉ SUR TILT NEON FONT
+           ========================================== */
+
+        .neon-sign-wrapper {
+            animation: neon-float 6s ease-in-out infinite;
+            transform: rotate(-3deg);
+            filter: drop-shadow(0 0 40px rgba(255, 0, 128, 0.4));
+        }
+
+        .neon-svg {
+            width: clamp(280px, 45vw, 450px);
+            height: auto;
+            overflow: visible;
+        }
+
+        /* Couche 1 - Super Glow (halo diffus) */
+        .super-glow {
+            fill: none;
+            stroke: var(--neon-color);
+            stroke-width: 12;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            filter: url(#super-glow-filter);
+            opacity: 0.5;
+        }
+
+        /* Couche 2 - Glow coloré */
+        .glow {
+            fill: none;
+            stroke: var(--neon-color);
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            filter: url(#glow-filter);
+        }
+
+        /* Couche 3 - Tube blanc central */
+        .tube {
+            fill: none;
+            stroke: var(--neon-white);
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Animations flicker */
+        .flicker-a { animation: flicker-a 4s ease-in-out infinite; }
+        .flicker-b { animation: flicker-b 3s ease-in-out infinite 0.5s; }
+        .flicker-c { animation: flicker-c 5s ease-in-out infinite 1s; }
+
+        @keyframes flicker-a {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+            20%, 24%, 55% { opacity: 0.4; }
+        }
+
+        @keyframes flicker-b {
+            0%, 30%, 32%, 70%, 72%, 100% { opacity: 1; }
+            31%, 71% { opacity: 0.3; }
+        }
+
+        @keyframes flicker-c {
+            0%, 45%, 47%, 85%, 87%, 100% { opacity: 1; }
+            46%, 86% { opacity: 0.35; }
+        }
+
+        @keyframes neon-float {
+            0%, 100% { transform: translateY(0) rotate(-3deg); }
+            50% { transform: translateY(-12px) rotate(-1deg); }
+        }
+
+        /* Contrôles */
+        .controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .controls button {
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            font-size: 11px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .controls button:hover {
+            background: #00ffff;
+            color: #000;
+        }
+
+        .controls button.active {
+            background: #ff0080;
+            border-color: #ff0080;
+            color: #fff;
+        }
+
+        .info {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #555;
+            font-family: monospace;
+            font-size: 11px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .neon-sign-wrapper,
+            .flicker-a, .flicker-b, .flicker-c {
+                animation: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+
+    <div class="demo-container">
+        <div class="neon-sign-wrapper">
+            <svg class="neon-svg" viewBox="0 0 340 55" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <!-- Filtre glow -->
+                    <filter id="glow-filter" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur1"/>
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur2"/>
+                        <feMerge>
+                            <feMergeNode in="blur2"/>
+                            <feMergeNode in="blur1"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+
+                    <!-- Filtre super glow -->
+                    <filter id="super-glow-filter" x="-100%" y="-100%" width="300%" height="300%">
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur1"/>
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur2"/>
+                        <feMerge>
+                            <feMergeNode in="blur2"/>
+                            <feMergeNode in="blur1"/>
+                        </feMerge>
+                    </filter>
+
+                    <!-- ==========================================
+                         LETTRES "Site en construction..."
+                         Style: Tilt Neon / tube arrondi monoline
+                         Chaque lettre = path continu
+                         ========================================== -->
+
+                    <!-- S -->
+                    <path id="S" d="M14 8 Q6 8 6 14 Q6 20 14 20 Q22 20 22 26 Q22 32 14 32"/>
+
+                    <!-- i -->
+                    <path id="i1" d="M30 14 L30 32 M30 8 L30 9"/>
+
+                    <!-- t -->
+                    <path id="t1" d="M40 6 L40 32 M36 14 L46 14"/>
+
+                    <!-- e -->
+                    <path id="e1" d="M62 20 L52 20 Q52 14 58 14 Q64 14 64 20 Q64 32 52 32"/>
+
+                    <!-- espace + e -->
+                    <path id="e2" d="M88 20 L78 20 Q78 14 84 14 Q90 14 90 20 Q90 32 78 32"/>
+
+                    <!-- n -->
+                    <path id="n1" d="M98 32 L98 14 Q98 14 106 14 Q114 14 114 20 L114 32"/>
+
+                    <!-- espace -->
+
+                    <!-- c -->
+                    <path id="c1" d="M136 14 Q128 14 128 23 Q128 32 136 32"/>
+
+                    <!-- o -->
+                    <path id="o1" d="M144 23 Q144 14 152 14 Q160 14 160 23 Q160 32 152 32 Q144 32 144 23"/>
+
+                    <!-- n -->
+                    <path id="n2" d="M168 32 L168 14 Q168 14 176 14 Q184 14 184 20 L184 32"/>
+
+                    <!-- s -->
+                    <path id="s2" d="M198 16 Q192 14 192 19 Q192 23 198 23 Q204 23 204 27 Q204 32 198 32"/>
+
+                    <!-- t -->
+                    <path id="t2" d="M214 6 L214 32 M210 14 L220 14"/>
+
+                    <!-- r -->
+                    <path id="r1" d="M228 32 L228 14 Q228 14 236 14"/>
+
+                    <!-- u -->
+                    <path id="u1" d="M244 14 L244 26 Q244 32 252 32 Q260 32 260 26 L260 14"/>
+
+                    <!-- c -->
+                    <path id="c2" d="M278 14 Q270 14 270 23 Q270 32 278 32"/>
+
+                    <!-- t -->
+                    <path id="t3" d="M288 6 L288 32 M284 14 L294 14"/>
+
+                    <!-- i -->
+                    <path id="i2" d="M302 14 L302 32 M302 8 L302 9"/>
+
+                    <!-- o -->
+                    <path id="o2" d="M310 23 Q310 14 318 14 Q326 14 326 23 Q326 32 318 32 Q310 32 310 23"/>
+
+                    <!-- n -->
+                    <path id="n3" d="M334 32 L334 14 Q334 14 342 14 Q350 14 350 20 L350 32"/>
+
+                    <!-- ... (points) -->
+                    <path id="dot1" d="M360 31 L360 32"/>
+                    <path id="dot2" d="M366 31 L366 32"/>
+                    <path id="dot3" d="M372 31 L372 32"/>
+
+                    <!-- Groupe complet du texte -->
+                    <g id="full-text">
+                        <use href="#S"/>
+                        <use href="#i1"/>
+                        <use href="#t1"/>
+                        <use href="#e1"/>
+                        <use href="#e2"/>
+                        <use href="#n1"/>
+                        <use href="#c1"/>
+                        <use href="#o1"/>
+                        <use href="#n2"/>
+                        <use href="#s2"/>
+                        <use href="#t2"/>
+                        <use href="#r1"/>
+                        <use href="#u1"/>
+                        <use href="#c2"/>
+                        <use href="#t3"/>
+                        <use href="#i2"/>
+                        <use href="#o2"/>
+                        <use href="#n3"/>
+                        <use href="#dot1"/>
+                        <use href="#dot2"/>
+                        <use href="#dot3"/>
+                    </g>
+                </defs>
+
+                <!-- COUCHE 1: Super Glow -->
+                <g class="layer-super-glow" transform="translate(-20, 10)">
+                    <use href="#S" class="super-glow flicker-a"/>
+                    <use href="#i1" class="super-glow"/>
+                    <use href="#t1" class="super-glow flicker-b"/>
+                    <use href="#e1" class="super-glow"/>
+                    <use href="#e2" class="super-glow"/>
+                    <use href="#n1" class="super-glow flicker-c"/>
+                    <use href="#c1" class="super-glow"/>
+                    <use href="#o1" class="super-glow"/>
+                    <use href="#n2" class="super-glow"/>
+                    <use href="#s2" class="super-glow flicker-a"/>
+                    <use href="#t2" class="super-glow"/>
+                    <use href="#r1" class="super-glow"/>
+                    <use href="#u1" class="super-glow flicker-b"/>
+                    <use href="#c2" class="super-glow"/>
+                    <use href="#t3" class="super-glow"/>
+                    <use href="#i2" class="super-glow flicker-c"/>
+                    <use href="#o2" class="super-glow"/>
+                    <use href="#n3" class="super-glow"/>
+                    <use href="#dot1" class="super-glow"/>
+                    <use href="#dot2" class="super-glow"/>
+                    <use href="#dot3" class="super-glow"/>
+                </g>
+
+                <!-- COUCHE 2: Glow coloré -->
+                <g class="layer-glow" transform="translate(-20, 10)">
+                    <use href="#S" class="glow flicker-a"/>
+                    <use href="#i1" class="glow"/>
+                    <use href="#t1" class="glow flicker-b"/>
+                    <use href="#e1" class="glow"/>
+                    <use href="#e2" class="glow"/>
+                    <use href="#n1" class="glow flicker-c"/>
+                    <use href="#c1" class="glow"/>
+                    <use href="#o1" class="glow"/>
+                    <use href="#n2" class="glow"/>
+                    <use href="#s2" class="glow flicker-a"/>
+                    <use href="#t2" class="glow"/>
+                    <use href="#r1" class="glow"/>
+                    <use href="#u1" class="glow flicker-b"/>
+                    <use href="#c2" class="glow"/>
+                    <use href="#t3" class="glow"/>
+                    <use href="#i2" class="glow flicker-c"/>
+                    <use href="#o2" class="glow"/>
+                    <use href="#n3" class="glow"/>
+                    <use href="#dot1" class="glow"/>
+                    <use href="#dot2" class="glow"/>
+                    <use href="#dot3" class="glow"/>
+                </g>
+
+                <!-- COUCHE 3: Tube blanc -->
+                <g class="layer-tube" transform="translate(-20, 10)">
+                    <use href="#S" class="tube flicker-a"/>
+                    <use href="#i1" class="tube"/>
+                    <use href="#t1" class="tube flicker-b"/>
+                    <use href="#e1" class="tube"/>
+                    <use href="#e2" class="tube"/>
+                    <use href="#n1" class="tube flicker-c"/>
+                    <use href="#c1" class="tube"/>
+                    <use href="#o1" class="tube"/>
+                    <use href="#n2" class="tube"/>
+                    <use href="#s2" class="tube flicker-a"/>
+                    <use href="#t2" class="tube"/>
+                    <use href="#r1" class="tube"/>
+                    <use href="#u1" class="tube flicker-b"/>
+                    <use href="#c2" class="tube"/>
+                    <use href="#t3" class="tube"/>
+                    <use href="#i2" class="tube flicker-c"/>
+                    <use href="#o2" class="tube"/>
+                    <use href="#n3" class="tube"/>
+                    <use href="#dot1" class="tube"/>
+                    <use href="#dot2" class="tube"/>
+                    <use href="#dot3" class="tube"/>
+                </g>
+            </svg>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button onclick="toggleFloat()" id="btn-float">Float: ON</button>
+        <button onclick="toggleFlicker()" id="btn-flicker">Flicker: ON</button>
+        <button onclick="toggleColor()" id="btn-color">Magenta</button>
+    </div>
+
+    <div class="info">prototype-neon-sign-v2.html | "Site en construction..."</div>
+
+    <script>
+        let floatOn = true;
+        let flickerOn = true;
+        let isMagenta = true;
+
+        function toggleFloat() {
+            floatOn = !floatOn;
+            document.querySelector('.neon-sign-wrapper').style.animation =
+                floatOn ? 'neon-float 6s ease-in-out infinite' : 'none';
+            document.getElementById('btn-float').textContent = `Float: ${floatOn ? 'ON' : 'OFF'}`;
+            document.getElementById('btn-float').classList.toggle('active', !floatOn);
+        }
+
+        function toggleFlicker() {
+            flickerOn = !flickerOn;
+            document.querySelectorAll('.flicker-a, .flicker-b, .flicker-c').forEach(el => {
+                el.style.animation = flickerOn ? '' : 'none';
+            });
+            document.getElementById('btn-flicker').textContent = `Flicker: ${flickerOn ? 'ON' : 'OFF'}`;
+            document.getElementById('btn-flicker').classList.toggle('active', !flickerOn);
+        }
+
+        function toggleColor() {
+            isMagenta = !isMagenta;
+            document.documentElement.style.setProperty('--neon-color', isMagenta ? '#ff0080' : '#00ffff');
+            document.getElementById('btn-color').textContent = isMagenta ? 'Magenta' : 'Cyan';
+        }
+    </script>
+</body>
+</html>

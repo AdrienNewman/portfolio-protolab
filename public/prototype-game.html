@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Retour d'UNIX - Prototype</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* CSS Variables */
+        :root {
+            --neon-cyan: #00ffff;
+            --neon-magenta: #ff0080;
+            --neon-green: #00ff88;
+            --neon-yellow: #ffff00;
+            --white: #ffffff;
+            --black: #000000;
+            --gray-dark: #0a0a0a;
+            --gray-mid: #1a1a1a;
+            --gray-light: #666666;
+            --gray-lighter: #999999;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            font-family: 'Space Mono', monospace;
+            color: var(--white);
+            overflow: hidden;
+        }
+
+        /* Dev toolbar */
+        .dev-toolbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50000;
+            background: rgba(10, 10, 10, 0.95);
+            border-bottom: 2px solid var(--neon-cyan);
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .dev-toolbar h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            color: var(--neon-cyan);
+            letter-spacing: 0.1em;
+        }
+
+        .dev-toolbar h1 span {
+            color: var(--neon-magenta);
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        .dev-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .dev-btn {
+            padding: 0.5rem 1rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: 2px solid var(--neon-cyan);
+            background: transparent;
+            color: var(--neon-cyan);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .dev-btn:hover {
+            background: var(--neon-cyan);
+            color: var(--black);
+        }
+
+        .dev-btn.active {
+            background: var(--neon-magenta);
+            border-color: var(--neon-magenta);
+            color: var(--black);
+        }
+
+        .dev-info {
+            font-size: 0.65rem;
+            color: var(--gray-light);
+        }
+
+        /* Game container (offset for toolbar) */
+        .game-container {
+            position: fixed;
+            top: 52px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        /* ========================================
+           GAME OVERLAY BASE (from GameOverlay.astro)
+           ======================================== */
+        .game-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 30000;
+            background: #000;
+        }
+
+        #game-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* Intro Canvas */
+        .intro-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 250;
+            pointer-events: none;
+        }
+
+        .intro-canvas.hidden {
+            display: none;
+        }
+
+        /* ========================================
+           HUD STYLES - COMPACT TRANSPARENT BAR
+           ======================================== */
+        .game-hud {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            pointer-events: none;
+            z-index: 100;
+            display: none;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .hud-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
+            gap: 2rem;
+        }
+
+        /* Remove box styling - inline items */
+        .hud-panel {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: transparent;
+            border: none;
+            padding: 0;
+        }
+
+        .hud-panel::before {
+            display: none;
+        }
+
+        .hud-label {
+            font-size: 0.6rem;
+            color: var(--gray-light);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .hud-value {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            color: var(--neon-cyan);
+            line-height: 1;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+        }
+
+        .hud-sublabel {
+            font-size: 0.55rem;
+            color: var(--neon-green);
+            letter-spacing: 0.05em;
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        /* Wave panel: WAVE 1 • APPLICATION */
+        .hud-wave {
+            flex-direction: row;
+            gap: 0.4rem;
+        }
+
+        .hud-wave .hud-sublabel {
+            margin-left: 0.25rem;
+            padding-left: 0.5rem;
+            border-left: 1px solid var(--gray-mid);
+        }
+
+        /* Score panel */
+        .hud-score .hud-value {
+            min-width: auto;
+            text-align: left;
+        }
+
+        /* Health bar - slim inline */
+        .hud-health {
+            flex-direction: row;
+            gap: 0.5rem;
+        }
+
+        .health-bar {
+            width: 100px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 3px;
+            position: relative;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        .health-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-green), var(--neon-cyan));
+            transition: width 0.3s ease;
+            box-shadow: 0 0 8px var(--neon-green);
+            width: 100%;
+            border-radius: 3px;
+        }
+
+        .health-text {
+            font-size: 0.65rem;
+            color: var(--gray-lighter);
+            margin: 0;
+            min-width: 35px;
+        }
+
+        /* Hide bottom controls bar */
+        .hud-bottom {
+            display: none;
+        }
+
+        .hud-controls {
+            display: none;
+        }
+
+        .control-hint {
+            display: none;
+        }
+
+        /* ========================================
+           POWER-UP NOTIFICATION
+           ======================================== */
+        .powerup-notification {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 1rem 2rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 150;
+            transition: opacity 0.2s ease;
+        }
+
+        .powerup-notification.show {
+            opacity: 1;
+            animation: powerupPulse 0.5s ease-out;
+        }
+
+        @keyframes powerupPulse {
+            0% { transform: translate(-50%, -50%) scale(0.8); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* ========================================
+           GAME SCREENS BASE
+           ======================================== */
+        .game-screen {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 200;
+        }
+
+        .game-screen.hidden {
+            display: none;
+        }
+
+        /* ========================================
+           OTHER SCREENS (Pause, GameOver, Victory)
+           ======================================== */
+        .screen-content {
+            text-align: center;
+            max-width: 500px;
+            padding: 3rem;
+            border: 2px solid var(--neon-cyan);
+            background: var(--gray-dark);
+            background-image:
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            position: relative;
+        }
+
+        .screen-content::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta), var(--neon-cyan));
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .screen-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3rem;
+            color: var(--neon-cyan);
+            margin-bottom: 1rem;
+            letter-spacing: 0.1em;
+        }
+
+        .screen-subtitle {
+            color: var(--gray-lighter);
+            margin-bottom: 2rem;
+        }
+
+        .victory-title {
+            color: var(--neon-green);
+            text-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+        }
+
+        .glitch-text {
+            color: var(--neon-magenta);
+            animation: glitch 2s infinite;
+        }
+
+        @keyframes glitch {
+            0%, 90%, 100% { transform: translateX(0); }
+            92% { transform: translateX(-3px); text-shadow: 3px 0 var(--neon-cyan); }
+            94% { transform: translateX(3px); text-shadow: -3px 0 var(--neon-magenta); }
+            96% { transform: translateX(-3px); text-shadow: 3px 0 var(--neon-cyan); }
+        }
+
+        /* Stats */
+        .pause-stats,
+        .final-stats {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item.large .stat-value {
+            font-size: 3rem;
+        }
+
+        .stat-label {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--gray-light);
+            letter-spacing: 0.1em;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-value {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            color: var(--neon-cyan);
+        }
+
+        /* Victory Badge */
+        .victory-badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .badge-icon {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid var(--neon-green);
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            animation: badgePulse 2s infinite;
+        }
+
+        .badge-icon svg {
+            width: 40px;
+            height: 40px;
+            stroke: var(--neon-green);
+        }
+
+        .badge-text {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--neon-green);
+            letter-spacing: 0.2em;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(0, 255, 136, 0.6); }
+        }
+
+        /* Victory Console */
+        .victory-console {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--neon-green);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            text-align: left;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .console-line {
+            color: var(--gray-lighter);
+            margin-bottom: 0.25rem;
+            opacity: 0;
+            animation: typeIn 0.3s ease-out forwards;
+        }
+
+        .console-line:nth-child(1) { animation-delay: 0.2s; }
+        .console-line:nth-child(2) { animation-delay: 0.5s; }
+        .console-line:nth-child(3) { animation-delay: 0.8s; }
+        .console-line:nth-child(4) { animation-delay: 1.1s; }
+        .console-line:nth-child(5) { animation-delay: 1.5s; }
+        .console-line:nth-child(6) { animation-delay: 1.8s; }
+        .console-line:nth-child(7) { animation-delay: 2.1s; }
+
+        .console-ok {
+            color: var(--neon-green);
+        }
+
+        @keyframes typeIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Buttons */
+        .game-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            margin: 0.5rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border: 2px solid;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .start-btn,
+        .resume-btn,
+        .restart-btn {
+            background: var(--neon-cyan);
+            border-color: var(--neon-cyan);
+            color: var(--black);
+        }
+
+        .start-btn:hover,
+        .resume-btn:hover,
+        .restart-btn:hover {
+            background: var(--neon-magenta);
+            border-color: var(--neon-magenta);
+            box-shadow: 0 0 30px rgba(255, 0, 128, 0.5);
+        }
+
+        .exit-btn {
+            background: transparent;
+            border-color: var(--gray-light);
+            color: var(--gray-light);
+        }
+
+        .exit-btn:hover {
+            border-color: var(--neon-magenta);
+            color: var(--neon-magenta);
+        }
+
+        /* ========================================
+           RESPONSIVE
+           ======================================== */
+        @media (max-width: 768px) {
+            .dev-toolbar {
+                flex-wrap: wrap;
+                padding: 0.5rem 1rem;
+            }
+
+            .dev-toolbar h1 {
+                font-size: 1rem;
+            }
+
+            .game-container {
+                top: 80px;
+            }
+
+            /* Compact HUD mobile adjustments */
+            .hud-top {
+                padding: 0.4rem 0.75rem;
+                gap: 1rem;
+            }
+
+            .hud-value {
+                font-size: 1.2rem;
+            }
+
+            .hud-label {
+                font-size: 0.5rem;
+            }
+
+            .hud-sublabel {
+                font-size: 0.5rem;
+            }
+
+            .health-bar {
+                width: 60px;
+                height: 5px;
+            }
+
+            .health-text {
+                font-size: 0.55rem;
+            }
+
+            .game-title {
+                font-size: 2.5rem;
+            }
+
+            .game-subtitle {
+                font-size: 0.7rem;
+                letter-spacing: 0.15em;
+            }
+
+            .start-content {
+                padding: 1rem;
+                gap: 1.5rem;
+            }
+
+            .screen-content {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Dev Toolbar -->
+    <div class="dev-toolbar">
+        <h1>LE RETOUR D'UNIX <span>PROTOTYPE</span></h1>
+        <div class="dev-actions">
+            <button class="dev-btn" id="btn-dev-mode" title="Boss HP ÷10">⚡ DEV MODE</button>
+            <button class="dev-btn" id="btn-skip-intro">Skip Intro</button>
+            <button class="dev-btn" id="btn-reset-score">Reset High Score</button>
+            <button class="dev-btn" id="btn-god-mode">God Mode</button>
+            <select class="dev-btn" id="select-layer" style="cursor:pointer;">
+                <option value="0">Start Layer</option>
+                <option value="7">L7 - Clippy</option>
+                <option value="6">L6 - IE6</option>
+                <option value="5">L5 - MSN</option>
+                <option value="4">L4 - WinUpdate</option>
+                <option value="3">L3 - Norton</option>
+                <option value="2">L2 - Hub</option>
+                <option value="1">L1 - Bill Gates</option>
+            </select>
+            <button class="dev-btn" id="btn-skip-to-boss">Skip to Boss</button>
+        </div>
+        <div class="dev-info">
+            Scripts: /scripts/game-prototype/
+        </div>
+    </div>
+
+    <!-- Game Container -->
+    <div class="game-container">
+        <div id="game-overlay" class="game-overlay">
+            <!-- Intro Canvas -->
+            <canvas id="intro-canvas" class="intro-canvas"></canvas>
+
+            <!-- Game Canvas -->
+            <canvas id="game-canvas"></canvas>
+
+            <!-- HUD - Compact Transparent Bar -->
+            <div id="game-hud" class="game-hud">
+                <div class="hud-top">
+                    <!-- Left: Wave + Layer -->
+                    <div class="hud-panel hud-wave">
+                        <span class="hud-label">L</span>
+                        <span class="hud-value" id="hud-wave-number">1</span>
+                        <span class="hud-sublabel" id="hud-layer-name">APPLICATION</span>
+                    </div>
+                    <!-- Center: Score -->
+                    <div class="hud-panel hud-score">
+                        <span class="hud-value" id="hud-score">0</span>
+                    </div>
+                    <!-- Right: Health Bar -->
+                    <div class="hud-panel hud-health">
+                        <div class="health-bar">
+                            <div class="health-fill" id="hud-health-fill"></div>
+                        </div>
+                        <span class="health-text" id="hud-health-text">100%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Power-up Notification -->
+            <div id="powerup-notification" class="powerup-notification"></div>
+
+            <!-- Pause Screen -->
+            <div id="game-pause-screen" class="game-screen pause-screen hidden">
+                <div class="screen-content">
+                    <h2 class="screen-title">SYSTÈME EN PAUSE</h2>
+                    <div class="pause-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">SCORE ACTUEL</span>
+                            <span class="stat-value" id="pause-score">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">COUCHE ACTUELLE</span>
+                            <span class="stat-value" id="pause-wave">1/7</span>
+                        </div>
+                    </div>
+                    <button class="game-btn resume-btn" id="resume-btn">
+                        <span>REPRENDRE</span>
+                    </button>
+                    <button class="game-btn restart-btn" id="restart-pause-btn">
+                        <span>RECOMMENCER</span>
+                    </button>
+                    <button class="game-btn exit-btn" id="exit-pause-btn">
+                        <span>ABANDONNER</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Game Over Screen -->
+            <div id="game-over-screen" class="game-screen gameover-screen hidden">
+                <div class="screen-content">
+                    <h2 class="screen-title glitch-text">KERNEL PANIC</h2>
+                    <p class="screen-subtitle">L'Empire Propriétaire a repris le contrôle...</p>
+                    <div class="final-stats">
+                        <div class="stat-item large">
+                            <span class="stat-label">SCORE FINAL</span>
+                            <span class="stat-value" id="final-score">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">MEILLEUR SCORE</span>
+                            <span class="stat-value" id="high-score">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">ARRÊTÉ À</span>
+                            <span class="stat-value" id="breach-layer">LAYER 7</span>
+                        </div>
+                    </div>
+                    <button class="game-btn restart-btn" id="restart-gameover-btn">
+                        <span>RELANCER L'HYPERVISEUR</span>
+                    </button>
+                    <button class="game-btn exit-btn" id="exit-gameover-btn">
+                        <span>FERMER LE PROTOTYPE</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Victory Screen -->
+            <div id="game-victory-screen" class="game-screen victory-screen hidden">
+                <div class="screen-content">
+                    <h2 class="screen-title victory-title">SYSTÈME LIBÉRÉ</h2>
+                    <p class="screen-subtitle">La galaxie est libre. Le code source est ouvert.</p>
+
+                    <!-- Console Log Effect -->
+                    <div class="victory-console" id="victory-console">
+                        <div class="console-line">> System halted.</div>
+                        <div class="console-line">> Unmounting proprietary volumes... Done.</div>
+                        <div class="console-line">> Wiping Master Boot Record... Done.</div>
+                        <div class="console-line">> Rebooting into Proxmox VE...</div>
+                        <div class="console-line console-ok">[OK] Boot sequence complete.</div>
+                        <div class="console-line console-ok">[OK] All services started.</div>
+                        <div class="console-line console-ok">[OK] Network interfaces UP.</div>
+                    </div>
+
+                    <div class="victory-badge">
+                        <div class="badge-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                        <span class="badge-text">MISSION ACCOMPLIE</span>
+                    </div>
+                    <div class="final-stats">
+                        <div class="stat-item large">
+                            <span class="stat-label">SCORE FINAL</span>
+                            <span class="stat-value" id="victory-score">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">MEILLEUR SCORE</span>
+                            <span class="stat-value" id="victory-high-score">0</span>
+                        </div>
+                    </div>
+                    <button class="game-btn restart-btn" id="restart-victory-btn">
+                        <span>REJOUER</span>
+                    </button>
+                    <button class="game-btn exit-btn" id="exit-victory-btn">
+                        <span>FERMER LE PROTOTYPE</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Prototype Game Controller (simplified, no intro)
+        class PrototypeGameController {
+            constructor() {
+                this.overlay = document.getElementById('game-overlay');
+                this.canvas = document.getElementById('game-canvas');
+                this.introCanvas = document.getElementById('intro-canvas');
+                this.hud = document.getElementById('game-hud');
+                this.game = null;
+                this.gameLoaded = false;
+                this.introLoaded = false;
+                this.intro = null;
+                this.skipIntro = false;
+                this.godMode = false;
+
+                // Screens
+                this.pauseScreen = document.getElementById('game-pause-screen');
+                this.gameOverScreen = document.getElementById('game-over-screen');
+                this.victoryScreen = document.getElementById('game-victory-screen');
+
+                // HUD elements
+                this.hudScore = document.getElementById('hud-score');
+                this.hudWaveNumber = document.getElementById('hud-wave-number');
+                this.hudLayerName = document.getElementById('hud-layer-name');
+                this.hudHealthFill = document.getElementById('hud-health-fill');
+                this.hudHealthText = document.getElementById('hud-health-text');
+
+                // Notification
+                this.notification = document.getElementById('powerup-notification');
+                this.notificationTimeout = null;
+
+                this.bindEvents();
+                this.bindDevTools();
+
+                // Auto-start
+                this.init();
+            }
+
+            bindEvents() {
+                document.getElementById('resume-btn')?.addEventListener('click', () => this.resumeGame());
+                document.getElementById('restart-pause-btn')?.addEventListener('click', () => this.restartGame());
+                document.getElementById('restart-gameover-btn')?.addEventListener('click', () => this.restartGame());
+                document.getElementById('restart-victory-btn')?.addEventListener('click', () => this.restartGame());
+
+                // Exit buttons just restart for prototype
+                document.getElementById('exit-pause-btn')?.addEventListener('click', () => location.reload());
+                document.getElementById('exit-gameover-btn')?.addEventListener('click', () => location.reload());
+                document.getElementById('exit-victory-btn')?.addEventListener('click', () => location.reload());
+
+                window.addEventListener('resize', () => this.handleResize());
+            }
+
+            bindDevTools() {
+                document.getElementById('btn-skip-intro')?.addEventListener('click', (e) => {
+                    this.skipIntro = !this.skipIntro;
+                    e.target.classList.toggle('active', this.skipIntro);
+                    console.log('Skip Intro:', this.skipIntro);
+                });
+
+                document.getElementById('btn-reset-score')?.addEventListener('click', () => {
+                    localStorage.removeItem('netdefender_highscore');
+                    console.log('High score reset');
+                });
+
+                document.getElementById('btn-god-mode')?.addEventListener('click', (e) => {
+                    this.godMode = !this.godMode;
+                    e.target.classList.toggle('active', this.godMode);
+                    if (this.game && this.game.player) {
+                        this.game.player.invincible = this.godMode;
+                    }
+                    console.log('God Mode:', this.godMode);
+                });
+
+                // DEV MODE - Réduit les HP des boss par 10
+                document.getElementById('btn-dev-mode')?.addEventListener('click', (e) => {
+                    if (window.DEV_MODE) {
+                        window.DEV_MODE.enabled = !window.DEV_MODE.enabled;
+                        e.target.classList.toggle('active', window.DEV_MODE.enabled);
+                        console.log('DEV MODE:', window.DEV_MODE.enabled ? 'ON (Boss HP ÷10)' : 'OFF');
+                    } else {
+                        console.warn('DEV_MODE not available (game not loaded)');
+                    }
+                });
+
+                // Skip to specific layer/boss
+                document.getElementById('btn-skip-to-boss')?.addEventListener('click', () => {
+                    console.log('[DEV] Skip to Boss clicked');
+                    const layerSelect = document.getElementById('select-layer');
+                    const layer = parseInt(layerSelect.value);
+                    console.log('[DEV] Selected layer:', layer, 'Game exists:', !!this.game);
+                    if (layer > 0 && this.game) {
+                        this.skipToLayer(layer);
+                    } else if (layer === 0) {
+                        console.log('[DEV] Please select a layer first');
+                    } else if (!this.game) {
+                        console.log('[DEV] Game not loaded yet, wait for intro to finish');
+                    }
+                });
+            }
+
+            // Skip directly to a specific layer (for testing)
+            skipToLayer(targetLayer) {
+                if (!this.game || !this.game.waveManager) {
+                    console.error('Game not initialized');
+                    return;
+                }
+
+                console.log(`[DEV] Skipping to Layer ${targetLayer}`);
+
+                // ========== SIMULER LA PROGRESSION COMPLÈTE ==========
+                // Mapping layer → boss + sage + pouvoirs associés
+                const LAYER_DATA = {
+                    7: { boss: null, sage: null, powers: [] },
+                    6: { boss: 'boss_clippe', sage: 'sage_jimmy', powers: ['power_wiki_boost', 'power_edit_shield'] },
+                    5: { boss: 'boss_explorer', sage: 'sage_firefox', powers: ['power_swift_tab', 'power_multi_tab'] },
+                    4: { boss: 'boss_messenger', sage: 'sage_duo', powers: ['power_streak_freeze', 'power_xp_burst'] },
+                    3: { boss: 'boss_update', sage: 'sage_tux', powers: ['power_kernel_panic', 'power_sudo_kill'] },
+                    2: { boss: 'boss_norton', sage: 'sage_anonymous', powers: ['power_ddos_mode', 'power_ghost_mode'] },
+                    1: { boss: 'boss_hub', sage: 'sage_rpi', powers: ['power_gpio_boost', 'power_overclock'] }
+                };
+
+                // Accès au PlayerStateManager via l'export global
+                const psm = window.playerStateManager || null;
+
+                // Simuler la victoire des boss précédents (de L6 jusqu'à targetLayer)
+                for (let layer = 6; layer >= targetLayer; layer--) {
+                    const data = LAYER_DATA[layer];
+                    if (!data || !data.boss) continue;
+
+                    // 1. Débloquer la couche OSI
+                    if (this.game.player && this.game.player.onBossDefeated) {
+                        console.log(`[DEV] Simulating defeat of ${data.boss} → unlock L${layer}`);
+                        this.game.player.onBossDefeated(data.boss);
+                    }
+
+                    // 2. Attribuer un pouvoir aléatoire du sage
+                    if (psm && data.powers && data.powers.length > 0) {
+                        const randomPower = data.powers[Math.floor(Math.random() * data.powers.length)];
+                        console.log(`[DEV] Granting random power from ${data.sage}: ${randomPower}`);
+                        psm.addPower(randomPower);
+                    }
+                }
+                // ========== FIN SIMULATION ==========
+
+                // Calculate wave number (layer 7 = wave 1, layer 1 = wave 7)
+                const waveNumber = 8 - targetLayer;
+
+                // Clear current enemies and projectiles
+                this.game.waveManager.enemies = [];
+                this.game.waveManager.spawnQueue = [];
+                this.game.waveManager.bossProjectiles = [];
+                this.game.waveManager.bossHazards = [];
+                this.game.waveManager.pendingBossSpawn = null;
+                this.game.waveManager.bossIntroActive = false;
+                this.game.waveManager.activeBoss = null;
+                this.game.bullets = [];
+                this.game.powerUps = [];
+
+                // Start the target wave
+                this.game.waveManager.startWave(waveNumber);
+                this.game.state = 'playing';
+
+                // Update HUD
+                const layer = this.game.waveManager.getCurrentLayerInfo();
+                this.updateWave(waveNumber, 7, layer);
+
+                // Update grid background color
+                if (this.game.gridBackground) {
+                    this.game.gridBackground.setLayerColor(targetLayer);
+                }
+
+                console.log(`[DEV] Now at Wave ${waveNumber} (Layer ${targetLayer})`);
+            }
+
+            handleResize() {
+                if (this.introCanvas) {
+                    this.introCanvas.width = this.overlay.clientWidth;
+                    this.introCanvas.height = this.overlay.clientHeight;
+                }
+                if (this.intro) {
+                    this.intro.resize();
+                }
+            }
+
+            async loadIntroScript() {
+                return new Promise((resolve, reject) => {
+                    if (this.introLoaded) {
+                        resolve();
+                        return;
+                    }
+
+                    const script = document.createElement('script');
+                    script.type = 'module';
+                    script.src = '/scripts/game-prototype/intro/IntroSequence.js';
+                    script.onload = () => {
+                        this.introLoaded = true;
+                        resolve();
+                    };
+                    script.onerror = reject;
+                    document.head.appendChild(script);
+                });
+            }
+
+            async loadGameScript() {
+                return new Promise((resolve, reject) => {
+                    if (this.gameLoaded) {
+                        resolve();
+                        return;
+                    }
+
+                    const script = document.createElement('script');
+                    script.type = 'module';
+                    // Use prototype scripts folder
+                    script.src = '/scripts/game-prototype/NetDefender.js';
+                    script.onload = () => {
+                        this.gameLoaded = true;
+                        resolve();
+                    };
+                    script.onerror = reject;
+                    document.head.appendChild(script);
+                });
+            }
+
+            async init() {
+                // Setup intro canvas
+                this.introCanvas.width = this.overlay.clientWidth;
+                this.introCanvas.height = this.overlay.clientHeight;
+
+                // Check if skip intro is enabled (dev mode)
+                if (this.skipIntro) {
+                    this.onIntroComplete();
+                    return;
+                }
+
+                // Load and play intro directly
+                try {
+                    await this.loadIntroScript();
+                    await new Promise(r => setTimeout(r, 100));
+
+                    if (window.IntroSequence) {
+                        this.introCanvas.classList.remove('hidden');
+                        this.intro = new window.IntroSequence(this.introCanvas, () => {
+                            this.onIntroComplete();
+                        });
+                        this.intro.start(this.introCanvas.width / 2, this.introCanvas.height / 2);
+                    } else {
+                        console.error('IntroSequence not available');
+                        this.onIntroComplete();
+                    }
+                } catch (err) {
+                    console.error('Failed to load intro:', err);
+                    this.onIntroComplete();
+                }
+
+                // Pre-load game in background
+                this.loadGameScript().catch(console.error);
+            }
+
+            onIntroComplete() {
+                // Hide intro canvas
+                this.introCanvas.classList.add('hidden');
+
+                // Flux LucasArts: directement vers le jeu (pas d'écran start)
+                this.initGameAndStart();
+            }
+
+            async initGameAndStart() {
+                console.log('[Controller] initGameAndStart called');
+
+                // Si déjà initialisé, démarrer directement
+                if (this.game) {
+                    console.log('[Controller] Game already loaded, starting...');
+                    this.startGame();
+                    return;
+                }
+
+                try {
+                    console.log('[Controller] Loading game script...');
+                    await this.loadGameScript();
+                    await new Promise(r => setTimeout(r, 100));
+
+                    if (window.NetDefender) {
+                        console.log('[Controller] Creating NetDefender instance...');
+                        console.log('[Controller] Canvas dimensions:', this.canvas.width, 'x', this.canvas.height);
+                        console.log('[Controller] Canvas client dimensions:', this.canvas.clientWidth, 'x', this.canvas.clientHeight);
+                        this.game = new window.NetDefender('game-canvas');
+
+                        this.game.onScoreUpdate = (score) => this.updateScore(score);
+                        this.game.onHealthUpdate = (health, max) => this.updateHealth(health, max);
+                        this.game.onWaveUpdate = (wave, total, layer) => this.updateWave(wave, total, layer);
+                        this.game.onPause = (paused) => paused ? this.showScreen('pause') : this.showScreen('playing');
+                        this.game.onGameOver = (score, highScore) => this.showGameOver(score, highScore);
+                        this.game.onVictory = (score, highScore) => this.showVictory(score, highScore);
+                        this.game.onPowerUpCollect = (name, color) => this.showPowerUpNotification(name, color);
+
+                        console.log('[Controller] Game loaded, starting...');
+
+                        // Démarrage automatique après chargement
+                        this.startGame();
+                    } else {
+                        console.error('[Controller] NetDefender class not available');
+                    }
+                } catch (err) {
+                    console.error('[Controller] Failed to load game:', err);
+                }
+            }
+
+            startGame() {
+                if (this.game) {
+                    this.showScreen('playing');
+                    this.game.start();
+
+                    // Apply god mode if enabled
+                    if (this.godMode && this.game.player) {
+                        this.game.player.invincible = true;
+                    }
+                }
+            }
+
+            resumeGame() {
+                if (this.game) {
+                    this.showScreen('playing');
+                    this.game.resume();
+                }
+            }
+
+            restartGame() {
+                if (this.game) {
+                    this.game.stop();
+                    this.showScreen('playing');
+                    this.game.start();
+
+                    if (this.godMode && this.game.player) {
+                        this.game.player.invincible = true;
+                    }
+                }
+            }
+
+            showScreen(screen) {
+                this.pauseScreen.classList.add('hidden');
+                this.gameOverScreen.classList.add('hidden');
+                this.victoryScreen.classList.add('hidden');
+                this.hud.style.display = 'none';
+
+                switch (screen) {
+                    case 'pause':
+                        this.pauseScreen.classList.remove('hidden');
+                        if (this.game) {
+                            document.getElementById('pause-score').textContent = this.game.score.toLocaleString('fr-FR');
+                            document.getElementById('pause-wave').textContent = `${this.game.waveManager.getCurrentWaveNumber()}/${this.game.waveManager.getTotalWaves()}`;
+                        }
+                        break;
+                    case 'gameover':
+                        this.gameOverScreen.classList.remove('hidden');
+                        break;
+                    case 'victory':
+                        this.victoryScreen.classList.remove('hidden');
+                        break;
+                    case 'playing':
+                        this.hud.style.display = 'flex';
+                        break;
+                }
+            }
+
+            updateScore(score) {
+                this.hudScore.textContent = score.toLocaleString('fr-FR');
+            }
+
+            updateHealth(health, max) {
+                const percent = (health / max) * 100;
+                this.hudHealthFill.style.width = `${percent}%`;
+                this.hudHealthText.textContent = `${Math.round(percent)}%`;
+
+                if (percent <= 25) {
+                    this.hudHealthFill.style.background = 'var(--neon-magenta)';
+                } else if (percent <= 50) {
+                    this.hudHealthFill.style.background = 'var(--neon-yellow)';
+                } else {
+                    this.hudHealthFill.style.background = 'linear-gradient(90deg, var(--neon-green), var(--neon-cyan))';
+                }
+            }
+
+            updateWave(wave, total, layer) {
+                this.hudWaveNumber.textContent = wave;
+                if (layer) {
+                    this.hudLayerName.textContent = layer.name;
+                    this.hudLayerName.style.color = layer.color;
+                }
+            }
+
+            showGameOver(score, highScore) {
+                document.getElementById('final-score').textContent = score.toLocaleString('fr-FR');
+                document.getElementById('high-score').textContent = highScore.toLocaleString('fr-FR');
+                if (this.game) {
+                    const layer = this.game.waveManager.getCurrentLayerInfo();
+                    document.getElementById('breach-layer').textContent = `LAYER ${layer?.level || '?'}`;
+                }
+                this.showScreen('gameover');
+            }
+
+            showVictory(score, highScore) {
+                document.getElementById('victory-score').textContent = score.toLocaleString('fr-FR');
+                document.getElementById('victory-high-score').textContent = highScore.toLocaleString('fr-FR');
+                this.showScreen('victory');
+            }
+
+            showPowerUpNotification(name, color) {
+                if (this.notificationTimeout) {
+                    clearTimeout(this.notificationTimeout);
+                }
+
+                this.notification.textContent = name;
+                this.notification.style.color = color;
+                this.notification.style.borderColor = color;
+                this.notification.style.boxShadow = `0 0 20px ${color}`;
+                this.notification.classList.add('show');
+
+                this.notificationTimeout = setTimeout(() => {
+                    this.notification.classList.remove('show');
+                }, 1500);
+            }
+        }
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            new PrototypeGameController();
+        });
+    </script>
+</body>
+</html>

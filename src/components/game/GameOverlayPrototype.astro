@@ -1,0 +1,1328 @@
+---
+// GameOverlay.astro - Full screen game container with cinematic intro
+// Triggered by clicking the floating packet in Three.js background
+---
+
+<div id="game-overlay" class="game-overlay">
+    <!-- Intro Canvas (for cinematic sequence) -->
+    <canvas id="intro-canvas" class="intro-canvas"></canvas>
+
+    <!-- Game Canvas -->
+    <canvas id="game-canvas"></canvas>
+
+    <!-- HUD -->
+    <div id="game-hud" class="game-hud">
+        <div class="hud-top">
+            <!-- Wave/Layer Info -->
+            <div class="hud-panel hud-wave">
+                <span class="hud-label">WAVE</span>
+                <span class="hud-value" id="hud-wave-number">1</span>
+                <span class="hud-sublabel" id="hud-layer-name">APPLICATION</span>
+            </div>
+
+            <!-- Score -->
+            <div class="hud-panel hud-score">
+                <span class="hud-label">SCORE</span>
+                <span class="hud-value" id="hud-score">0</span>
+            </div>
+
+            <!-- Health -->
+            <div class="hud-panel hud-health">
+                <span class="hud-label">FIREWALL</span>
+                <div class="health-bar">
+                    <div class="health-fill" id="hud-health-fill"></div>
+                </div>
+                <span class="health-text" id="hud-health-text">100%</span>
+            </div>
+        </div>
+
+        <div class="hud-bottom">
+            <div class="hud-controls">
+                <span class="control-hint">[ZQSD/ARROWS] MOVE</span>
+                <span class="control-hint">[SPACE/CLICK] FIRE</span>
+                <span class="control-hint">[ESC] PAUSE</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Power-up Notification -->
+    <div id="powerup-notification" class="powerup-notification"></div>
+
+    <!-- Start Screen (redesigned, appears after intro) -->
+    <div id="game-start-screen" class="game-screen start-screen hidden">
+        <div class="start-content">
+            <!-- Title animated by CSS -->
+            <div class="start-title-container">
+                <h1 class="game-title animated-title">
+                    <span class="title-net">NET</span><span class="title-defender">DEFENDER</span>
+                </h1>
+                <p class="game-subtitle">OSI LAYER DEFENSE PROTOCOL</p>
+            </div>
+
+            <!-- Threat Analysis Panel -->
+            <div class="threat-panel">
+                <div class="threat-header">
+                    <span class="threat-icon">!</span>
+                    <span class="threat-text">THREAT ANALYSIS</span>
+                </div>
+                <div class="osi-bars">
+                    <div class="osi-bar" data-layer="7" style="--bar-color: #ff0080">
+                        <span class="bar-label">L7 APPLICATION</span>
+                        <div class="bar-track"><div class="bar-fill"></div></div>
+                        <span class="bar-percent">0%</span>
+                    </div>
+                    <div class="osi-bar" data-layer="6" style="--bar-color: #ff0080">
+                        <span class="bar-label">L6 PRESENTATION</span>
+                        <div class="bar-track"><div class="bar-fill"></div></div>
+                        <span class="bar-percent">0%</span>
+                    </div>
+                    <div class="osi-bar" data-layer="5" style="--bar-color: #00ff88">
+                        <span class="bar-label">L5 SESSION</span>
+                        <div class="bar-track"><div class="bar-fill"></div></div>
+                        <span class="bar-percent">0%</span>
+                    </div>
+                    <div class="osi-bar" data-layer="4" style="--bar-color: #00ff88">
+                        <span class="bar-label">L4 TRANSPORT</span>
+                        <div class="bar-track"><div class="bar-fill"></div></div>
+                        <span class="bar-percent">0%</span>
+                    </div>
+                    <div class="osi-bar" data-layer="3" style="--bar-color: #00ffff">
+                        <span class="bar-label">L3 NETWORK</span>
+                        <div class="bar-track"><div class="bar-fill"></div></div>
+                        <span class="bar-percent">0%</span>
+                    </div>
+                    <div class="osi-bar" data-layer="2" style="--bar-color: #ffff00">
+                        <span class="bar-label">L2 DATA LINK</span>
+                        <div class="bar-track"><div class="bar-fill"></div></div>
+                        <span class="bar-percent">0%</span>
+                    </div>
+                    <div class="osi-bar" data-layer="1" style="--bar-color: #ffff00">
+                        <span class="bar-label">L1 PHYSICAL</span>
+                        <div class="bar-track"><div class="bar-fill"></div></div>
+                        <span class="bar-percent">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ship Preview (CSS animated) -->
+            <div class="ship-preview-container">
+                <div class="ship-preview">
+                    <div class="ship-body"></div>
+                    <div class="ship-wing left"></div>
+                    <div class="ship-wing right"></div>
+                    <div class="ship-thruster"></div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="start-actions">
+                <button class="game-btn start-btn pulse-btn" id="start-game-btn">
+                    <span>INITIALIZE DEFENSE</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+
+                <div class="high-score-display">
+                    <span class="hs-label">HIGH SCORE</span>
+                    <span class="hs-value" id="menu-high-score">0</span>
+                </div>
+
+                <button class="game-btn exit-btn" id="exit-start-btn">
+                    <span>RETURN TO PORTFOLIO</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pause Screen -->
+    <div id="game-pause-screen" class="game-screen pause-screen hidden">
+        <div class="screen-content">
+            <h2 class="screen-title">SYSTEM PAUSED</h2>
+
+            <div class="pause-stats">
+                <div class="stat-item">
+                    <span class="stat-label">CURRENT SCORE</span>
+                    <span class="stat-value" id="pause-score">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">CURRENT WAVE</span>
+                    <span class="stat-value" id="pause-wave">1/7</span>
+                </div>
+            </div>
+
+            <button class="game-btn resume-btn" id="resume-btn">
+                <span>RESUME DEFENSE</span>
+            </button>
+
+            <button class="game-btn restart-btn" id="restart-pause-btn">
+                <span>RESTART MISSION</span>
+            </button>
+
+            <button class="game-btn exit-btn" id="exit-pause-btn">
+                <span>ABORT MISSION</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="game-over-screen" class="game-screen gameover-screen hidden">
+        <div class="screen-content">
+            <h2 class="screen-title glitch-text">BREACH DETECTED</h2>
+            <p class="screen-subtitle">Network infrastructure compromised</p>
+
+            <div class="final-stats">
+                <div class="stat-item large">
+                    <span class="stat-label">FINAL SCORE</span>
+                    <span class="stat-value" id="final-score">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">HIGH SCORE</span>
+                    <span class="stat-value" id="high-score">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">BREACHED AT</span>
+                    <span class="stat-value" id="breach-layer">LAYER 7</span>
+                </div>
+            </div>
+
+            <button class="game-btn restart-btn" id="restart-gameover-btn">
+                <span>REINITIALIZE DEFENSE</span>
+            </button>
+
+            <button class="game-btn exit-btn" id="exit-gameover-btn">
+                <span>RETURN TO PORTFOLIO</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Victory Screen -->
+    <div id="game-victory-screen" class="game-screen victory-screen hidden">
+        <div class="screen-content">
+            <h2 class="screen-title victory-title">ALL LAYERS SECURED</h2>
+            <p class="screen-subtitle">Network infrastructure protected</p>
+
+            <div class="victory-badge">
+                <div class="badge-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                </div>
+                <span class="badge-text">MISSION COMPLETE</span>
+            </div>
+
+            <div class="final-stats">
+                <div class="stat-item large">
+                    <span class="stat-label">FINAL SCORE</span>
+                    <span class="stat-value" id="victory-score">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">HIGH SCORE</span>
+                    <span class="stat-value" id="victory-high-score">0</span>
+                </div>
+            </div>
+
+            <button class="game-btn restart-btn" id="restart-victory-btn">
+                <span>DEFEND AGAIN</span>
+            </button>
+
+            <button class="game-btn exit-btn" id="exit-victory-btn">
+                <span>RETURN TO PORTFOLIO</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* ========================================
+       GAME OVERLAY BASE
+       ======================================== */
+    .game-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 30000;
+        background: #000;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .game-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    #game-canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    /* Intro Canvas */
+    .intro-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 250;
+        pointer-events: none;
+    }
+
+    .intro-canvas.hidden {
+        display: none;
+    }
+
+    /* ========================================
+       HUD STYLES
+       ======================================== */
+    .game-hud {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 100;
+        display: none;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 1.5rem;
+        font-family: 'Space Mono', monospace;
+    }
+
+    .hud-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .hud-panel {
+        background: rgba(10, 10, 10, 0.9);
+        border: 2px solid var(--neon-cyan);
+        padding: 1rem 1.5rem;
+        position: relative;
+        background-image:
+            linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 15px 15px;
+    }
+
+    .hud-panel::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+    }
+
+    .hud-label {
+        display: block;
+        font-size: 0.65rem;
+        color: var(--gray-light);
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin-bottom: 0.25rem;
+    }
+
+    .hud-value {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 2.5rem;
+        color: var(--neon-cyan);
+        line-height: 1;
+        text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    }
+
+    .hud-sublabel {
+        display: block;
+        font-size: 0.6rem;
+        color: var(--neon-green);
+        letter-spacing: 0.1em;
+        margin-top: 0.25rem;
+    }
+
+    .hud-score .hud-value {
+        min-width: 120px;
+        text-align: center;
+    }
+
+    .health-bar {
+        width: 150px;
+        height: 12px;
+        background: var(--gray-mid);
+        border: 1px solid var(--gray-light);
+        position: relative;
+        overflow: hidden;
+        margin-top: 0.5rem;
+    }
+
+    .health-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--neon-green), var(--neon-cyan));
+        transition: width 0.3s ease;
+        box-shadow: 0 0 10px var(--neon-green);
+        width: 100%;
+    }
+
+    .health-text {
+        font-size: 0.7rem;
+        color: var(--gray-lighter);
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    .hud-bottom {
+        display: flex;
+        justify-content: center;
+    }
+
+    .hud-controls {
+        display: flex;
+        gap: 2rem;
+        background: rgba(10, 10, 10, 0.8);
+        padding: 0.75rem 1.5rem;
+        border: 1px solid var(--gray-mid);
+    }
+
+    .control-hint {
+        font-size: 0.65rem;
+        color: var(--gray-light);
+        letter-spacing: 0.05em;
+    }
+
+    /* ========================================
+       POWER-UP NOTIFICATION
+       ======================================== */
+    .powerup-notification {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 1rem 2rem;
+        font-family: 'Space Mono', monospace;
+        font-size: 1.25rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        background: rgba(0, 0, 0, 0.9);
+        border: 3px solid;
+        opacity: 0;
+        pointer-events: none;
+        z-index: 150;
+        transition: opacity 0.2s ease;
+    }
+
+    .powerup-notification.show {
+        opacity: 1;
+        animation: powerupPulse 0.5s ease-out;
+    }
+
+    @keyframes powerupPulse {
+        0% { transform: translate(-50%, -50%) scale(0.8); }
+        50% { transform: translate(-50%, -50%) scale(1.1); }
+        100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    /* ========================================
+       GAME SCREENS BASE
+       ======================================== */
+    .game-screen {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(10px);
+        z-index: 200;
+    }
+
+    .game-screen.hidden {
+        display: none;
+    }
+
+    /* ========================================
+       START SCREEN (REDESIGNED)
+       ======================================== */
+    .start-screen {
+        background: transparent;
+    }
+
+    .start-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+        max-width: 700px;
+        width: 100%;
+        padding: 2rem;
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Title */
+    .start-title-container {
+        text-align: center;
+    }
+
+    .game-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 5rem;
+        line-height: 1;
+        margin-bottom: 0.5rem;
+        letter-spacing: 0.05em;
+    }
+
+    .animated-title {
+        animation: titleGlow 2s ease-in-out infinite;
+    }
+
+    @keyframes titleGlow {
+        0%, 100% { filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.5)); }
+        50% { filter: drop-shadow(0 0 40px rgba(0, 255, 255, 0.8)); }
+    }
+
+    .title-net {
+        color: var(--neon-cyan);
+        text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+    }
+
+    .title-defender {
+        color: var(--white);
+    }
+
+    .game-subtitle {
+        font-family: 'Space Mono', monospace;
+        font-size: 0.9rem;
+        color: var(--neon-green);
+        letter-spacing: 0.3em;
+    }
+
+    /* Threat Panel */
+    .threat-panel {
+        width: 100%;
+        max-width: 500px;
+        background: rgba(10, 10, 10, 0.95);
+        border: 2px solid var(--neon-cyan);
+        padding: 1.5rem;
+        position: relative;
+    }
+
+    .threat-panel::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta), var(--neon-cyan));
+    }
+
+    .threat-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--gray-mid);
+    }
+
+    .threat-icon {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--neon-magenta);
+        color: #000;
+        font-weight: bold;
+        font-size: 1rem;
+        animation: iconPulse 1s ease-in-out infinite;
+    }
+
+    @keyframes iconPulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+    .threat-text {
+        font-family: 'Space Mono', monospace;
+        font-size: 0.8rem;
+        color: var(--neon-magenta);
+        letter-spacing: 0.1em;
+    }
+
+    .osi-bars {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .osi-bar {
+        display: grid;
+        grid-template-columns: 120px 1fr 40px;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .bar-label {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.65rem;
+        color: var(--bar-color);
+        letter-spacing: 0.05em;
+    }
+
+    .bar-track {
+        height: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--bar-color);
+        overflow: hidden;
+    }
+
+    .bar-fill {
+        height: 100%;
+        width: 0%;
+        background: var(--bar-color);
+        box-shadow: 0 0 10px var(--bar-color);
+        transition: width 0.3s ease;
+    }
+
+    .bar-percent {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.6rem;
+        color: var(--gray-light);
+        text-align: right;
+    }
+
+    /* Ship Preview */
+    .ship-preview-container {
+        padding: 1rem 0;
+    }
+
+    .ship-preview {
+        position: relative;
+        width: 60px;
+        height: 70px;
+        animation: shipFloat 2s ease-in-out infinite;
+    }
+
+    @keyframes shipFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .ship-body {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 15px solid transparent;
+        border-right: 15px solid transparent;
+        border-bottom: 40px solid var(--neon-cyan);
+        filter: drop-shadow(0 0 10px var(--neon-cyan));
+    }
+
+    .ship-wing {
+        position: absolute;
+        top: 25px;
+        width: 0;
+        height: 0;
+        border-top: 8px solid transparent;
+        border-bottom: 15px solid var(--neon-magenta);
+        filter: drop-shadow(0 0 5px var(--neon-magenta));
+    }
+
+    .ship-wing.left {
+        left: 5px;
+        border-right: 12px solid var(--neon-magenta);
+        border-left: none;
+    }
+
+    .ship-wing.right {
+        right: 5px;
+        border-left: 12px solid var(--neon-magenta);
+        border-right: none;
+    }
+
+    .ship-thruster {
+        position: absolute;
+        bottom: 5px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 10px;
+        height: 20px;
+        background: linear-gradient(to bottom, var(--neon-cyan), transparent);
+        border-radius: 50% 50% 50% 50% / 20% 20% 80% 80%;
+        animation: thrusterGlow 0.2s ease-in-out infinite;
+        filter: drop-shadow(0 0 10px var(--neon-cyan));
+    }
+
+    @keyframes thrusterGlow {
+        0%, 100% { opacity: 1; height: 20px; }
+        50% { opacity: 0.7; height: 25px; }
+    }
+
+    /* Start Actions */
+    .start-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .high-score-display {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.75rem 1.5rem;
+        border: 1px solid var(--gray-mid);
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    .hs-label {
+        font-family: 'Space Mono', monospace;
+        font-size: 0.6rem;
+        color: var(--gray-light);
+        letter-spacing: 0.1em;
+    }
+
+    .hs-value {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.5rem;
+        color: var(--neon-yellow);
+        text-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
+    }
+
+    .pulse-btn {
+        animation: btnPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes btnPulse {
+        0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); }
+        50% { box-shadow: 0 0 40px rgba(0, 255, 255, 0.6); }
+    }
+
+    /* ========================================
+       OTHER SCREENS (Pause, GameOver, Victory)
+       ======================================== */
+    .screen-content {
+        text-align: center;
+        max-width: 500px;
+        padding: 3rem;
+        border: 2px solid var(--neon-cyan);
+        background: var(--gray-dark);
+        background-image:
+            linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 30px 30px;
+        position: relative;
+    }
+
+    .screen-content::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta), var(--neon-cyan));
+        z-index: -1;
+        opacity: 0.3;
+    }
+
+    .screen-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 3rem;
+        color: var(--neon-cyan);
+        margin-bottom: 1rem;
+        letter-spacing: 0.1em;
+    }
+
+    .screen-subtitle {
+        color: var(--gray-lighter);
+        margin-bottom: 2rem;
+    }
+
+    .victory-title {
+        color: var(--neon-green);
+        text-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+    }
+
+    .glitch-text {
+        color: var(--neon-magenta);
+        animation: glitch 2s infinite;
+    }
+
+    @keyframes glitch {
+        0%, 90%, 100% { transform: translateX(0); }
+        92% { transform: translateX(-3px); text-shadow: 3px 0 var(--neon-cyan); }
+        94% { transform: translateX(3px); text-shadow: -3px 0 var(--neon-magenta); }
+        96% { transform: translateX(-3px); text-shadow: 3px 0 var(--neon-cyan); }
+    }
+
+    /* Stats */
+    .pause-stats,
+    .final-stats {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-item.large .stat-value {
+        font-size: 3rem;
+    }
+
+    .stat-label {
+        display: block;
+        font-size: 0.7rem;
+        color: var(--gray-light);
+        letter-spacing: 0.1em;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-value {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 2rem;
+        color: var(--neon-cyan);
+    }
+
+    /* Victory Badge */
+    .victory-badge {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .badge-icon {
+        width: 80px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 3px solid var(--neon-green);
+        border-radius: 50%;
+        margin-bottom: 1rem;
+        animation: badgePulse 2s infinite;
+    }
+
+    .badge-icon svg {
+        width: 40px;
+        height: 40px;
+        stroke: var(--neon-green);
+    }
+
+    .badge-text {
+        font-family: 'Space Mono', monospace;
+        font-size: 0.9rem;
+        color: var(--neon-green);
+        letter-spacing: 0.2em;
+    }
+
+    @keyframes badgePulse {
+        0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.3); }
+        50% { box-shadow: 0 0 40px rgba(0, 255, 136, 0.6); }
+    }
+
+    /* Buttons */
+    .game-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        padding: 1rem 2rem;
+        margin: 0.5rem;
+        font-family: 'Space Mono', monospace;
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        border: 2px solid;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .game-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .start-btn,
+    .resume-btn,
+    .restart-btn {
+        background: var(--neon-cyan);
+        border-color: var(--neon-cyan);
+        color: var(--black);
+    }
+
+    .start-btn:hover,
+    .resume-btn:hover,
+    .restart-btn:hover {
+        background: var(--neon-magenta);
+        border-color: var(--neon-magenta);
+        box-shadow: 0 0 30px rgba(255, 0, 128, 0.5);
+    }
+
+    .exit-btn {
+        background: transparent;
+        border-color: var(--gray-light);
+        color: var(--gray-light);
+    }
+
+    .exit-btn:hover {
+        border-color: var(--neon-magenta);
+        color: var(--neon-magenta);
+    }
+
+    /* ========================================
+       RESPONSIVE
+       ======================================== */
+    @media (max-width: 768px) {
+        .game-hud {
+            padding: 1rem;
+        }
+
+        .hud-top {
+            flex-wrap: wrap;
+        }
+
+        .hud-panel {
+            padding: 0.75rem 1rem;
+        }
+
+        .hud-value {
+            font-size: 1.75rem;
+        }
+
+        .health-bar {
+            width: 100px;
+        }
+
+        .hud-controls {
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .game-title {
+            font-size: 2.5rem;
+        }
+
+        .game-subtitle {
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+        }
+
+        .start-content {
+            padding: 1rem;
+            gap: 1.5rem;
+        }
+
+        .threat-panel {
+            padding: 1rem;
+        }
+
+        .osi-bar {
+            grid-template-columns: 90px 1fr 35px;
+            gap: 0.5rem;
+        }
+
+        .bar-label {
+            font-size: 0.55rem;
+        }
+
+        .screen-content {
+            padding: 2rem 1.5rem;
+            margin: 1rem;
+        }
+
+        .ship-preview-container {
+            display: none;
+        }
+    }
+</style>
+
+<script is:inline>
+    // Game overlay controller with cinematic intro
+    class GameOverlayController {
+        constructor() {
+            this.overlay = document.getElementById('game-overlay');
+            this.canvas = document.getElementById('game-canvas');
+            this.introCanvas = document.getElementById('intro-canvas');
+            this.hud = document.getElementById('game-hud');
+            this.game = null;
+            this.gameLoaded = false;
+            this.introLoaded = false;
+            this.intro = null;
+
+            // Screens
+            this.startScreen = document.getElementById('game-start-screen');
+            this.pauseScreen = document.getElementById('game-pause-screen');
+            this.gameOverScreen = document.getElementById('game-over-screen');
+            this.victoryScreen = document.getElementById('game-victory-screen');
+
+            // HUD elements
+            this.hudScore = document.getElementById('hud-score');
+            this.hudWaveNumber = document.getElementById('hud-wave-number');
+            this.hudLayerName = document.getElementById('hud-layer-name');
+            this.hudHealthFill = document.getElementById('hud-health-fill');
+            this.hudHealthText = document.getElementById('hud-health-text');
+
+            // Notification
+            this.notification = document.getElementById('powerup-notification');
+            this.notificationTimeout = null;
+
+            // OSI bars animation
+            this.osiAnimationInterval = null;
+
+            this.bindEvents();
+        }
+
+        bindEvents() {
+            // Start game
+            document.getElementById('start-game-btn')?.addEventListener('click', () => this.startGame());
+
+            // Resume
+            document.getElementById('resume-btn')?.addEventListener('click', () => this.resumeGame());
+
+            // Restart buttons
+            document.getElementById('restart-pause-btn')?.addEventListener('click', () => this.restartGame());
+            document.getElementById('restart-gameover-btn')?.addEventListener('click', () => this.restartGame());
+            document.getElementById('restart-victory-btn')?.addEventListener('click', () => this.restartGame());
+
+            // Exit buttons
+            document.getElementById('exit-start-btn')?.addEventListener('click', () => this.closeOverlay());
+            document.getElementById('exit-pause-btn')?.addEventListener('click', () => this.closeOverlay());
+            document.getElementById('exit-gameover-btn')?.addEventListener('click', () => this.closeOverlay());
+            document.getElementById('exit-victory-btn')?.addEventListener('click', () => this.closeOverlay());
+
+            // Escape key
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && this.overlay.classList.contains('active')) {
+                    if (!this.startScreen.classList.contains('hidden')) {
+                        this.closeOverlay();
+                    }
+                }
+            });
+
+            // Handle resize
+            window.addEventListener('resize', () => this.handleResize());
+        }
+
+        handleResize() {
+            if (this.introCanvas) {
+                this.introCanvas.width = window.innerWidth;
+                this.introCanvas.height = window.innerHeight;
+            }
+            if (this.intro) {
+                this.intro.resize();
+            }
+        }
+
+        loadIntroScript() {
+            return new Promise((resolve, reject) => {
+                if (this.introLoaded) {
+                    resolve();
+                    return;
+                }
+
+                const script = document.createElement('script');
+                script.type = 'module';
+                script.src = '/scripts/game/intro/IntroSequence.js';
+                script.onload = () => {
+                    this.introLoaded = true;
+                    resolve();
+                };
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+
+        loadGameScript() {
+            return new Promise((resolve, reject) => {
+                if (this.gameLoaded) {
+                    resolve();
+                    return;
+                }
+
+                const script = document.createElement('script');
+                script.type = 'module';
+                script.src = '/scripts/game/NetDefender.js';
+                script.onload = () => {
+                    this.gameLoaded = true;
+                    resolve();
+                };
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+
+        async open(packetX, packetY) {
+            // Show overlay
+            this.overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            // Setup intro canvas
+            this.introCanvas.width = window.innerWidth;
+            this.introCanvas.height = window.innerHeight;
+            this.introCanvas.classList.remove('hidden');
+
+            // Hide start screen initially (will show after intro)
+            this.startScreen.classList.add('hidden');
+
+            // Load and run intro sequence
+            try {
+                await this.loadIntroScript();
+                await new Promise(r => setTimeout(r, 100));
+
+                if (window.IntroSequence) {
+                    this.intro = new window.IntroSequence(this.introCanvas, () => {
+                        this.onIntroComplete();
+                    });
+                    this.intro.start(packetX, packetY);
+                } else {
+                    // Fallback: skip intro
+                    this.onIntroComplete();
+                }
+            } catch (err) {
+                console.error('Failed to load intro:', err);
+                this.onIntroComplete();
+            }
+
+            // Pre-load game in background
+            this.loadGameScript().catch(console.error);
+        }
+
+        onIntroComplete() {
+            // Hide intro canvas
+            this.introCanvas.classList.add('hidden');
+
+            // Show start screen with animation
+            this.showScreen('start');
+
+            // Update high score display
+            const highScore = localStorage.getItem('netdefender_highscore') || 0;
+            document.getElementById('menu-high-score').textContent = parseInt(highScore).toLocaleString('fr-FR');
+
+            // Animate OSI bars
+            this.animateOsiBars();
+
+            // Initialize game if not already done
+            this.initGame();
+        }
+
+        animateOsiBars() {
+            const bars = document.querySelectorAll('.osi-bar');
+            const threatLevels = [95, 85, 70, 60, 45, 30, 15]; // Threat levels per layer
+
+            let currentBar = 0;
+
+            // Clear any existing animation
+            if (this.osiAnimationInterval) {
+                clearInterval(this.osiAnimationInterval);
+            }
+
+            this.osiAnimationInterval = setInterval(() => {
+                if (currentBar >= bars.length) {
+                    clearInterval(this.osiAnimationInterval);
+                    return;
+                }
+
+                const bar = bars[currentBar];
+                const fill = bar.querySelector('.bar-fill');
+                const percent = bar.querySelector('.bar-percent');
+                const targetPercent = threatLevels[currentBar];
+
+                fill.style.width = targetPercent + '%';
+                percent.textContent = targetPercent + '%';
+
+                currentBar++;
+            }, 150);
+        }
+
+        async initGame() {
+            if (this.game) return;
+
+            try {
+                await this.loadGameScript();
+                await new Promise(r => setTimeout(r, 100));
+
+                if (window.NetDefender) {
+                    this.game = new window.NetDefender('game-canvas');
+
+                    // Set up callbacks
+                    this.game.onScoreUpdate = (score) => this.updateScore(score);
+                    this.game.onHealthUpdate = (health, max) => this.updateHealth(health, max);
+                    this.game.onWaveUpdate = (wave, total, layer) => this.updateWave(wave, total, layer);
+                    this.game.onPause = (paused) => paused ? this.showScreen('pause') : this.showScreen('playing');
+                    this.game.onGameOver = (score, highScore) => this.showGameOver(score, highScore);
+                    this.game.onVictory = (score, highScore) => this.showVictory(score, highScore);
+                    this.game.onPowerUpCollect = (name, color, isPositive) => this.showPowerUpNotification(name, color);
+                } else {
+                    console.error('NetDefender not available on window');
+                }
+            } catch (err) {
+                console.error('Failed to load game:', err);
+            }
+        }
+
+        startGame() {
+            if (this.game) {
+                this.showScreen('playing');
+                this.game.start();
+            }
+        }
+
+        resumeGame() {
+            if (this.game) {
+                this.showScreen('playing');
+                this.game.resume();
+            }
+        }
+
+        restartGame() {
+            if (this.game) {
+                this.game.stop();
+                this.showScreen('playing');
+                this.game.start();
+            }
+        }
+
+        closeOverlay() {
+            if (this.game) {
+                this.game.stop();
+            }
+            if (this.intro) {
+                this.intro.stop();
+            }
+            if (this.osiAnimationInterval) {
+                clearInterval(this.osiAnimationInterval);
+            }
+
+            this.overlay.classList.remove('active');
+            document.body.style.overflow = '';
+
+            // Dispatch event for Three.js
+            window.dispatchEvent(new CustomEvent('netdefender-closed'));
+        }
+
+        showScreen(screen) {
+            // Hide all screens
+            this.startScreen.classList.add('hidden');
+            this.pauseScreen.classList.add('hidden');
+            this.gameOverScreen.classList.add('hidden');
+            this.victoryScreen.classList.add('hidden');
+            this.hud.style.display = 'none';
+
+            // Show requested screen
+            switch (screen) {
+                case 'start':
+                    this.startScreen.classList.remove('hidden');
+                    break;
+                case 'pause':
+                    this.pauseScreen.classList.remove('hidden');
+                    if (this.game) {
+                        document.getElementById('pause-score').textContent = this.game.score.toLocaleString('fr-FR');
+                        document.getElementById('pause-wave').textContent = `${this.game.waveManager.getCurrentWaveNumber()}/${this.game.waveManager.getTotalWaves()}`;
+                    }
+                    break;
+                case 'gameover':
+                    this.gameOverScreen.classList.remove('hidden');
+                    break;
+                case 'victory':
+                    this.victoryScreen.classList.remove('hidden');
+                    break;
+                case 'playing':
+                    this.hud.style.display = 'flex';
+                    break;
+            }
+        }
+
+        updateScore(score) {
+            this.hudScore.textContent = score.toLocaleString('fr-FR');
+        }
+
+        updateHealth(health, max) {
+            const percent = (health / max) * 100;
+            this.hudHealthFill.style.width = `${percent}%`;
+            this.hudHealthText.textContent = `${Math.round(percent)}%`;
+
+            // Color based on health
+            if (percent <= 25) {
+                this.hudHealthFill.style.background = 'var(--neon-magenta)';
+            } else if (percent <= 50) {
+                this.hudHealthFill.style.background = 'var(--neon-yellow)';
+            } else {
+                this.hudHealthFill.style.background = 'linear-gradient(90deg, var(--neon-green), var(--neon-cyan))';
+            }
+        }
+
+        updateWave(wave, total, layer) {
+            this.hudWaveNumber.textContent = wave;
+            if (layer) {
+                this.hudLayerName.textContent = layer.name;
+                this.hudLayerName.style.color = layer.color;
+            }
+        }
+
+        showGameOver(score, highScore) {
+            document.getElementById('final-score').textContent = score.toLocaleString('fr-FR');
+            document.getElementById('high-score').textContent = highScore.toLocaleString('fr-FR');
+            if (this.game) {
+                const layer = this.game.waveManager.getCurrentLayerInfo();
+                document.getElementById('breach-layer').textContent = `LAYER ${layer?.level || '?'}`;
+            }
+            this.showScreen('gameover');
+        }
+
+        showVictory(score, highScore) {
+            document.getElementById('victory-score').textContent = score.toLocaleString('fr-FR');
+            document.getElementById('victory-high-score').textContent = highScore.toLocaleString('fr-FR');
+            this.showScreen('victory');
+        }
+
+        showPowerUpNotification(name, color) {
+            if (this.notificationTimeout) {
+                clearTimeout(this.notificationTimeout);
+            }
+
+            this.notification.textContent = name;
+            this.notification.style.color = color;
+            this.notification.style.borderColor = color;
+            this.notification.style.boxShadow = `0 0 20px ${color}`;
+            this.notification.classList.add('show');
+
+            this.notificationTimeout = setTimeout(() => {
+                this.notification.classList.remove('show');
+            }, 1500);
+        }
+    }
+
+    // Initialize controller
+    const gameController = new GameOverlayController();
+
+    // Expose for external triggering (with packet position)
+    window.openNetDefender = (packetX, packetY) => gameController.open(packetX, packetY);
+    window.closeNetDefender = () => gameController.closeOverlay();
+</script>

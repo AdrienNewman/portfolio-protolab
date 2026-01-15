@@ -1,5 +1,8 @@
 ---
-// ProjectGallery Component - Utilise projects.json (unifié avec admin)
+/**
+ * ProjectGallery Component - Badge style compact (V2)
+ * Grille 5 colonnes + modal dynamique
+ */
 import ProjectCard from './ProjectCard.astro';
 import ProjectModal from './ProjectModal.astro';
 import projectsData from '../../data/projects.json';
@@ -24,16 +27,10 @@ const entries = [...projectsData].sort((a, b) => ((b.featured ? 1 : 0) - (a.feat
         <div class="projects-grid">
             {entries.map(project => (
                 <ProjectCard
-                    projectId={project.id}
+                    id={project.id}
                     title={project.title}
-                    description={project.description}
-                    stack={project.stack ?? []}
-                    featured={project.featured}
-                    status={project.status ?? 'Production'}
                     icon={project.icon}
                     iconColor={project.iconColor}
-                    glowColor={project.glowColor}
-                    stats={project.stats}
                 />
             ))}
         </div>
@@ -59,6 +56,8 @@ const entries = [...projectsData].sort((a, b) => ((b.featured ? 1 : 0) - (a.feat
         margin-bottom: 1rem;
         padding: 0.5rem 1rem;
         border: 1px solid var(--neon-cyan);
+        opacity: 0;
+        transform: translateY(20px);
     }
 
     .section-title {
@@ -67,6 +66,8 @@ const entries = [...projectsData].sort((a, b) => ((b.featured ? 1 : 0) - (a.feat
         letter-spacing: 0.02em;
         line-height: 1;
         margin-bottom: 1.5rem;
+        opacity: 0;
+        transform: translateY(30px);
     }
 
     .section-title span { color: var(--neon-cyan); }
@@ -80,14 +81,44 @@ const entries = [...projectsData].sort((a, b) => ((b.featured ? 1 : 0) - (a.feat
         line-height: 1.4;
         letter-spacing: 0.05em;
         text-transform: uppercase;
+        opacity: 0;
+        transform: translateY(20px);
     }
 
     .projects-container { max-width: 1400px; margin: 0 auto; }
-    .projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 5rem; }
 
-    @media (max-width: 768px) {
+    /* Grille 5 colonnes - style badges */
+    .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 1rem;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    /* Responsive: 3 colonnes tablette */
+    @media (max-width: 900px) {
+        .projects-grid {
+            grid-template-columns: repeat(3, 1fr);
+            max-width: 600px;
+        }
+    }
+
+    /* Responsive: 2 colonnes mobile */
+    @media (max-width: 600px) {
         .section { padding: 5rem 1.5rem; }
         .section-header { margin-bottom: 3rem; }
-        .projects-grid { grid-template-columns: 1fr; }
+        .projects-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            max-width: 400px;
+        }
+    }
+
+    /* Responsive: petit mobile */
+    @media (max-width: 400px) {
+        .projects-grid {
+            gap: 0.5rem;
+        }
     }
 </style>

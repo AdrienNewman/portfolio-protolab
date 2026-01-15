@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototype - Néon Publicitaire</title>
+
+    <!-- Fonts du portfolio -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --neon-magenta: #ff0080;
+            --neon-cyan: #00ffff;
+            --black: #000000;
+            --gray-dark: #0a0a0a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--black);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Space Mono', monospace;
+            overflow: hidden;
+        }
+
+        /* Simulation du background avec particules */
+        .background {
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at center, transparent 0%, transparent 50%, rgba(0, 0, 0, 0.8) 100%),
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.1) 2px, rgba(0, 0, 0, 0.1) 4px);
+            z-index: 1;
+        }
+
+        /* Container principal */
+        .demo-container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+        }
+
+        /* ==========================================
+           ÉLÉMENT NÉON - À COPIER DANS HERO.ASTRO
+           ========================================== */
+
+        .neon-sign-wrapper {
+            position: relative;
+            transform: rotate(-5deg);
+            animation: neon-float 6s ease-in-out infinite;
+            pointer-events: none;
+            margin-bottom: 3rem;
+        }
+
+        .neon-sign {
+            padding: 1.2rem 2.5rem;
+            border: 3px solid rgba(255, 0, 128, 0.5);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(3px);
+            box-shadow:
+                0 0 10px rgba(255, 0, 128, 0.4),
+                0 0 30px rgba(255, 0, 128, 0.2),
+                0 0 60px rgba(255, 0, 128, 0.1),
+                inset 0 0 30px rgba(255, 0, 128, 0.05);
+        }
+
+        .neon-text {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            color: #fff;
+            text-shadow:
+                0 0 7px #fff,
+                0 0 10px #fff,
+                0 0 21px #fff,
+                0 0 42px var(--neon-magenta),
+                0 0 82px var(--neon-magenta),
+                0 0 92px var(--neon-magenta);
+            letter-spacing: 0.2em;
+            display: block;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .neon-text-small {
+            font-size: clamp(0.8rem, 2vw, 1.1rem);
+            margin-top: 0.4rem;
+            letter-spacing: 0.25em;
+            opacity: 0.95;
+        }
+
+        /* Animations flicker pour lettres individuelles */
+        .flicker-slow {
+            animation: neon-flicker 3s step-end infinite;
+        }
+
+        .flicker-fast {
+            animation: neon-flicker 1.5s step-end infinite 0.3s;
+        }
+
+        .flicker-medium {
+            animation: neon-flicker 2s step-end infinite 0.7s;
+        }
+
+        @keyframes neon-flicker {
+            0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+                opacity: 1;
+            }
+            20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+                opacity: 0.4;
+            }
+        }
+
+        @keyframes neon-float {
+            0%, 100% {
+                transform: translateY(0) rotate(-5deg);
+            }
+            50% {
+                transform: translateY(-15px) rotate(-3deg);
+            }
+        }
+
+        /* ==========================================
+           FIN DE L'ÉLÉMENT NÉON
+           ========================================== */
+
+        /* Infos de debug */
+        .debug-info {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--neon-cyan);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            opacity: 0.6;
+        }
+
+        .debug-info code {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 0.2rem 0.5rem;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        /* Simulation du titre Hero pour contexte */
+        .hero-title-preview {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(3rem, 8vw, 5rem);
+            line-height: 1;
+            text-transform: uppercase;
+            margin-top: 2rem;
+            opacity: 0.3;
+        }
+
+        .hero-title-preview .line-1 {
+            color: #fff;
+        }
+
+        .hero-title-preview .line-2 {
+            color: var(--neon-cyan);
+        }
+
+        /* Contrôles de test */
+        .controls {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 100;
+        }
+
+        .controls button {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .controls button:hover {
+            background: var(--neon-cyan);
+            color: var(--black);
+        }
+
+        .controls button.active {
+            background: var(--neon-magenta);
+            border-color: var(--neon-magenta);
+            color: #fff;
+        }
+
+        /* Accessibilité - Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            .neon-sign-wrapper {
+                animation: none;
+                transform: rotate(-5deg);
+            }
+            .flicker-slow,
+            .flicker-fast,
+            .flicker-medium {
+                animation: none;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .neon-sign-wrapper {
+                transform: scale(0.8) rotate(-5deg);
+            }
+            .controls {
+                top: 1rem;
+                right: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+
+    <div class="demo-container">
+        <!-- ÉLÉMENT NÉON -->
+        <div class="neon-sign-wrapper" aria-hidden="true">
+            <div class="neon-sign">
+                <span class="neon-text">
+                    <span class="flicker-slow">C</span>ONSTRU<span class="flicker-medium">C</span>TIO<span class="flicker-fast">N</span>
+                </span>
+                <span class="neon-text neon-text-small">EN COURS...</span>
+            </div>
+        </div>
+
+        <!-- Aperçu du contexte Hero -->
+        <div class="hero-title-preview">
+            <div class="line-1">Adrien</div>
+            <div class="line-2">Mercadier</div>
+        </div>
+    </div>
+
+    <!-- Contrôles de test -->
+    <div class="controls">
+        <button onclick="toggleFloat()" id="btn-float">Float: ON</button>
+        <button onclick="toggleFlicker()" id="btn-flicker">Flicker: ON</button>
+        <button onclick="toggleColor()" id="btn-color">Magenta</button>
+    </div>
+
+    <div class="debug-info">
+        Prototype Néon - <code>public/prototype-neon-sign.html</code>
+    </div>
+
+    <script>
+        let floatEnabled = true;
+        let flickerEnabled = true;
+        let isMagenta = true;
+
+        function toggleFloat() {
+            floatEnabled = !floatEnabled;
+            const wrapper = document.querySelector('.neon-sign-wrapper');
+            const btn = document.getElementById('btn-float');
+
+            if (floatEnabled) {
+                wrapper.style.animation = 'neon-float 6s ease-in-out infinite';
+                btn.textContent = 'Float: ON';
+                btn.classList.remove('active');
+            } else {
+                wrapper.style.animation = 'none';
+                btn.textContent = 'Float: OFF';
+                btn.classList.add('active');
+            }
+        }
+
+        function toggleFlicker() {
+            flickerEnabled = !flickerEnabled;
+            const flickers = document.querySelectorAll('.flicker-slow, .flicker-fast, .flicker-medium');
+            const btn = document.getElementById('btn-flicker');
+
+            flickers.forEach(el => {
+                if (flickerEnabled) {
+                    el.style.animation = '';
+                } else {
+                    el.style.animation = 'none';
+                }
+            });
+
+            btn.textContent = flickerEnabled ? 'Flicker: ON' : 'Flicker: OFF';
+            btn.classList.toggle('active', !flickerEnabled);
+        }
+
+        function toggleColor() {
+            isMagenta = !isMagenta;
+            const root = document.documentElement;
+            const btn = document.getElementById('btn-color');
+            const sign = document.querySelector('.neon-sign');
+            const texts = document.querySelectorAll('.neon-text');
+
+            if (isMagenta) {
+                root.style.setProperty('--neon-magenta', '#ff0080');
+                sign.style.borderColor = 'rgba(255, 0, 128, 0.5)';
+                sign.style.boxShadow = '0 0 10px rgba(255, 0, 128, 0.4), 0 0 30px rgba(255, 0, 128, 0.2), 0 0 60px rgba(255, 0, 128, 0.1), inset 0 0 30px rgba(255, 0, 128, 0.05)';
+                texts.forEach(t => {
+                    t.style.textShadow = '0 0 7px #fff, 0 0 10px #fff, 0 0 21px #fff, 0 0 42px #ff0080, 0 0 82px #ff0080, 0 0 92px #ff0080';
+                });
+                btn.textContent = 'Magenta';
+            } else {
+                root.style.setProperty('--neon-magenta', '#00ffff');
+                sign.style.borderColor = 'rgba(0, 255, 255, 0.5)';
+                sign.style.boxShadow = '0 0 10px rgba(0, 255, 255, 0.4), 0 0 30px rgba(0, 255, 255, 0.2), 0 0 60px rgba(0, 255, 255, 0.1), inset 0 0 30px rgba(0, 255, 255, 0.05)';
+                texts.forEach(t => {
+                    t.style.textShadow = '0 0 7px #fff, 0 0 10px #fff, 0 0 21px #fff, 0 0 42px #00ffff, 0 0 82px #00ffff, 0 0 92px #00ffff';
+                });
+                btn.textContent = 'Cyan';
+            }
+        }
+    </script>
+</body>
+</html>
