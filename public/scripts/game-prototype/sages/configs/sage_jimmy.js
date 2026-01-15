@@ -9,7 +9,7 @@ export const sage_jimmy = {
   id: 'sage_jimmy',
   name: 'Jimmy Wales',
   title: 'Fondateur de Wikipédia',
-  portrait: '/images/game/sages/jimmy_wales_wikipedia.PNG',
+  portrait: '/images/game/sages/jimmy_wales_wikipedia.png',
 
   // Apparition
   appearsAfterBoss: 'boss_clippe',
