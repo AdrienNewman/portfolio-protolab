@@ -1140,6 +1140,10 @@
             // Hide intro canvas
             this.introCanvas.classList.add('hidden');
 
+            // Setup game canvas dimensions
+            this.canvas.width = window.innerWidth;
+            this.canvas.height = window.innerHeight;
+
             // Démarrer directement le jeu (comme prototype-game.html)
             // Pas de start screen - le prototype gère tout (Jimmy Wales, etc.)
             await this.initGame();
